@@ -108,7 +108,7 @@ export default function DiseaseView({ id, onExit }: { id: string; onExit?(): voi
             <li key={g.id}>
               <a href={doiUrl(g)} target="_blank" rel="noreferrer">{g.title}</a>
               <div className="small">{g.org}・{g.citation}{g.doi && `・DOI ${g.doi}`}</div>
-              <div className="small">{g.status === 'verified' ? `✓ 已核對出版紀錄（${g.checkedAt}）` : `⚠ 需人工核對（${g.checkedAt}）`}{g.note && `：${g.note}`}</div>
+              <div className="small">{g.status === 'verified' ? `✓ 已核對出版紀錄（${g.checkedAt}）` : g.status === 'user-verified' ? `✓ 已人工核對連結與版本（${g.checkedAt}）` : `⚠ 需人工核對（${g.checkedAt}）`}{g.note && `：${g.note}`}</div>
             </li>
           ))}
         </ol>

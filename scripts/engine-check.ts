@@ -7,6 +7,7 @@ import { ORGAN_MAP } from '../src/data/organs';
 import { REF_MAP } from '../src/data/references';
 import { TOPICS } from '../src/data/topics';
 import { DISEASES } from '../src/data/diseases';
+import { reviewStatus } from '../src/data/reviewers';
 import { GUIDELINE_MAP } from '../src/data/guidelines';
 import manifest from '../src/data/modelManifest.json';
 import { analyzeRules, consultHash } from '../src/engine/ruleEngine';
@@ -46,8 +47,13 @@ const base = (): Consult => ({
 for (const d of DISEASES) {
   d.organs.forEach((o) => assert(ORGAN_MAP[o], `${d.id} 未知器官 ${o}`));
   assert(TOPICS.some((t) => t.id === d.id), `${d.id} 沒有對應的主題`);
-  assert(d.review.status === '待醫學審閱' || (d.review.reviewer && d.review.reviewedAt), `${d.id} 標示已審閱但缺少審閱者或日期`);
+  assert(d.review.roles.length > 0, `${d.id} 缺少審閱角色`);
+  for (const r of d.review.roles) for (const x of r.records) {
+    assert(x.name && x.credentials && x.scope, `${d.id} 審閱紀錄缺少姓名、證照或範圍`);
+    assert(/^\d{4}-\d{2}-\d{2}$/.test(x.reviewedAt), `${d.id} 審閱日期格式錯誤：${x.reviewedAt}`);
+  }
   assert(d.animPlan.length > 0, `${d.id} 缺少動畫規劃`);
+  assert(['待醫學審閱', '已審閱'].includes(reviewStatus(d.review)), `${d.id} 審閱狀態異常`);
   for (const s of d.sections) for (const c of s.claims) {
     c.src.forEach((x) => assert(GUIDELINE_MAP[x.g], `${d.id} 未知指引 ${x.g}`));
     if (c.check !== 'general') assert(c.src.length > 0, `${d.id}「${c.text.slice(0, 20)}」標示已核對但沒有來源`);

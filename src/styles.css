@@ -431,3 +431,15 @@ dl { margin: .4em 0; } dt { font-weight: 700; color: var(--teal-2); font-size: .
 .anim-plan ol, .srcs { padding-left: 1.2em; font-size: .86rem; }
 .srcs li { margin-bottom: .45rem; }
 .srcs a { color: var(--navy); font-weight: 600; }
+
+/* 淚膜動畫 */
+.tear { margin: .4rem 0 0; }
+.tear-canvas { height: 260px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); touch-action: none; }
+.tear-canvas canvas { display: block; }
+.tear-controls { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin: .5rem 0; flex-wrap: wrap; }
+.tear-controls .seg { flex: 1; min-width: 200px; margin: 0; }
+.tear-readout { display: flex; flex-wrap: wrap; gap: .2rem .7rem; align-items: baseline; font-size: .84rem; color: var(--muted); }
+.tear-readout b { color: var(--navy); }
+.tear-legend { list-style: none; padding: 0; margin: .5rem 0; font-size: .82rem; }
+.tear-legend li { display: flex; align-items: center; gap: .45em; padding: .15em 0; }
+.tear-legend i { width: 12px; height: 12px; border-radius: 3px; flex: none; border: 1px solid rgba(0,0,0,.12); }

@@ -6,10 +6,12 @@
  *   citation  指引出處已確認，但這句的內容尚未以全文逐字核對
  *   general   一般生理學或公共衛生知識，非來自指定指引，需由醫療專業人員確認
  *
- * 所有模組在完成醫療專業審閱前，review.status 一律為「待醫學審閱」。
+ * 審閱狀態由 reviewers.ts 的審閱名單推算；名單未填齊前顯示「待醫學審閱」。
  * 衛教邊界：區分風險、症狀、臨床診斷與已確診疾病；不以單一症狀判斷疾病；
  * 藥物僅作客觀介紹，不提供個人處方或停藥建議；食物與營養補充品不能取代必要醫療。
  */
+import type { ReviewState } from './reviewers';
+
 export type Check = 'text' | 'citation' | 'general';
 
 export interface Claim {
@@ -26,13 +28,7 @@ export interface DiseaseModule {
   en: string;
   organs: string[];
   specialty: string; // 建議審閱的專科
-  review: {
-    status: '待醫學審閱' | '已審閱';
-    reviewer?: string;
-    reviewedAt?: string;
-    guidelineVersion: string;
-    changelog: { date: string; note: string }[];
-  };
+  review: ReviewState;
   /** 3D 機制動畫的規劃（P3）；目前尚未完成 */
   animPlan: string[];
   sections: { key: SectionKey; title: string; claims: Claim[] }[];
@@ -54,7 +50,10 @@ const MED_NOTE: Claim = { text: '藥物需由醫師依個人狀況評估與處�
 export const DISEASES: DiseaseModule[] = [
   {
     id: 'hypertension', title: '高血壓', en: 'Hypertension', organs: ['heart', 'vessels', 'brain', 'kidneys'], specialty: '心臟內科或家醫科',
-    review: { status: '待醫學審閱', guidelineVersion: '2022 TSOC/THS；2026 THS 高齡者', changelog: [created] },
+    review: { guidelineVersion: '2022 TSOC/THS；2026 THS 高齡者', changelog: [created], roles: [
+      { role: '心臟內科或家醫科', required: true, records: [] },
+      { role: '合格營養師（飲食與營養）', required: true, records: [] },
+    ] },
     animPlan: ['正常血管與血壓調節', '血管收縮與周邊血管阻力', '長期高血壓可能造成的血管重塑', '心臟、腦部與腎臟的相關健康風險'],
     sections: [
       { key: 'define', title: SECTION_TITLE.define, claims: [
@@ -93,7 +92,10 @@ export const DISEASES: DiseaseModule[] = [
   },
   {
     id: 'atherosclerosis', title: '動脈粥狀硬化', en: 'Atherosclerosis', organs: ['vessels', 'heart', 'brain'], specialty: '心臟內科',
-    review: { status: '待醫學審閱', guidelineVersion: '2026 ACC/AHA 多學會血脂異常指引', changelog: [created] },
+    review: { guidelineVersion: '2026 ACC/AHA 多學會血脂異常指引', changelog: [created], roles: [
+      { role: '心臟內科', required: true, records: [] },
+      { role: '合格營養師（飲食與營養）', required: true, records: [] },
+    ] },
     animPlan: ['正常動脈內皮', 'LDL 脂蛋白進入血管壁', '發炎細胞與泡沫細胞形成', '粥狀斑塊的發展', '斑塊破裂與血栓形成的可能機制'],
     sections: [
       { key: 'define', title: SECTION_TITLE.define, claims: [
@@ -125,7 +127,10 @@ export const DISEASES: DiseaseModule[] = [
   },
   {
     id: 't2dm', title: '第二型糖尿病', en: 'Type 2 Diabetes', organs: ['pancreas', 'liver', 'muscles', 'kidneys', 'eyes', 'nerves'], specialty: '新陳代謝科',
-    review: { status: '待醫學審閱', guidelineVersion: 'ADA Standards of Care 2026；台灣糖尿病學會指引待核對', changelog: [created] },
+    review: { guidelineVersion: 'ADA Standards of Care 2026；台灣糖尿病學會指引待核對', changelog: [created], roles: [
+      { role: '新陳代謝科', required: true, records: [] },
+      { role: '合格營養師（飲食與營養）', required: true, records: [] },
+    ] },
     animPlan: ['正常血糖調節', '胰臟與胰島素', '細胞葡萄糖攝取', '胰島素阻抗', '長期高血糖與微血管健康風險'],
     sections: [
       { key: 'define', title: SECTION_TITLE.define, claims: [
@@ -158,7 +163,10 @@ export const DISEASES: DiseaseModule[] = [
   },
   {
     id: 'fatty-liver', title: '脂肪肝（MASLD）', en: 'Metabolic dysfunction-associated steatotic liver disease', organs: ['liver', 'pancreas', 'vessels'], specialty: '肝膽腸胃科',
-    review: { status: '待醫學審閱', guidelineVersion: '2024 EASL–EASD–EASO；AASLD 2023', changelog: [created] },
+    review: { guidelineVersion: '2024 EASL–EASD–EASO；AASLD 2023', changelog: [created], roles: [
+      { role: '肝膽腸胃科', required: true, records: [] },
+      { role: '合格營養師（飲食與營養）', required: true, records: [] },
+    ] },
     animPlan: ['正常肝細胞', '肝細胞脂肪堆積', '可能發生的肝臟發炎', '肝纖維化形成', '生活習慣與代謝風險的關係'],
     sections: [
       { key: 'define', title: SECTION_TITLE.define, claims: [
@@ -192,7 +200,10 @@ export const DISEASES: DiseaseModule[] = [
   },
   {
     id: 'dry-eye', title: '乾眼症', en: 'Dry Eye Disease', organs: ['eyes'], specialty: '眼科',
-    review: { status: '待醫學審閱', guidelineVersion: 'TFOS DEWS III（2025）', changelog: [created] },
+    review: { guidelineVersion: 'TFOS DEWS III（2025）', changelog: [created], roles: [
+      { role: '眼科', required: true, records: [] },
+      { role: '合格營養師（飲食與營養）', required: true, records: [] },
+    ] },
     animPlan: ['眼球與角膜結構', '淚膜的主要組成', '正常眨眼與淚膜分布', '淚膜不穩定與蒸發', '眼表發炎及乾眼相關機制'],
     sections: [
       { key: 'define', title: SECTION_TITLE.define, claims: [

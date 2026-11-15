@@ -1,9 +1,12 @@
-import { useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { CHECK_LABEL, DISEASE_MAP, type Claim } from '../data/diseases';
 import { GUIDELINE_MAP, doiUrl } from '../data/guidelines';
 import { ORGAN_MAP } from '../data/organs';
+import { reviewStatus } from '../data/reviewers';
 import { useStore, type LayerOpacity } from '../store';
 import { Pending } from './ui';
+
+const TearFilm = lazy(() => import('./TearFilm'));
 
 const VIEW_OPACITY: LayerOpacity = { skin: 0.08, muscle: 0, skeleton: 0.12, organ: 1, vessel: 0.85, nerve: 0.6 };
 
@@ -45,9 +48,16 @@ export default function DiseaseView({ id, onExit }: { id: string; onExit?(): voi
         {onExit && <button className="btn small ghost" onClick={onExit} aria-label="關閉">✕</button>}
       </div>
       <div className="review-badge">
-        <b>{d.review.status}</b>
+        <b>{reviewStatus(d.review)}</b>
         <span>建議審閱：{d.specialty}・指引版本：{d.review.guidelineVersion}</span>
-        <span>審閱者：{d.review.reviewer ?? '尚未指派'}　審閱日期：{d.review.reviewedAt ?? '—'}</span>
+        {d.review.roles.map((r) => (
+          <span key={r.role}>
+            {r.role}{r.required ? '（必要）' : ''}：
+            {r.records.length
+              ? r.records.map((x) => `${x.name}（${x.credentials}）${x.reviewedAt}・${x.scope}`).join('；')
+              : '尚未指派'}
+          </span>
+        ))}
       </div>
       <p className="small">3D 標示：{d.organs.map((o) => ORGAN_MAP[o]?.name).join('、')}。本頁為衛教資料，不是診斷；不能用單一症狀判斷疾病。</p>
       <div className="chk-summary">
@@ -65,8 +75,17 @@ export default function DiseaseView({ id, onExit }: { id: string; onExit?(): voi
 
       <div className="card anim-plan">
         <h4>3D 機制動畫</h4>
-        <p><Pending>規劃中（P3）</Pending></p>
-        <ol>{d.animPlan.map((a) => <li key={a}>{a}</li>)}</ol>
+        {d.id === 'dry-eye' ? (
+          <>
+            <Suspense fallback={<p className="small">載入淚膜動畫…</p>}><TearFilm /></Suspense>
+            <p className="small">已完成：眨眼、淚膜變薄與蒸發（示意）。尚未完成：淚膜各層的細部成分圖、眼表發炎機制。</p>
+          </>
+        ) : (
+          <>
+            <p><Pending>規劃中（P3）</Pending></p>
+            <ol>{d.animPlan.map((a) => <li key={a}>{a}</li>)}</ol>
+          </>
+        )}
       </div>
 
       <div className="card">

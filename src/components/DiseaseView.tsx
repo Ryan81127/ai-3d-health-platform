@@ -35,7 +35,9 @@ export default function DiseaseView({ id, onExit }: { id: string; onExit?(): voi
 
   useEffect(() => {
     const prev = useStore.getState().opacity;
-    useStore.setState({ opacity: VIEW_OPACITY, peel: null, autoRotate: false });
+    // 疾病牽涉骨骼時，骨骼層清楚顯示、內臟淡化，標示才看得出來
+    const op = d.organs.includes('bones') ? { ...VIEW_OPACITY, skeleton: 0.95, organ: 0.25, vessel: 0.3, nerve: 0 } : VIEW_OPACITY;
+    useStore.setState({ opacity: op, peel: null, autoRotate: false });
     setStory({ focus: d.organs, spotlight: d.organs, flows: null });
     return () => { setStory({ spotlight: null, focus: null, flows: null }); useStore.setState({ opacity: prev }); };
   }, [d, setStory]);

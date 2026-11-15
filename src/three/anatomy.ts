@@ -15,7 +15,8 @@ export interface PartInfo {
 }
 
 type P3 = [number, number, number];
-export const PARTS: PartInfo[] = manifestJson as PartInfo[];
+// 骨骼圖層的部位沒有個別器官，統一對應到「骨骼」衛教器官
+export const PARTS: PartInfo[] = (manifestJson as PartInfo[]).map((p) => (p.layer === 'skeleton' && !p.organ ? { ...p, organ: 'bones' } : p));
 export const PART_MAP: Record<string, PartInfo> = Object.fromEntries(PARTS.map((p) => [p.id, p]));
 
 export const SOURCE_LABEL: Record<string, string> = {

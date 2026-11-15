@@ -7,6 +7,7 @@ import { ORGAN_MAP } from '../src/data/organs';
 import { REF_MAP } from '../src/data/references';
 import { TOPICS } from '../src/data/topics';
 import { DISEASES } from '../src/data/diseases';
+import { CATEGORIES as DISEASE_CATEGORIES } from '../src/data/categories';
 import { reviewStatus } from '../src/data/reviewers';
 import { GUIDELINE_MAP } from '../src/data/guidelines';
 import manifest from '../src/data/modelManifest.json';
@@ -46,7 +47,7 @@ const base = (): Consult => ({
 // 疾病模組：來源必須在指引登錄表內；未審閱前必須標示待醫學審閱
 for (const d of DISEASES) {
   d.organs.forEach((o) => assert(ORGAN_MAP[o], `${d.id} 未知器官 ${o}`));
-  assert(TOPICS.some((t) => t.id === d.id), `${d.id} 沒有對應的主題`);
+  assert(DISEASE_CATEGORIES.some((c) => c.diseases.some((x) => x.id === d.id)), `${d.id} 沒有放進任何疾病分類`);
   assert(d.review.roles.length > 0, `${d.id} 缺少審閱角色`);
   for (const r of d.review.roles) for (const x of r.records) {
     assert(x.name && x.credentials && x.scope, `${d.id} 審閱紀錄缺少姓名、證照或範圍`);
@@ -60,6 +61,9 @@ for (const d of DISEASES) {
   }
   assert(d.sections.some((s) => s.key === 'redflags'), `${d.id} 缺少就醫警訊`);
 }
+// 疾病分類：同一分類內不可重複
+for (const c of DISEASE_CATEGORIES) assert(new Set(c.diseases.map((x) => x.id)).size === c.diseases.length, `${c.id} 有重複的疾病`);
+
 // 3D 模型部位：對應的器官必須存在，id 不可重複
 const ids = new Set<string>();
 for (const p of manifest as { id: string; organ: string | null }[]) {

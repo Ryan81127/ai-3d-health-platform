@@ -4,6 +4,8 @@ import { TOPIC_MAP } from '../data/topics';
 import { useStore } from '../store';
 import OrganCard from './OrganCard';
 import StoryPlayer, { TopicPicker } from './StoryPlayer';
+import { CATEGORIES, CATEGORY_STATS, isReady } from '../data/categories';
+import { DISEASE_MAP } from '../data/diseases';
 import DiseaseView from './DiseaseView';
 
 const SYSTEM_ORDER = ['神經系統', '感覺系統', '消化系統', '呼吸系統', '內分泌系統', '心血管系統', '消化與代謝系統', '消化與內分泌系統', '泌尿系統', '肌肉骨骼系統', '皮膚系統'];
@@ -11,15 +13,40 @@ const SYSTEM_ORDER = ['神經系統', '感覺系統', '消化系統', '呼吸系
 /** 自由探索：3D 人體佔滿畫面，左側為主題與器官清單，右側為故事或器官資訊 */
 export function ExploreLeft({ onStory }: { onStory(id: string): void }) {
   const { selectedOrgan, selectOrgan } = useStore();
-  const [tab, setTab] = useState<'topic' | 'organ'>('topic');
+  const [tab, setTab] = useState<'topic' | 'disease' | 'organ'>('topic');
+  const [openCat, setOpenCat] = useState<string | null>(null);
   const groups = SYSTEM_ORDER.map((sys) => [sys, ORGANS.filter((o) => o.system === sys)] as const).filter(([, l]) => l.length);
   return (
     <div className="dock-body">
       <div className="seg" role="tablist">
         <button role="tab" aria-selected={tab === 'topic'} className={tab === 'topic' ? 'on' : ''} onClick={() => setTab('topic')}>主題故事</button>
+        <button role="tab" aria-selected={tab === 'disease'} className={tab === 'disease' ? 'on' : ''} onClick={() => setTab('disease')}>疾病分類</button>
         <button role="tab" aria-selected={tab === 'organ'} className={tab === 'organ' ? 'on' : ''} onClick={() => setTab('organ')}>器官</button>
       </div>
-      {tab === 'topic' ? (
+      {tab === 'disease' ? (
+        <div className="cat-list">
+          <p className="small">常見疾病 {CATEGORY_STATS.total} 種，已完成 {CATEGORY_STATS.ready} 種，其餘分批整理中。</p>
+          {CATEGORIES.map((c) => {
+            const done = c.diseases.filter((x) => isReady(x.id)).length;
+            return (
+              <div key={c.id} className={`acc ${openCat === c.id ? 'open' : ''}`}>
+                <button className="acc-head" aria-expanded={openCat === c.id} onClick={() => setOpenCat(openCat === c.id ? null : c.id)}>
+                  <span>{c.icon} {c.title}</span><b className="count">{done}/{c.diseases.length}</b><i>{openCat === c.id ? '−' : '+'}</i>
+                </button>
+                {openCat === c.id && (
+                  <div className="acc-body topic-picker">
+                    {c.diseases.map((x) => (
+                      <button key={x.id} className="topic-chip" disabled={!isReady(x.id)} onClick={() => onStory(x.id)}>
+                        {x.title}{!isReady(x.id) && <small>整理中</small>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ) : tab === 'topic' ? (
         <>
           <p className="small">選一個生活習慣，看看身體裡可能發生什麼。</p>
           <TopicPicker onPick={onStory} />
@@ -48,12 +75,12 @@ export function ExploreRight({ story, setStory }: { story: { topic: string; step
     <div className="dock-body">
       {story && (
         <div className="seg" role="tablist">
-          <button role="tab" aria-selected={tab === 'story'} className={tab === 'story' ? 'on' : ''} onClick={() => setTab('story')}>{TOPIC_MAP[story.topic].icon} {TOPIC_MAP[story.topic].title}</button>
+          <button role="tab" aria-selected={tab === 'story'} className={tab === 'story' ? 'on' : ''} onClick={() => setTab('story')}>{TOPIC_MAP[story.topic]?.icon ?? '📘'} {TOPIC_MAP[story.topic]?.title ?? DISEASE_MAP[story.topic]?.title}</button>
           <button role="tab" aria-selected={tab === 'organ'} className={tab === 'organ' ? 'on' : ''} onClick={() => setTab('organ')}>器官資訊</button>
         </div>
       )}
       {story && <div hidden={tab !== 'story'}>
-        {TOPIC_MAP[story.topic].ready
+        {TOPIC_MAP[story.topic]?.ready
           ? <StoryPlayer topicId={story.topic} startAt={story.step} onExit={() => setStory(null)} />
           : <DiseaseView key={story.topic} id={story.topic} onExit={() => setStory(null)} />}
       </div>}

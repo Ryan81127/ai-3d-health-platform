@@ -47,6 +47,16 @@ export const SECTION_TITLE: Record<SectionKey, string> = {
 const created = { date: '2026-11-15', note: '依 P0 核對的指引建立初版草稿' };
 const MED_NOTE: Claim = { text: '藥物需由醫師依個人狀況評估與處方。請勿自行開始、停用或調整藥物劑量；有疑問請與醫師或藥師討論。', src: [], check: 'general' };
 
+/* 第一批起使用的簡寫：t＝已對照原文，gen＝一般衛教知識，sec＝分節 */
+const t = (text: string, g: string, where?: string): Claim => ({ text, src: [{ g, where }], check: 'text' });
+const gen = (text: string): Claim => ({ text, src: [], check: 'general' });
+const sec = (key: SectionKey, claims: Claim[]) => ({ key, title: SECTION_TITLE[key], claims });
+const rev = (guidelineVersion: string, specialty: string): ReviewState => ({
+  guidelineVersion, changelog: [{ date: '2026-11-15', note: '第一批常見疾病：依官方衛教頁面原文建立初版' }],
+  roles: [{ role: specialty, required: true, records: [] }, { role: '合格營養師（飲食與營養）', required: true, records: [] }],
+});
+const EMERGENCY = gen('出現胸痛、嚴重呼吸困難、突然單側無力或口齒不清、意識改變時，請立即撥打 119。');
+
 export const DISEASES: DiseaseModule[] = [
   {
     id: 'hypertension', title: '高血壓', en: 'Hypertension', organs: ['heart', 'vessels', 'brain', 'kidneys'], specialty: '心臟內科或家醫科',
@@ -231,6 +241,207 @@ export const DISEASES: DiseaseModule[] = [
       { key: 'redflags', title: SECTION_TITLE.redflags, claims: [
         { text: '突然視力下降且眨眼後沒有改善，需要緊急就醫排除其他原因（例如血管阻塞）。乾眼通常是雙側；明顯單眼紅、痛，或伴隨分泌物、腫脹，可能是其他眼疾，應就醫評估。', src: [{ g: 'dews3-dx', where: '病史問診表' }], check: 'text' },
       ] },
+    ],
+  },
+  /* ===== 第一批常見疾病（2026-11-15） ===== */
+  {
+    id: 'metabolic-syndrome', title: '代謝症候群', en: 'Metabolic Syndrome', organs: ['pancreas', 'liver', 'vessels', 'heart'], specialty: '家醫科或新陳代謝科',
+    review: rev('國健署代謝症候群（代謝症候群學習手冊 105 年版）', '家醫科或新陳代謝科'),
+    animPlan: ['腹部內臟脂肪堆積', '胰島素阻抗與血糖上升', '五項判定因子與心血管風險'],
+    sections: [
+      sec('define', [
+        t('判定標準共五項：(1) 腹部肥胖：男性腰圍 ≥90 公分、女性 ≥80 公分；(2) 收縮壓 ≥130 mmHg 或舒張壓 ≥85 mmHg；(3) 空腹血糖 ≥100 mg/dL；(4) 空腹三酸甘油酯 ≥150 mg/dL；(5) 高密度脂蛋白膽固醇男性 <40、女性 <50 mg/dL。符合三項（含）以上即判定為代謝症候群。', 'hpa-metsyn', '一、誰是代謝症候群病人'),
+        t('代謝症候群可預防也可治療；若不及早檢查治療，與一般人相比，得到糖尿病的風險增加 6 倍、高血壓 4 倍、高血脂 3 倍、心臟病及腦中風 2 倍。', 'hpa-metsyn', '簡介'),
+        gen('判定需依實際量測腰圍、血壓與抽血結果，不能只看外觀或症狀判斷。'),
+      ]),
+      sec('mechanism', [
+        t('胰島素阻抗是發生代謝症候群的原因：細胞對胰島素的敏感度變差，血液中的葡萄糖不容易進入細胞，身體代謝就會出問題。', 'hpa-metsyn', '三、胰島素阻抗'),
+        t('腹部肥胖代表內臟脂肪堆積多。BMI 無法完全反映內臟脂肪；腰圍代表脂肪分布，腰圍粗、內臟脂肪多更容易導致代謝異常。', 'hpa-metsyn', '四、以腹部肥胖偵測'),
+      ]),
+      sec('organs', [
+        gen('長期可能影響血管、心臟、腦血管，以及胰臟與肝臟的代謝功能。這是群體層次的風險，不代表每個人都會發生。'),
+      ]),
+      sec('lifestyle', [
+        t('成因中不良生活型態約佔 50%、遺傳因素約佔 20%；家族中有高血壓、糖尿病、高血脂的人機率較高；長期壓力也可能使血糖上升。', 'hpa-metsyn', '二、為什麼會得到'),
+        t('預防五大絕招：聰明選、健康吃；減少久坐，一天至少運動 30 分鐘；不吸菸、少喝酒；紓解壓力，必要時尋求醫師或臨床心理師協助；善用成人預防保健檢查，及早發現。', 'hpa-metsyn', '五、預防代謝症候群'),
+      ]),
+      sec('nutrition', [
+        t('「三低一高」健康飲食口訣：低油、低糖、低鹽、高纖。低纖、高糖、高油脂飲食與過量飲酒的人較容易有代謝症候群。', 'hpa-metsyn', '二、五'),
+      ]),
+      sec('meds', [gen('若血壓、血糖或血脂已達疾病標準，需由醫師評估是否治療。'), MED_NOTE]),
+      sec('redflags', [EMERGENCY]),
+    ],
+  },
+  {
+    id: 'stroke', title: '腦中風', en: 'Stroke', organs: ['brain', 'vessels', 'heart'], specialty: '神經內科',
+    review: rev('國健署腦血管疾病；MedlinePlus Stroke', '神經內科'),
+    animPlan: ['腦部血流與缺血', '血管阻塞與血管破裂出血的差異', '三高與腦血管風險'],
+    sections: [
+      sec('define', [
+        t('腦中風分兩種：缺血性中風是血塊阻塞腦部血管，約佔 80%；出血性中風是腦部血管破裂出血。另有暫時性腦缺血（TIA），症狀類似中風。', 'mp-stroke', 'Types of stroke'),
+        t('腦中風是全球死亡與失能的主要原因；腦血管疾病長期為國人十大死因第 2–4 位，存活後常遺留不同程度的神經功能障礙。', 'hpa-stroke'),
+      ]),
+      sec('mechanism', [gen('腦細胞需要持續的血流供應氧氣與養分，血流中斷時腦組織可能在短時間內受損，所以越早治療越好。')]),
+      sec('organs', [gen('依受影響的腦部位置不同，可能影響肢體活動、說話、理解、視力、平衡與吞嚥。')]),
+      sec('lifestyle', [
+        t('高血壓、高血糖、高血脂者發生中風的風險，分別是非三高者的 2.84、2.86 與 2.37 倍。有三高問題應尋求醫療協助並定期回診；國健署列出的控制數字為血壓 <140/90 mmHg、醣化血色素 <7%、低密度脂蛋白膽固醇 <100 mg/dL（個人目標依醫師評估）。', 'hpa-stroke', '一、掌握三高關鍵控制數字'),
+        t('規律運動：每週五次（至少三次），每次 30 分鐘；維持 BMI 18.5–24，腰圍男性 <90 公分、女性 <80 公分；戒菸、節酒。', 'hpa-stroke', '三、四、五'),
+        t('40–64 歲每 3 年一次、65 歲以上每年一次，可使用國民健康署免費成人預防保健服務檢查血壓、血糖、血脂、BMI 與腰圍。', 'hpa-stroke', '六、定期健康檢查'),
+      ]),
+      sec('nutrition', [
+        t('「三少二多」：少調味品、低油脂、少加工食品、多蔬果、多高纖；每日鈉攝取量少於 2.4 公克（約 6 公克食鹽、1 茶匙）。', 'hpa-stroke', '二、選擇健康飲食'),
+      ]),
+      sec('meds', [MED_NOTE]),
+      sec('redflags', [
+        t('中風症狀通常突然發生：臉、手或腳突然麻木或無力（特別是單側）；突然意識混亂、說話或理解困難；單眼或雙眼突然看不清楚；突然走路困難、頭暈、失去平衡；突然出現原因不明的劇烈頭痛。', 'mp-stroke', 'Symptoms'),
+        gen('出現上述任一症狀，請立即撥打 119 並記下發作時間，不要等待症狀自行消失。'),
+      ]),
+    ],
+  },
+  {
+    id: 'ckd', title: '慢性腎臟病', en: 'Chronic Kidney Disease', organs: ['kidneys', 'vessels', 'heart'], specialty: '腎臟科',
+    review: rev('國健署腎臟病；NIDDK', '腎臟科'),
+    animPlan: ['腎絲球過濾血液', '高血壓與高血糖對腎絲球微血管的影響', '水分與廢物堆積'],
+    sections: [
+      sec('define', [
+        t('慢性腎臟病是腎臟受損或結構異常，無法正常過濾血液，使廢物與多餘水分堆積在體內。', 'niddk-ckd'),
+        t('大多數早期患者沒有症狀，很多人到腎臟病晚期才出現症狀；唯一確認的方法是做血液與尿液檢查。', 'niddk-ckd', 'Symptoms of early CKD'),
+      ]),
+      sec('mechanism', [
+        t('腎臟由許多腎絲球與腎元組成，含有豐富微血管。血壓、血糖或血脂控制不好會傷害血管壁；高血壓使腎臟無法有效過濾廢物，高血糖則可能導致腎絲球硬化與腎元破壞。', 'hpa-kidney'),
+      ]),
+      sec('organs', [
+        t('腎臟無法排除多餘水分與鹽分時，可能出現水腫，常見於腿、腳、腳踝，較少見於手或臉。部分人可能進展到腎衰竭。', 'niddk-ckd'),
+      ]),
+      sec('lifestyle', [
+        t('腎臟保健八項守則：監測及控制三高、規律運動、健康飲食、體重控制、多喝水、不抽菸、避免服用不當藥物、定期檢查腎功能。', 'hpa-kidney'),
+        t('預防或控制糖尿病與高血壓，可能預防慢性腎臟病或減緩惡化。', 'niddk-ckd'),
+      ]),
+      sec('nutrition', [gen('已確診者的蛋白質、鉀、磷與水分攝取需依醫師與營養師指示調整，不建議自行限制或補充。')]),
+      sec('meds', [t('避免服用會傷害腎臟的藥物。', 'niddk-ckd'), gen('止痛藥、來路不明的藥物或保健食品，使用前請先詢問醫師或藥師。'), MED_NOTE]),
+      sec('redflags', [gen('尿量明顯減少、全身水腫、呼吸困難或意識改變時，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'asthma', title: '氣喘', en: 'Asthma', organs: ['airway', 'lungs'], specialty: '胸腔內科（兒童為小兒科）',
+    review: rev('國健署慢性呼吸道疾病；WHO Asthma fact sheet（2026）', '胸腔內科（兒童為小兒科）'),
+    animPlan: ['正常支氣管', '發炎與平滑肌收縮使氣道變窄', '吸入藥物的作用'],
+    sections: [
+      sec('define', [
+        t('氣喘是受到過敏原或刺激物刺激後，支氣管產生慢性發炎，可能出現呼吸困難、喘鳴音、胸悶和咳嗽。', 'hpa-resp', '氣喘'),
+        t('症狀可輕可重、時好時壞；這些症狀也可能由其他疾病造成，有症狀的人應由醫療人員評估。', 'who-asthma', 'Symptoms'),
+      ]),
+      sec('mechanism', [t('小氣道發炎，加上周圍肌肉收縮，使氣道變窄、呼吸變得困難。', 'who-asthma')]),
+      sec('organs', [t('家族中有人有氣喘、本身有濕疹或過敏性鼻炎等過敏疾病，以及過重或肥胖，都與氣喘風險較高有關。', 'who-asthma', 'Causes')]),
+      sec('lifestyle', [
+        t('保持清潔、遠離過敏原：塵蟎、蟑螂、黴菌、花粉與寵物毛髮是常見誘發因子；寢具每 1–2 週以 55 度熱水清洗。', 'hpa-resp', '控制氣喘 4 觀念'),
+        t('避免刺激物：戒菸並避免二手菸；注意氣溫驟變、空氣污染、突然劇烈運動與刺激性氣味。運動前暖身 15–30 分鐘，並隨身攜帶藥物。', 'hpa-resp', '控制氣喘 4 觀念'),
+      ]),
+      sec('nutrition', [gen('維持健康體重；飲食均衡，留意個人確定會誘發症狀的食物。')]),
+      sec('meds', [
+        t('氣喘目前無法治癒，但可以控制。最常見的治療是吸入器，把藥物直接送到肺部：支氣管擴張劑用來緩解症狀，吸入型類固醇用來減少發炎。', 'who-asthma', 'Treatment'),
+        t('應遵從醫囑按時用藥、不可自行停藥，並定期回診。', 'hpa-resp', '定期回診、正確用藥'),
+        t('醫療人員可能提供氣喘行動計畫，說明症狀惡化時如何增加治療，以避免嚴重發作。', 'who-asthma', 'Self-care'),
+        MED_NOTE,
+      ]),
+      sec('redflags', [gen('喘到無法說完一句話、嘴唇發紫，或使用緩解藥物後仍無改善時，請立即撥打 119 或前往急診。')]),
+    ],
+  },
+  {
+    id: 'copd', title: '慢性阻塞性肺病（COPD）', en: 'Chronic Obstructive Pulmonary Disease', organs: ['lungs', 'airway', 'heart'], specialty: '胸腔內科',
+    review: rev('國健署慢性呼吸道疾病', '胸腔內科'),
+    animPlan: ['正常肺泡與氣體交換', '肺氣腫與呼吸道阻塞', '吸菸對呼吸道的影響'],
+    sections: [
+      sec('define', [
+        t('慢性阻塞性肺病是呼吸道長期發炎，導致無法恢復的呼吸道阻塞，包括「慢性支氣管炎」與「肺氣腫」兩大類型，常見症狀為「咳、痰、悶、喘」。', 'hpa-resp', 'COPD'),
+      ]),
+      sec('mechanism', [t('呼吸道阻塞使氣體無法通暢進出，肺部氣體交換功能變差。', 'hpa-resp', 'COPD')]),
+      sec('organs', [t('可能伴隨心血管疾病、骨質疏鬆、糖尿病、肺癌等共病，影響生活品質。', 'hpa-resp', 'COPD')]),
+      sec('lifestyle', [
+        t('約 9 成患者是因吸菸引起，但確診者中仍有 4 成在吸菸；請戒菸並遠離二手菸、三手菸。', 'hpa-resp', 'COPD'),
+        t('日常建議：勤練腹式呼吸；多喝水、勤拍痰；多走路、勤活動；常洗手、外出戴口罩；避免人多與密閉的環境。', 'hpa-resp', 'COPD 十項建議'),
+      ]),
+      sec('nutrition', [t('飲食要均衡。', 'hpa-resp', 'COPD 十項建議')]),
+      sec('meds', [t('相信專業、配合醫囑，正確並確實用藥。', 'hpa-resp', 'COPD 十項建議'), MED_NOTE]),
+      sec('redflags', [gen('喘明顯加重、嘴唇或指甲發紫、意識改變時，請立即就醫或撥打 119。')]),
+    ],
+  },
+  {
+    id: 'osteoporosis', title: '骨質疏鬆症', en: 'Osteoporosis', organs: ['bones'], specialty: '骨科或內分泌科',
+    review: rev('國健署骨質疏鬆', '骨科或內分泌科'),
+    animPlan: ['正常骨小樑', '骨流失與孔隙增加', '負重運動與鈣質對骨骼的作用'],
+    sections: [
+      sec('define', [
+        t('骨量大約在 20–30 歲達到高峰，之後逐漸減少；女性停經後骨流失加快。骨流失過多會在骨骼中形成許多孔隙，使骨骼變脆、變弱。', 'hpa-osteo'),
+        t('骨質疏鬆是沉默的疾病，大多沒有明顯症狀，有些人只出現身高變矮或駝背；輕微跌倒或彎腰搬東西就可能骨折。', 'hpa-osteo'),
+        t('曾經骨折或 65 歲以上的婦女等高風險者，可依醫師建議做骨鬆檢查；大規模社區篩檢的國際實證目前仍不足。', 'hpa-osteo'),
+      ]),
+      sec('mechanism', [
+        t('風險因子包括：父母曾骨折（特別是髖骨骨折）、曾發生骨鬆性骨折（再次骨折機率為兩倍）、服用類固醇、停經、卵巢切除或 45 歲前提早更年期。', 'hpa-osteo'),
+      ]),
+      sec('organs', [t('骨折可能引發嚴重疼痛、無法行動、長期失能，甚至死亡。', 'hpa-osteo')]),
+      sec('lifestyle', [
+        t('從事負重運動可增加骨密度與肌肉，改善平衡、降低跌倒與骨折風險，例如健走、慢跑、爬樓梯、舞蹈、登山、跳繩，或雙手拿約 0.5–1 公斤的啞鈴做操。', 'hpa-osteo'),
+        t('適度曬太陽幫助身體製造維生素 D3：上午 10 點前或下午 2 點後，不擦防曬乳曬 10–20 分鐘，並避免曬傷。不吸菸、節制飲酒、避免過量咖啡與熬夜。', 'hpa-osteo'),
+      ]),
+      sec('nutrition', [
+        t('多攝取骨骼需要的鈣質、維生素 D3 與蛋白質，例如乳品、高鈣豆製品、黑芝麻、小魚乾與深綠色蔬菜。', 'hpa-osteo'),
+        t('世界骨質疏鬆基金會指出，年輕時多增加 10% 骨密度，可使骨質疏鬆延緩 13 年發生（引述自國民健康署）。', 'hpa-osteo'),
+      ]),
+      sec('meds', [t('已有骨質疏鬆者，藥物治療、規律運動與健康飲食都有助於維持骨骼健康。', 'hpa-osteo'), MED_NOTE]),
+      sec('redflags', [gen('跌倒後無法站立或行走、出現劇烈背痛或髖部疼痛時，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'depression', title: '憂鬱症', en: 'Depressive Disorder', organs: ['brain'], specialty: '精神科或身心科',
+    review: rev('WHO Depression fact sheet（2026-09）', '精神科或身心科'),
+    animPlan: ['情緒與腦部的關係（示意）', '壓力事件與恢復的循環', '運動、睡眠與社會支持的作用'],
+    sections: [
+      sec('define', [
+        t('憂鬱症是常見的精神疾病，全球約 5.2% 的成人受影響，女性多於男性；憂鬱症可能導致自殺，但輕度、中度與重度憂鬱症都有有效治療。', 'who-depression', 'Key facts'),
+        t('憂鬱發作時會情緒低落（悲傷、易怒、空虛）或對活動失去興趣，且一天大部分時間、幾乎每天、持續至少兩週，與一般的情緒起伏不同。', 'who-depression', 'Symptoms and patterns'),
+        t('其他可能症狀：注意力差、過度罪惡感或自我價值低、對未來絕望、想到死亡或自殺、睡眠紊亂、食慾或體重改變、非常疲倦或沒有精力。', 'who-depression', 'Symptoms and patterns'),
+        gen('是否罹患憂鬱症需由精神科或身心科醫師評估，不能只靠問卷或單一症狀判斷。'),
+      ]),
+      sec('mechanism', [
+        t('憂鬱症是社會、心理與生物因素複雜交互作用的結果；經歷失業、喪親、創傷等不良生活事件的人較容易發生。', 'who-depression', 'Contributing factors'),
+      ]),
+      sec('organs', [
+        t('憂鬱症與身體健康密切相關：缺乏活動、有害飲酒等因素，也是心血管疾病、癌症、糖尿病與呼吸道疾病的風險因子；罹患這些疾病的人也可能因疾病負擔而出現憂鬱。', 'who-depression', 'Contributing factors'),
+      ]),
+      sec('lifestyle', [
+        t('自我照顧：持續做以前喜歡的活動、與親友保持聯繫、規律運動（即使只是短暫散步）、盡量維持規律的飲食與睡眠、避免或減少飲酒、不使用非法藥物。', 'who-depression', 'Self-care'),
+      ]),
+      sec('nutrition', [gen('維持規律、均衡的飲食；避免以酒精處理情緒。')]),
+      sec('meds', [
+        t('有效治療包括心理治療與藥物。心理治療是首要治療，中度與重度憂鬱症可合併抗憂鬱藥物；輕度憂鬱症不需要抗憂鬱藥物。', 'who-depression', 'Diagnosis and treatment'),
+        MED_NOTE,
+      ]),
+      sec('redflags', [
+        gen('有傷害自己或自殺的念頭時，請立即撥打 119 或前往急診，並告訴身邊信任的人。（台灣心理諮詢專線資訊待人工核對後補上）'),
+      ]),
+    ],
+  },
+  {
+    id: 'menopause', title: '更年期症候群', en: 'Menopausal Syndrome', organs: ['brain', 'bones', 'heart'], specialty: '婦產科或家醫科',
+    review: rev('國健署更年期保健', '婦產科或家醫科'),
+    animPlan: ['卵巢荷爾蒙變化（示意；目前 3D 模型為男性，無法顯示女性生殖器官）', '荷爾蒙與骨質流失', '更年期症狀與生活調整'],
+    sections: [
+      sec('define', [
+        t('婦女約在 45–52 歲時，卵巢逐漸停止製造女性荷爾蒙，月經從不規則到最後一年內不再有月經；停經前後的過渡期就是更年期。', 'hpa-menopause'),
+        t('更年期是自然過程，不是疾病，多數人都會順利度過；約三成婦女會因女性荷爾蒙不足而出現身心不適。', 'hpa-menopause'),
+      ]),
+      sec('mechanism', [t('卵巢製造的女性荷爾蒙逐漸減少，是更年期身心變化的主要原因。', 'hpa-menopause')]),
+      sec('organs', [
+        t('生理症狀可能包括：熱潮紅、盜汗、虛弱、暈眩、胸悶、心悸、陰道乾澀、性交疼痛、頻尿、尿失禁與骨質流失；心理上可能有焦慮、煩躁、失眠、恐慌、心情低落與記憶力衰退。', 'hpa-menopause'),
+        gen('胸悶、心悸也可能來自心臟問題，應就醫排除，不要直接歸因於更年期。'),
+      ]),
+      sec('lifestyle', [
+        t('正常作息、充足睡眠、均衡飲食、規律運動，避免飲酒、吸菸與熬夜；學習情緒管理，積極參與社交活動。', 'hpa-menopause'),
+      ]),
+      sec('nutrition', [gen('更年期骨質流失加快，可多攝取含鈣與維生素 D 的食物（可參考「骨質疏鬆症」的飲食建議）。')]),
+      sec('meds', [t('45 歲以上婦女身體不適時，可先與家庭醫學科或婦科醫師討論。', 'hpa-menopause'), MED_NOTE]),
+      sec('redflags', [gen('停經一年以上又出現陰道出血，或經血量異常大、持續出血時，請儘速就醫。')]),
     ],
   },
 ];

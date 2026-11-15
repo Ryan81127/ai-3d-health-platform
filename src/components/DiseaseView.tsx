@@ -8,6 +8,7 @@ import { Pending } from './ui';
 
 const TearFilm = lazy(() => import('./TearFilm'));
 const VesselFlow = lazy(() => import('./VesselFlow'));
+const MetabolismAnim = lazy(() => import('./MetabolismAnim'));
 
 const VIEW_OPACITY: LayerOpacity = { skin: 0.08, muscle: 0, skeleton: 0.12, organ: 1, vessel: 0.85, nerve: 0.6 };
 
@@ -73,6 +74,15 @@ export default function DiseaseView({ id, onExit }: { id: string; onExit?(): voi
           <>
             <Suspense fallback={<p className="small">載入淚膜動畫…</p>}><TearFilm /></Suspense>
             <p className="small">已完成：眨眼、淚膜變薄與蒸發（示意）。尚未完成：淚膜各層的細部成分圖、眼表發炎機制。</p>
+          </>
+        ) : d.id === 't2dm' || d.id === 'fatty-liver' ? (
+          <>
+            <Suspense fallback={<p className="small">載入代謝動畫…</p>}><MetabolismAnim topic={d.id} /></Suspense>
+            <p className="small">
+              {d.id === 't2dm'
+                ? '已完成：胰島素與葡萄糖進入細胞、胰島素阻抗、胰臟代償與長期高血糖（示意）。尚未完成：胰臟細胞的細部與微血管病變的影像。'
+                : '已完成：肝細胞脂肪堆積、可能的發炎與纖維化（示意）。尚未完成：肝小葉結構與代謝路徑的細部。'}
+            </p>
           </>
         ) : d.id === 'hypertension' || d.id === 'atherosclerosis' ? (
           <>

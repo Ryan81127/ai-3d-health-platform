@@ -7,7 +7,8 @@ import { PART_MAP, partLabel, searchParts, type SearchHit } from '../three/anato
 
 const BodyViewer = lazy(() => import('../three/BodyViewer'));
 
-export default function ViewerPanel({ flagged }: { flagged: string[] }) {
+/** variant='stage'：3D 佔滿畫面，控制列浮在下方；showControls=false 用於首頁 */
+export default function ViewerPanel({ flagged, variant = 'panel', showControls = true }: { flagged: string[]; variant?: 'panel' | 'stage'; showControls?: boolean }) {
   const { selectedOrgan, selectedPart, selectOrgan, selectPart, hidden, hideSelected, showAll, opacity, peel, setPeel, setLayerOpacity, resetView, addSnapshot, snapshots, spotlight } = useStore();
   const [menu, setMenu] = useState(false);
   const [fine, setFine] = useState(false);
@@ -37,12 +38,12 @@ export default function ViewerPanel({ flagged }: { flagged: string[] }) {
   };
 
   return (
-    <div className="viewer">
+    <div className={`viewer ${variant}`}>
       <div className="viewer-canvas">
         <Suspense fallback={<div className="loading">載入 3D 場景…</div>}>
           <BodyViewer flagged={flagged} />
         </Suspense>
-        <div className="viewer-search">
+        {showControls && <div className="viewer-search">
           <input type="search" value={q} placeholder="搜尋部位（例：肝、股骨、aorta）" aria-label="搜尋部位" onChange={(e) => setQ(e.target.value)} />
           {q.trim() && (
             <ul>
@@ -50,24 +51,24 @@ export default function ViewerPanel({ flagged }: { flagged: string[] }) {
               {hits.map((h) => <li key={h.partId ?? h.organId}><button onClick={() => choose(h)}><b>{h.label}</b><small>{h.sub}</small></button></li>)}
             </ul>
           )}
-        </div>
-        {current && (
+        </div>}
+        {current && variant === 'panel' && (
           <div className="viewer-current">
             <b>{current}</b>
             {part && <small>{LAYER_ZH[part.layer]}{partLabel(part) !== part.en && `・${part.en}`}</small>}
             {part?.schematic && <small className="warn">示意幾何：資料集未收錄此構造</small>}
           </div>
         )}
-        <div className="viewer-legend">
+        {showControls && <div className="viewer-legend">
           {(spotlight ?? flagged).length > 0 && <><i className="dot flag" />{spotlight ? '主題教學標示' : '問卷相關器官'}　</>}
           <i className="dot sel" />目前選取
-        </div>
+        </div>}
         <div className="viewer-credit" title={MODEL_INFO.limits}><span className="how">拖曳旋轉・滾輪或雙指縮放・右鍵或雙指平移・點選部位<br /></span>{MODEL_INFO.credit}</div>
       </div>
 
-      <div className="viewer-controls">
+      {showControls && <div className="viewer-controls">
         <div className="row">
-          <button className="btn small" aria-expanded={menu} onClick={() => setMenu(!menu)}>器官選單 {menu ? '▴' : '▾'}</button>
+          {variant === 'panel' && <button className="btn small" aria-expanded={menu} onClick={() => setMenu(!menu)}>器官選單 {menu ? '▴' : '▾'}</button>}
           <button className="btn small ghost" onClick={() => selectOrgan(null)} disabled={!selectedOrgan && !selectedPart}>回到全身</button>
           <button className="btn small ghost" onClick={hideSelected} disabled={!selectedPart}>隱藏此部位</button>
           <button className="btn small ghost" onClick={showAll} disabled={!hidden.length}>顯示全部{hidden.length ? `（${hidden.length}）` : ''}</button>
@@ -100,13 +101,12 @@ export default function ViewerPanel({ flagged }: { flagged: string[] }) {
             ))}
           </div>
         )}
-        <div className="row pending-row">
+        {variant === 'panel' && <div className="row pending-row">
           <span className="chip" title={MODEL_INFO.limits}>模型限制：{MODEL_INFO.limits}</span>
           <button className="chip" disabled>女性解剖模型（資料集未提供）</button>
           <button className="chip" disabled>組織・細胞微觀探索（第三階段，尚未完成）</button>
-          <button className="chip" disabled>正常／異常動畫比較（第三階段，尚未完成）</button>
-        </div>
-      </div>
+        </div>}
+      </div>}
     </div>
   );
 }

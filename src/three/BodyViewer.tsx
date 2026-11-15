@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { ORGAN_MAP } from '../data/organs';
 import { PEEL_ORDER, useStore, type LayerKey } from '../store';
-import { BODY, NERVE_PATHS, ORGAN_BOUNDS, PART_MAP, THYROID, partLabel, type Bounds, type PartInfo } from './anatomy';
+import { BODY, NERVE_PATHS, ORGAN_BOUNDS, PART_MAP, THYROID, partLabel, unionBounds, type Bounds, type PartInfo } from './anatomy';
 
 const SELECT = new THREE.Color('#12c9b4');
 const FLAG = new THREE.Color('#ff9a1f');
@@ -122,7 +122,7 @@ function LayerModel({ layer, flagged }: { layer: LayerKey; flagged: string[] }) 
   }, [meshes, layerOpacity, hidden, flagged, marks.selectedOrgan, marks.selectedPart, marks.spotlight]); // eslint-disable-line
 
   useFrame(({ clock }) => {
-    const k = 0.2 + Math.sin(clock.elapsedTime * 3) * 0.14;
+    const k = useStore.getState().reduceMotion ? 0.2 : 0.2 + Math.sin(clock.elapsedTime * 3) * 0.14;
     for (const { mat } of meshes) if (mat.userData.pulse) mat.emissiveIntensity = k;
   });
 
@@ -168,6 +168,8 @@ function SchematicNerves({ flagged }: { flagged: string[] }) {
 type Controls = { target: THREE.Vector3; update(): void; addEventListener(t: string, f: () => void): void; removeEventListener(t: string, f: () => void): void };
 function CameraRig() {
   const { selectedOrgan, selectedPart, spotlight } = useMarks();
+  const focusOrgans = useStore((s) => s.focusOrgans);
+  const reduceMotion = useStore((s) => s.reduceMotion);
   const controls = useThree((s) => s.controls) as unknown as Controls | null;
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const aspect = useThree((s) => s.size.width / Math.max(1, s.size.height));
@@ -175,8 +177,11 @@ function CameraRig() {
 
   useEffect(() => {
     if (!controls) return;
-    const focusOrgan = selectedOrgan ?? (spotlight && spotlight.length === 1 ? spotlight[0] : null);
-    const b: Bounds = selectedPart && PART_MAP[selectedPart] ? PART_MAP[selectedPart] : focusOrgan ? ORGAN_BOUNDS[focusOrgan] ?? BODY : BODY;
+    // 優先順序：點選的部位 → 選取的器官 → 主題故事要框住的器官
+    const b: Bounds = selectedPart && PART_MAP[selectedPart] ? PART_MAP[selectedPart]
+      : selectedOrgan ? ORGAN_BOUNDS[selectedOrgan] ?? BODY
+      : focusOrgans ? unionBounds(focusOrgans)
+      : spotlight && spotlight.length === 1 ? ORGAN_BOUNDS[spotlight[0]] ?? BODY : BODY;
     const whole = b.r > 0.6;
     const target = new THREE.Vector3(...b.c);
     const half = THREE.MathUtils.degToRad(camera.fov / 2);
@@ -185,25 +190,73 @@ function CameraRig() {
     // 保留使用者目前的觀看方向，只改變距離與目標
     const dir = camera.position.clone().sub(controls.target).normalize();
     if (whole) dir.set(dir.x, 0.05, dir.z).normalize();
+    // 故事模式由正前方略偏側面觀看，器官比較不會互相遮擋
+    if (focusOrgans && !selectedOrgan && !selectedPart) dir.set(0.32, 0.12, 1).normalize();
     anim.current = { target, pos: target.clone().add(dir.multiplyScalar(dist)) };
-  }, [selectedOrgan, selectedPart, spotlight, controls, camera, aspect]);
+  }, [selectedOrgan, selectedPart, spotlight, focusOrgans, controls, camera, aspect]);
 
   useEffect(() => {
     if (!controls) return;
-    const stop = () => { anim.current = null; };
+    const stop = () => { anim.current = null; if (useStore.getState().autoRotate) useStore.getState().setAutoRotate(false); };
     controls.addEventListener('start', stop);
     return () => controls.removeEventListener('start', stop);
   }, [controls]);
 
   useFrame((_, dt) => {
     if (!anim.current || !controls) return;
-    const k = 1 - Math.exp(-dt * 5);
+    const k = reduceMotion ? 1 : 1 - Math.exp(-dt * 3.2);
     controls.target.lerp(anim.current.target, k);
     camera.position.lerp(anim.current.pos, k);
     controls.update();
     if (camera.position.distanceTo(anim.current.pos) < 0.002) anim.current = null;
   });
   return null;
+}
+
+/* ---------- 訊號路徑：以流動光點示意器官之間的訊號（例如眼睛到大腦的光線訊號） ---------- */
+const FLOW_N = 16;
+function FlowPath({ from, to }: { from: string; to: string }) {
+  const reduceMotion = useStore((s) => s.reduceMotion);
+  const curve = useMemo(() => {
+    const a = new THREE.Vector3(...ORGAN_BOUNDS[from].c), b = new THREE.Vector3(...ORGAN_BOUNDS[to].c);
+    const mid = a.clone().add(b).multiplyScalar(0.5);
+    mid.z += 0.06 + a.distanceTo(b) * 0.25; // 往身體前方拱起，避免被器官擋住
+    return new THREE.QuadraticBezierCurve3(a, mid, b);
+  }, [from, to]);
+  const line = useMemo(() => new THREE.TubeGeometry(curve, 48, 0.0018, 6, false), [curve]);
+  const dots = useRef<THREE.InstancedMesh>(null);
+  const tmp = useMemo(() => new THREE.Object3D(), []);
+  const len = curve.getLength();
+  const dot = Math.min(0.0065, Math.max(0.0028, len * 0.03)); // 短路徑（例如眼睛到大腦）用較小的光點
+  useEffect(() => () => line.dispose(), [line]);
+  useFrame(({ clock }) => {
+    if (!dots.current) return;
+    const t = reduceMotion ? 0 : clock.elapsedTime;
+    for (let i = 0; i < FLOW_N; i++) {
+      const u = (i / FLOW_N + t * (0.11 / Math.max(0.15, len))) % 1;
+      tmp.position.copy(curve.getPoint(u));
+      tmp.scale.setScalar(dot * (0.35 + 0.65 * Math.sin(Math.PI * u)));
+      tmp.updateMatrix();
+      dots.current.setMatrixAt(i, tmp.matrix);
+    }
+    dots.current.instanceMatrix.needsUpdate = true;
+  });
+  return (
+    <group>
+      <mesh geometry={line} renderOrder={10} raycast={() => null}>
+        <meshBasicMaterial color="#ffd166" transparent opacity={0.45} depthTest={false} />
+      </mesh>
+      <instancedMesh ref={dots} args={[undefined, undefined, FLOW_N]} renderOrder={11} raycast={() => null}>
+        <sphereGeometry args={[1, 10, 8]} />
+        <meshBasicMaterial color="#fff3b0" transparent opacity={0.95} depthTest={false} />
+      </instancedMesh>
+    </group>
+  );
+}
+function Flows() {
+  const flows = useStore((s) => s.flows);
+  if (!flows) return null;
+  return <>{flows.filter(([a, b]) => ORGAN_BOUNDS[a] && ORGAN_BOUNDS[b]).map(([a, b]) => <FlowPath key={`${a}-${b}`} from={a} to={b} />)}</>;
 }
 
 /* 攝影棚式環境光，讓骨骼、肌肉、器官表面有立體的明暗與反光 */
@@ -255,6 +308,8 @@ function LoadFlag({ onProgress }: { onProgress(delta: number): void }) {
 function Scene({ flagged, onProgress }: { flagged: string[]; onProgress(delta: number): void }) {
   const opacity = useStore((s) => s.opacity);
   const selectedOrgan = useStore((s) => s.selectedOrgan);
+  const autoRotate = useStore((s) => s.autoRotate);
+  const reduceMotion = useStore((s) => s.reduceMotion);
   // 圖層第一次需要顯示時才下載，之後保留在記憶體
   const [mounted, setMounted] = useState<LayerKey[]>([]);
   useEffect(() => {
@@ -280,9 +335,10 @@ function Scene({ flagged, onProgress }: { flagged: string[]; onProgress(delta: n
       ))}
       <SchematicThyroid flagged={flagged} />
       <SchematicNerves flagged={flagged} />
+      <Flows />
       <Label />
 
-      <OrbitControls makeDefault target={BODY.c} minDistance={0.12} maxDistance={8} enableDamping dampingFactor={0.12} />
+      <OrbitControls makeDefault target={BODY.c} minDistance={0.12} maxDistance={8} enableDamping dampingFactor={0.12} autoRotate={autoRotate && !reduceMotion} autoRotateSpeed={0.7} />
       <CameraRig />
       <CaptureBridge />
     </>

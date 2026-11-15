@@ -2,12 +2,11 @@ import { useEffect, useMemo, useState } from 'react';
 import type { AnalysisResult } from '../types';
 import { ORGAN_MAP } from '../data/organs';
 import { NUTRIENTS, type Nutrient } from '../data/nutrients';
-import { TOPICS } from '../data/topics';
 import { CONTENT_VERSION } from '../data/references';
 import { PROVIDERS } from '../engine/provider';
 import { useStore } from '../store';
-import { PART_MAP, partLabel } from '../three/anatomy';
-import { LAYER_ZH } from '../data/partNames';
+import OrganCard from './OrganCard';
+import StoryPlayer, { TopicPicker } from './StoryPlayer';
 import { EvidenceBadge, ItemCard, Pending, Sources } from './ui';
 
 type Tab = 'analysis' | 'organ' | 'topic' | 'nutrient';
@@ -73,92 +72,15 @@ function Analysis({ a }: { a: AnalysisResult }) {
   );
 }
 
-function OrganInfo({ a }: { a: AnalysisResult }) {
-  const id = useStore((s) => s.selectedOrgan);
-  const partId = useStore((s) => s.selectedPart);
-  const part = partId ? PART_MAP[partId] : null;
-  if (!id && part) return (
-    <div className="card">
-      <h3>{partLabel(part)}<span className="tag">{LAYER_ZH[part.layer]}</span></h3>
-      <p className="small">英文解剖學名稱：{part.en}</p>
-      <p>這個部位目前沒有對應的衛教內容。可用「隱藏此部位」看到它後方的構造。</p>
-    </div>
-  );
-  if (!id) return <p className="empty">在 3D 人體上點選任一部位，或使用搜尋與「器官選單」，這裡會顯示名稱、功能與衛教資訊。</p>;
-  const o = ORGAN_MAP[id];
-  const related = a.organs.find((x) => x.organId === id);
-  const nutrients = NUTRIENTS.filter((n) => n.organs.includes(id));
-  return (
-    <div className="card">
-      <h3>{o.name}<span className="tag">{o.system}</span></h3>
-      {part && <p className="small">點選的部位：{partLabel(part)}{partLabel(part) !== part.en && `（${part.en}）`}{part.schematic && '｜示意幾何，資料集未收錄此構造'}</p>}
-      {related && <p className="relate">問卷中相關的項目：{related.reasons.join('、')}（僅表示功能上可能相關）</p>}
-      <h4>主要功能</h4><p>{o.fn}</p>
-      <h4>正常生理</h4><p>{o.edu}</p>
-      <h4>日常保養方向</h4><p>{o.care}</p>
-      {nutrients.length > 0 && <><h4>相關營養素</h4><p>{nutrients.map((n) => n.name).join('、')}</p></>}
-      <p><Pending>可能異常機制的動畫比較、組織與細胞層級放大（第三階段）</Pending></p>
-      <p className="small">3D 模型為 BodyParts3D 成年男性解剖模型，是通用教學模型，不是個案的影像。</p>
-    </div>
-  );
+function OrganInfo({ a, openStory }: { a: AnalysisResult; openStory(topic: string, step: number): void }) {
+  return <OrganCard relatedReasons={(id) => a.organs.find((x) => x.organId === id)?.reasons} onOpenStory={openStory} />;
 }
 
-function TopicPlayer() {
-  const setSpotlight = useStore((s) => s.setSpotlight);
-  const selectOrgan = useStore((s) => s.selectOrgan);
-  const [topicId, setTopicId] = useState('late-night');
-  const [i, setI] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  const topic = TOPICS.find((t) => t.id === topicId)!;
-  const step = topic.steps[i];
-
-  useEffect(() => {
-    if (!step) return;
-    selectOrgan(null);
-    setSpotlight(step.organs);
-    return () => setSpotlight(null);
-  }, [step, setSpotlight, selectOrgan]);
-
-  useEffect(() => {
-    if (!playing) return;
-    const t = setTimeout(() => { if (i < topic.steps.length - 1) setI(i + 1); else setPlaying(false); }, 6000);
-    return () => clearTimeout(t);
-  }, [playing, i, topic.steps.length]);
-
+function TopicTab({ story, setStory }: { story: { topic: string; step: number }; setStory(s: { topic: string; step: number }): void }) {
   return (
     <div>
-      <div className="chips">
-        {TOPICS.map((t) => (
-          <button key={t.id} className={`chip ${t.id === topicId ? 'on' : ''}`} disabled={!t.ready} onClick={() => { setTopicId(t.id); setI(0); }}>
-            {t.title}{!t.ready && '（尚未完成）'}
-          </button>
-        ))}
-      </div>
-      <p className="small demo-note">示意教學：呈現群體研究中的可能機制與風險關聯，不是對個案的預測，也不表示每個人都會發展成疾病。</p>
-      <p className="small">{topic.intro}</p>
-      <div className="timeline" role="tablist" aria-label="時間軸">
-        {topic.steps.map((s, k) => (
-          <button key={k} role="tab" aria-selected={k === i} className={k === i ? 'on' : k < i ? 'done' : ''} onClick={() => { setI(k); setPlaying(false); }} title={s.title}>
-            <i>{k + 1}</i><span>{s.stage}</span>
-          </button>
-        ))}
-      </div>
-      {step && (
-        <div className="card">
-          <div className="item-head"><span className="tag stage">{step.stage}</span><strong>{step.title}</strong><EvidenceBadge level={step.evidence} /></div>
-          <div className="compare">
-            <div><h4>一般狀況</h4><p>{step.normal}</p></div>
-            <div className="chg"><h4>{step.stage === '改善方向' ? '可行的調整' : '熬夜時可能的變化'}</h4><p>{step.change}</p></div>
-          </div>
-          <p className="small">3D 標示：{step.organs.map((o) => ORGAN_MAP[o].name).join('、')}</p>
-          <Sources refs={step.refs} />
-        </div>
-      )}
-      <div className="player">
-        <button className="btn small ghost" disabled={i === 0} onClick={() => { setI(i - 1); setPlaying(false); }}>◀ 上一步</button>
-        <button className="btn small" onClick={() => { if (!playing && i === topic.steps.length - 1) setI(0); setPlaying(!playing); }}>{playing ? '⏸ 暫停' : '▶ 自動播放'}</button>
-        <button className="btn small ghost" disabled={i >= topic.steps.length - 1} onClick={() => { setI(i + 1); setPlaying(false); }}>下一步 ▶</button>
-      </div>
+      <TopicPicker value={story.topic} onPick={(topic) => setStory({ topic, step: 0 })} />
+      <StoryPlayer topicId={story.topic} startAt={story.step} />
     </div>
   );
 }
@@ -199,6 +121,8 @@ export default function RightPanel({ a }: { a: AnalysisResult }) {
   const [tab, setTab] = useState<Tab>('analysis');
   const selectedPart = useStore((s) => s.selectedPart);
   useEffect(() => { if ((selected || selectedPart) && tab !== 'topic') setTab('organ'); }, [selected, selectedPart]); // eslint-disable-line
+  const [story, setStory] = useState({ topic: 'late-night', step: 0 });
+  const openStory = (topic: string, step: number) => { setStory({ topic, step }); setTab('topic'); };
   const tabs: [Tab, string][] = [['analysis', '分析'], ['organ', '器官'], ['topic', '機制主題'], ['nutrient', '營養資料庫']];
   return (
     <div className="right">
@@ -207,8 +131,8 @@ export default function RightPanel({ a }: { a: AnalysisResult }) {
       </div>
       <div className="tabbody">
         {tab === 'analysis' && <Analysis a={a} />}
-        {tab === 'organ' && <OrganInfo a={a} />}
-        {tab === 'topic' && <TopicPlayer />}
+        {tab === 'organ' && <OrganInfo a={a} openStory={openStory} />}
+        {tab === 'topic' && <TopicTab story={story} setStory={setStory} />}
         {tab === 'nutrient' && <NutrientDB />}
       </div>
     </div>

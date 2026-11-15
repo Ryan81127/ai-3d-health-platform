@@ -5,6 +5,9 @@ import { consultHash } from './engine/ruleEngine';
 import { ORGAN_MAP } from './data/organs';
 
 export type Step = 'setup' | 'work' | 'review';
+/** home：首頁（人體為主角）；explore：自由探索；consult：健康諮詢流程 */
+export type Mode = 'home' | 'explore' | 'consult';
+export type Flow = [string, string];
 export type LayerKey = 'skin' | 'muscle' | 'skeleton' | 'organ' | 'vessel' | 'nerve';
 export type LayerOpacity = Record<LayerKey, number>;
 /** 由外而內的剝離順序 */
@@ -32,7 +35,14 @@ interface State {
   consults: Record<string, Consult>;
   currentId: string;
   step: Step;
+  mode: Mode;
+  /** 自由探索要開啟的主題故事 */
+  storyTopic: string | null;
+  reduceMotion: boolean;
   /* 3D 檢視狀態（不持久化） */
+  focusOrgans: string[] | null; // 鏡頭要框住的器官（主題故事用）
+  flows: Flow[] | null; // 3D 中流動光點的訊號路徑（示意）
+  autoRotate: boolean;
   selectedOrgan: string | null;
   selectedPart: string | null; // 模型部位 id（FMA 編號）
   hidden: string[]; // 被隱藏的部位 id
@@ -43,6 +53,10 @@ interface State {
   capture: (() => string | null) | null;
 
   setStep(s: Step): void;
+  setMode(m: Mode, storyTopic?: string | null): void;
+  setStory(v: { spotlight?: string[] | null; focus?: string[] | null; flows?: Flow[] | null }): void;
+  setReduceMotion(v: boolean): void;
+  setAutoRotate(v: boolean): void;
   update(fn: (c: Consult) => void, auditAction?: string): void;
   toggleSymptom(id: string): void;
   setSymptomDetail(id: string, patch: Partial<SymptomDetail>): void;
@@ -76,6 +90,12 @@ export const useStore = create<State>()(
       consults: { [first.id]: first },
       currentId: first.id,
       step: 'setup',
+      mode: 'home',
+      storyTopic: null,
+      reduceMotion: typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches,
+      focusOrgans: null,
+      flows: null,
+      autoRotate: true,
       selectedOrgan: null,
       spotlight: null,
       selectedPart: null,
@@ -86,6 +106,19 @@ export const useStore = create<State>()(
       capture: null,
 
       setStep: (step) => set({ step }),
+      setMode: (mode, storyTopic = null) => set({
+        mode, storyTopic, selectedOrgan: null, selectedPart: null, spotlight: null, focusOrgans: null, flows: null,
+        autoRotate: mode === 'home', hidden: [], opacity: DEFAULT_OPACITY, peel: null,
+      }),
+      setStory: (v) => set((s) => ({
+        spotlight: v.spotlight !== undefined ? v.spotlight : s.spotlight,
+        focusOrgans: v.focus !== undefined ? v.focus : s.focusOrgans,
+        flows: v.flows !== undefined ? v.flows : s.flows,
+        selectedOrgan: v.focus !== undefined ? null : s.selectedOrgan,
+        selectedPart: v.focus !== undefined ? null : s.selectedPart,
+      })),
+      setReduceMotion: (reduceMotion) => set({ reduceMotion, autoRotate: reduceMotion ? false : get().autoRotate }),
+      setAutoRotate: (autoRotate) => set({ autoRotate }),
       update: (fn, auditAction) =>
         set((s) => {
           const c: Consult = structuredClone(s.consults[s.currentId]);
@@ -115,14 +148,15 @@ export const useStore = create<State>()(
       // 選取器官時自動調整圖層，讓它不被外層遮住
       selectOrgan: (id) => set((s) => {
         if (!id) return { selectedOrgan: null, selectedPart: null };
+        // 選取時停止自動旋轉
         const layer = ORGAN_MAP[id].layer as LayerKey;
         const op = { ...s.opacity };
         if (layer !== 'skin') op.skin = Math.min(op.skin, 0.14);
         if (layer !== 'skin' && layer !== 'muscle') { op.muscle = Math.min(op.muscle, 0); op.skeleton = Math.min(op.skeleton, 0.3); }
         if (layer !== 'organ') op[layer] = Math.max(op[layer], layer === 'skin' ? 0.9 : 1);
-        return { selectedOrgan: id, selectedPart: null, opacity: op, peel: null };
+        return { selectedOrgan: id, selectedPart: null, opacity: op, peel: null, autoRotate: false };
       }),
-      selectPart: (selectedPart, selectedOrgan) => set({ selectedPart, selectedOrgan }),
+      selectPart: (selectedPart, selectedOrgan) => set({ selectedPart, selectedOrgan, autoRotate: false }),
       hideSelected: () => set((s) => (s.selectedPart ? { hidden: [...s.hidden, s.selectedPart], selectedPart: null, selectedOrgan: null } : {})),
       showAll: () => set({ hidden: [] }),
       setPeel: (peel) => set({ peel, opacity: Object.fromEntries(PEEL_ORDER.map((k, i) => [k, Math.min(1, Math.max(0, i + 1 - peel))])) as LayerOpacity }),
@@ -145,12 +179,16 @@ export const useStore = create<State>()(
         consults: Object.fromEntries(Object.entries(s.consults).filter(([, c]) => c.consent.localStorage)),
         currentId: s.currentId,
         step: s.step,
+        reduceMotion: s.reduceMotion,
+        // 諮詢進行中重新整理時留在諮詢流程；其他情況回到首頁
+        mode: s.mode === 'consult' ? 'consult' : 'home',
       }),
       merge: (persisted, current) => {
         const p = (persisted ?? {}) as Partial<State>;
         const consults = { ...(p.consults ?? {}) };
-        if (p.currentId && consults[p.currentId]) return { ...current, consults, currentId: p.currentId, step: p.step ?? 'setup' };
-        return { ...current, consults: { ...consults, ...current.consults }, step: 'setup' };
+        const rm = p.reduceMotion ?? current.reduceMotion;
+        if (p.currentId && consults[p.currentId]) return { ...current, consults, currentId: p.currentId, step: p.step ?? 'setup', reduceMotion: rm, mode: p.mode ?? 'home', autoRotate: (p.mode ?? 'home') === 'home' };
+        return { ...current, consults: { ...consults, ...current.consults }, step: 'setup', reduceMotion: rm };
       },
     },
   ),

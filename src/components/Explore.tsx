@@ -1,0 +1,58 @@
+import { useEffect, useState } from 'react';
+import { ORGANS } from '../data/organs';
+import { TOPIC_MAP } from '../data/topics';
+import { useStore } from '../store';
+import OrganCard from './OrganCard';
+import StoryPlayer, { TopicPicker } from './StoryPlayer';
+
+const SYSTEM_ORDER = ['神經系統', '感覺系統', '消化系統', '呼吸系統', '內分泌系統', '心血管系統', '消化與代謝系統', '消化與內分泌系統', '泌尿系統', '肌肉骨骼系統', '皮膚系統'];
+
+/** 自由探索：3D 人體佔滿畫面，左側為主題與器官清單，右側為故事或器官資訊 */
+export function ExploreLeft({ onStory }: { onStory(id: string): void }) {
+  const { selectedOrgan, selectOrgan } = useStore();
+  const [tab, setTab] = useState<'topic' | 'organ'>('topic');
+  const groups = SYSTEM_ORDER.map((sys) => [sys, ORGANS.filter((o) => o.system === sys)] as const).filter(([, l]) => l.length);
+  return (
+    <div className="dock-body">
+      <div className="seg" role="tablist">
+        <button role="tab" aria-selected={tab === 'topic'} className={tab === 'topic' ? 'on' : ''} onClick={() => setTab('topic')}>主題故事</button>
+        <button role="tab" aria-selected={tab === 'organ'} className={tab === 'organ' ? 'on' : ''} onClick={() => setTab('organ')}>器官</button>
+      </div>
+      {tab === 'topic' ? (
+        <>
+          <p className="small">選一個生活習慣，看看身體裡可能發生什麼。</p>
+          <TopicPicker onPick={onStory} />
+        </>
+      ) : (
+        <div className="organ-list">
+          {groups.map(([sys, list]) => (
+            <div key={sys}>
+              <h4>{sys}</h4>
+              {list.map((o) => <button key={o.id} className={selectedOrgan === o.id ? 'on' : ''} onClick={() => selectOrgan(o.id)}><i style={{ background: o.color }} />{o.name}</button>)}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function ExploreRight({ story, setStory }: { story: { topic: string; step: number } | null; setStory(s: { topic: string; step: number } | null): void }) {
+  const selectedOrgan = useStore((s) => s.selectedOrgan);
+  const selectedPart = useStore((s) => s.selectedPart);
+  const [tab, setTab] = useState<'story' | 'organ'>(story ? 'story' : 'organ');
+  useEffect(() => { if (story) setTab('story'); }, [story]);
+  useEffect(() => { if (selectedOrgan || selectedPart) setTab('organ'); }, [selectedOrgan, selectedPart]);
+  return (
+    <div className="dock-body">
+      {story && (
+        <div className="seg" role="tablist">
+          <button role="tab" aria-selected={tab === 'story'} className={tab === 'story' ? 'on' : ''} onClick={() => setTab('story')}>{TOPIC_MAP[story.topic].icon} {TOPIC_MAP[story.topic].title}</button>
+          <button role="tab" aria-selected={tab === 'organ'} className={tab === 'organ' ? 'on' : ''} onClick={() => setTab('organ')}>器官資訊</button>
+        </div>
+      )}
+      {story && <div hidden={tab !== 'story'}><StoryPlayer topicId={story.topic} startAt={story.step} onExit={() => setStory(null)} /></div>}
+      {(!story || tab === 'organ') && <OrganCard onOpenStory={(topic, step) => setStory({ topic, step })} />}
+    </div>
+  );
+}

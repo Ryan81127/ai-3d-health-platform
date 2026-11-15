@@ -75,6 +75,16 @@ for (const id of Object.keys(ORGAN_MAP)) {
   ORGAN_BOUNDS[id] = ORGAN_MAP[id].layer === 'organ' && parts.length ? boundsOf(parts) : BODY;
 }
 
+/** 多個器官的聯合範圍；只有整個圖層代表的器官（皮膚、肌肉、血管）時回傳全身 */
+export function unionBounds(ids: string[]): Bounds {
+  const own = ids.filter((id) => ORGAN_MAP[id]?.layer === 'organ' && ORGAN_BOUNDS[id] !== BODY);
+  if (!own.length) return BODY;
+  if (own.length === 1) return ORGAN_BOUNDS[own[0]];
+  const lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity];
+  for (const id of own) { const b = ORGAN_BOUNDS[id]; for (let i = 0; i < 3; i++) { lo[i] = Math.min(lo[i], b.c[i] - b.r * 0.7); hi[i] = Math.max(hi[i], b.c[i] + b.r * 0.7); } }
+  return { c: lo.map((v, i) => (v + hi[i]) / 2) as P3, r: Math.hypot(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]) / 2 };
+}
+
 export const LAYER_OF_ORGAN: Record<string, LayerKey> = Object.fromEntries(Object.values(ORGAN_MAP).map((o) => [o.id, o.layer as LayerKey]));
 
 export interface SearchHit { partId?: string; organId?: string; label: string; sub: string }

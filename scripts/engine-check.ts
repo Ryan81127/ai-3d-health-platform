@@ -23,7 +23,15 @@ MECHANISMS.forEach((m) => { ref(m.refs, m.id); m.lifestyle.forEach((l) => assert
 LIFESTYLE.forEach((l) => ref(l.advice.refs, l.id));
 RED_FLAGS.forEach((r) => { ref(r.refs, r.id); r.organs.forEach((o) => assert(ORGAN_MAP[o], `${r.id} 未知器官 ${o}`)); });
 NUTRIENTS.forEach((n) => { ref(n.refs, n.id); n.organs.forEach((o) => assert(ORGAN_MAP[o], `${n.id} 未知器官 ${o}`)); });
-TOPICS.forEach((t) => t.steps.forEach((s) => { ref(s.refs, t.id); s.organs.forEach((o) => assert(ORGAN_MAP[o], `${t.id} 未知器官 ${o}`)); }));
+TOPICS.forEach((t) => {
+  t.steps.forEach((s) => {
+    ref(s.refs, t.id);
+    s.organs.forEach((o) => assert(ORGAN_MAP[o], `${t.id} 未知器官 ${o}`));
+    s.flow?.forEach(([a, b]) => assert(ORGAN_MAP[a]?.layer === 'organ' && ORGAN_MAP[b]?.layer === 'organ', `${t.id} 訊號路徑只能連接器官：${a}→${b}`));
+  });
+  t.quiz.forEach((q) => { ref(q.refs, t.id); assert(q.answer >= 0 && q.answer < q.options.length, `${t.id} 測驗答案超出選項：${q.q}`); });
+  if (t.ready) assert(t.steps.length && t.quiz.length, `${t.id} 已標示完成但缺少步驟或測驗`);
+});
 
 const base = (): Consult => ({
   id: 't', caseCode: 'T-1', date: '2026-01-01', managerName: '', consent: { education: true, localStorage: false, thirdPartyAI: false },

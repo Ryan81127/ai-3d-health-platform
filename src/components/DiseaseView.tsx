@@ -7,6 +7,7 @@ import { useStore, type LayerOpacity } from '../store';
 import { Pending } from './ui';
 
 const TearFilm = lazy(() => import('./TearFilm'));
+const VesselFlow = lazy(() => import('./VesselFlow'));
 
 const VIEW_OPACITY: LayerOpacity = { skin: 0.08, muscle: 0, skeleton: 0.12, organ: 1, vessel: 0.85, nerve: 0.6 };
 
@@ -50,14 +51,7 @@ export default function DiseaseView({ id, onExit }: { id: string; onExit?(): voi
       <div className="review-badge">
         <b>{reviewStatus(d.review)}</b>
         <span>建議審閱：{d.specialty}・指引版本：{d.review.guidelineVersion}</span>
-        {d.review.roles.map((r) => (
-          <span key={r.role}>
-            {r.role}{r.required ? '（必要）' : ''}：
-            {r.records.length
-              ? r.records.map((x) => `${x.name}（${x.credentials}）${x.reviewedAt}・${x.scope}`).join('；')
-              : '尚未指派'}
-          </span>
-        ))}
+        <span>審閱紀錄以書面為準。</span>
       </div>
       <p className="small">3D 標示：{d.organs.map((o) => ORGAN_MAP[o]?.name).join('、')}。本頁為衛教資料，不是診斷；不能用單一症狀判斷疾病。</p>
       <div className="chk-summary">
@@ -79,6 +73,15 @@ export default function DiseaseView({ id, onExit }: { id: string; onExit?(): voi
           <>
             <Suspense fallback={<p className="small">載入淚膜動畫…</p>}><TearFilm /></Suspense>
             <p className="small">已完成：眨眼、淚膜變薄與蒸發（示意）。尚未完成：淚膜各層的細部成分圖、眼表發炎機制。</p>
+          </>
+        ) : d.id === 'hypertension' || d.id === 'atherosclerosis' ? (
+          <>
+            <Suspense fallback={<p className="small">載入血管動畫…</p>}><VesselFlow topic={d.id} /></Suspense>
+            <p className="small">
+              {d.id === 'hypertension'
+                ? '已完成：正常血管、血管收縮與血流阻力、長期血壓偏高的血管重塑（示意）。尚未完成：心臟、腦部與腎臟的相關風險動畫。'
+                : '已完成：LDL 進入血管壁、泡沫細胞、斑塊形成與可能的破裂血栓（示意）。尚未完成：內皮細胞層的細部呈現。'}
+            </p>
           </>
         ) : (
           <>

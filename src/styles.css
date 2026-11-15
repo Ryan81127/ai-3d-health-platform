@@ -443,3 +443,11 @@ dl { margin: .4em 0; } dt { font-weight: 700; color: var(--teal-2); font-size: .
 .tear-legend { list-style: none; padding: 0; margin: .5rem 0; font-size: .82rem; }
 .tear-legend li { display: flex; align-items: center; gap: .45em; padding: .15em 0; }
 .tear-legend i { width: 12px; height: 12px; border-radius: 3px; flex: none; border: 1px solid rgba(0,0,0,.12); }
+
+/* 血管動畫 */
+.vessel { margin: .4rem 0 0; }
+.vessel .seg { margin: .5rem 0; }
+.vessel .seg button { font-size: .8rem; }
+.stage-slider { display: flex; flex-direction: column; gap: .2rem; margin: .5rem 0; font-size: .86rem; color: var(--navy); }
+.stage-slider input { width: 100%; accent-color: var(--teal); }
+.stage-slider small { color: var(--muted); }

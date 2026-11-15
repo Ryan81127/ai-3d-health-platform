@@ -7,6 +7,8 @@ import { PROVIDERS } from '../engine/provider';
 import { useStore } from '../store';
 import OrganCard from './OrganCard';
 import StoryPlayer, { TopicPicker } from './StoryPlayer';
+import DiseaseView from './DiseaseView';
+import { TOPIC_MAP } from '../data/topics';
 import { EvidenceBadge, ItemCard, Pending, Sources } from './ui';
 
 type Tab = 'analysis' | 'organ' | 'topic' | 'nutrient';
@@ -80,7 +82,7 @@ function TopicTab({ story, setStory }: { story: { topic: string; step: number };
   return (
     <div>
       <TopicPicker value={story.topic} onPick={(topic) => setStory({ topic, step: 0 })} />
-      <StoryPlayer topicId={story.topic} startAt={story.step} />
+      {TOPIC_MAP[story.topic].ready ? <StoryPlayer topicId={story.topic} startAt={story.step} /> : <DiseaseView key={story.topic} id={story.topic} />}
     </div>
   );
 }

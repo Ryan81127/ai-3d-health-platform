@@ -10,44 +10,19 @@ export interface PartInfo {
   organ: string | null;
   c: [number, number, number];
   r: number;
-  /** 資料集沒有、以示意幾何補上的構造 */
-  schematic?: boolean;
+  /** 模型來源：未標示為 BodyParts3D 3.0；bp4 為 BodyParts3D 4.0；za 為 Z-Anatomy */
+  src?: 'bp4' | 'za';
 }
 
-const base = manifestJson as PartInfo[];
-const find = (re: RegExp) => base.filter((p) => re.test(p.en));
-const byY = (a: PartInfo, b: PartInfo) => b.c[1] - a.c[1];
-
-/* 甲狀腺：資料集未收錄，放在甲狀軟骨下方作為示意 */
-const tc = find(/thyroid cartilage/)[0];
-export const THYROID: PartInfo = {
-  id: 'x-thyroid', en: 'thyroid gland (schematic)', layer: 'organ', organ: 'thyroid', schematic: true,
-  c: [tc.c[0], tc.c[1] - 0.028, tc.c[2] + 0.004], r: 0.03,
-};
-
-/* 神經走向：資料集沒有周邊神經，沿骨骼中心點畫出示意路徑 */
 type P3 = [number, number, number];
-const spine = find(/vertebra$|^atlas$|^axis$|^sacrum$/).sort(byY);
-const one = (name: string) => base.find((p) => p.en === name)!.c as P3;
-const limb = (side: 'left' | 'right'): P3[][] => {
-  const c7 = one('seventh cervical vertebra'), l5 = one('fifth lumbar vertebra');
-  return [
-    [c7, one(`${side} clavicle`), one(`${side} humerus`), one(`${side} ulna`), one(`${side} third metacarpal bone`)],
-    [l5, one(`${side} hip bone`), one(`${side} femur`), one(`${side} tibia`), one(`${side} talus`)],
-  ];
-};
-export const NERVE_PATHS: { pts: P3[]; r: number }[] = [
-  { pts: [[spine[0].c[0], spine[0].c[1] + 0.04, spine[0].c[2]], ...spine.map((p) => [p.c[0], p.c[1], p.c[2] - 0.012] as P3)], r: 0.006 },
-  ...[...limb('left'), ...limb('right')].map((pts) => ({ pts: pts.map(([x, y, z]) => [x, y, z - 0.012] as P3), r: 0.003 })),
-];
-export const NERVE_SCHEMATIC: PartInfo = { id: 'x-nerves', en: 'spinal cord and peripheral nerves (schematic path)', layer: 'nerve', organ: 'nerves', schematic: true, c: [0, 0.9, 0], r: 0.9 };
-
-export const PARTS: PartInfo[] = [...base, THYROID, NERVE_SCHEMATIC];
+export const PARTS: PartInfo[] = manifestJson as PartInfo[];
 export const PART_MAP: Record<string, PartInfo> = Object.fromEntries(PARTS.map((p) => [p.id, p]));
 
+export const SOURCE_LABEL: Record<string, string> = {
+  bp3: 'BodyParts3D 3.0', bp4: 'BodyParts3D 4.0', za: 'Z-Anatomy（CC BY-SA 4.0）',
+};
+
 export function partLabel(p: PartInfo): string {
-  if (p.id === 'x-thyroid') return '甲狀腺（示意）';
-  if (p.id === 'x-nerves') return '脊髓與周邊神經（示意走向）';
   return zhName(p.en) ?? p.en;
 }
 
@@ -71,7 +46,7 @@ function boundsOf(parts: PartInfo[]): Bounds {
 export const BODY: Bounds = { c: [0, 0.83, 0], r: 0.95 };
 export const ORGAN_BOUNDS: Record<string, Bounds> = {};
 for (const id of Object.keys(ORGAN_MAP)) {
-  const parts = PARTS.filter((p) => p.organ === id && !(p.id === 'x-nerves'));
+  const parts = PARTS.filter((p) => p.organ === id);
   ORGAN_BOUNDS[id] = ORGAN_MAP[id].layer === 'organ' && parts.length ? boundsOf(parts) : BODY;
 }
 

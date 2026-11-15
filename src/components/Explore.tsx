@@ -4,6 +4,7 @@ import { TOPIC_MAP } from '../data/topics';
 import { useStore } from '../store';
 import OrganCard from './OrganCard';
 import StoryPlayer, { TopicPicker } from './StoryPlayer';
+import DiseaseView from './DiseaseView';
 
 const SYSTEM_ORDER = ['神經系統', '感覺系統', '消化系統', '呼吸系統', '內分泌系統', '心血管系統', '消化與代謝系統', '消化與內分泌系統', '泌尿系統', '肌肉骨骼系統', '皮膚系統'];
 
@@ -51,7 +52,11 @@ export function ExploreRight({ story, setStory }: { story: { topic: string; step
           <button role="tab" aria-selected={tab === 'organ'} className={tab === 'organ' ? 'on' : ''} onClick={() => setTab('organ')}>器官資訊</button>
         </div>
       )}
-      {story && <div hidden={tab !== 'story'}><StoryPlayer topicId={story.topic} startAt={story.step} onExit={() => setStory(null)} /></div>}
+      {story && <div hidden={tab !== 'story'}>
+        {TOPIC_MAP[story.topic].ready
+          ? <StoryPlayer topicId={story.topic} startAt={story.step} onExit={() => setStory(null)} />
+          : <DiseaseView key={story.topic} id={story.topic} onExit={() => setStory(null)} />}
+      </div>}
       {(!story || tab === 'organ') && <OrganCard onOpenStory={(topic, step) => setStory({ topic, step })} />}
     </div>
   );

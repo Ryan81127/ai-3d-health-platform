@@ -3,7 +3,7 @@ import { ORGANS, ORGAN_MAP } from '../data/organs';
 import { LAYER_ZH } from '../data/partNames';
 import { PEEL_ORDER, useStore, type LayerKey } from '../store';
 import { MODEL_INFO } from '../three/modelSource';
-import { PART_MAP, partLabel, searchParts, type SearchHit } from '../three/anatomy';
+import { PART_MAP, SOURCE_LABEL, partLabel, searchParts, type SearchHit } from '../three/anatomy';
 
 const BodyViewer = lazy(() => import('../three/BodyViewer'));
 
@@ -56,7 +56,7 @@ export default function ViewerPanel({ flagged, variant = 'panel', showControls =
           <div className="viewer-current">
             <b>{current}</b>
             {part && <small>{LAYER_ZH[part.layer]}{partLabel(part) !== part.en && `・${part.en}`}</small>}
-            {part?.schematic && <small className="warn">示意幾何：資料集未收錄此構造</small>}
+            {part && <small>來源：{SOURCE_LABEL[part.src ?? 'bp3']}</small>}
           </div>
         )}
         {showControls && <div className="viewer-legend">
@@ -94,7 +94,7 @@ export default function ViewerPanel({ flagged, variant = 'panel', showControls =
         {fine && (
           <div className="layer-grid">
             {PEEL_ORDER.map((k: LayerKey) => (
-              <label key={k}><span>{LAYER_ZH[k]}{k === 'nerve' && '（示意）'}</span>
+              <label key={k}><span>{LAYER_ZH[k]}</span>
                 <input type="range" min={0} max={1} step={0.02} value={opacity[k]} onChange={(e) => setLayerOpacity(k, Number(e.target.value))} />
                 <button className={`chip ${opacity[k] > 0.01 ? 'on' : ''}`} aria-pressed={opacity[k] > 0.01} onClick={() => setLayerOpacity(k, opacity[k] > 0.01 ? 0 : 1)}>{opacity[k] > 0.01 ? '顯示' : '隱藏'}</button>
               </label>

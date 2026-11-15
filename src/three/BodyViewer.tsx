@@ -5,7 +5,13 @@ import * as THREE from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { ORGAN_MAP } from '../data/organs';
 import { PEEL_ORDER, useStore, type LayerKey } from '../store';
-import { BODY, NERVE_PATHS, ORGAN_BOUNDS, PART_MAP, THYROID, partLabel, unionBounds, type Bounds, type PartInfo } from './anatomy';
+import { BODY, ORGAN_BOUNDS, PART_MAP, partLabel, unionBounds, type Bounds, type PartInfo } from './anatomy';
+
+/** 每個圖層由哪些模型檔組成（見 public/models/LICENSE.txt） */
+const LAYER_FILES: Record<LayerKey, string[]> = {
+  skin: ['skin'], muscle: ['muscle'], skeleton: ['skeleton'],
+  organ: ['organ', 'bp4-eye', 'za-organ'], vessel: ['vessel', 'bp4-vessel'], nerve: ['za-nerve'],
+};
 
 const SELECT = new THREE.Color('#12c9b4');
 const FLAG = new THREE.Color('#ff9a1f');
@@ -86,8 +92,8 @@ function pick(e: ThreeEvent<MouseEvent>, layerOpacity: number) {
 }
 
 /* ---------- 一個圖層的解剖模型 ---------- */
-function LayerModel({ layer, flagged }: { layer: LayerKey; flagged: string[] }) {
-  const { scene } = useGLTF(`${import.meta.env.BASE_URL}models/${layer}.glb`, false, true);
+function LayerModel({ layer, file, flagged }: { layer: LayerKey; file: string; flagged: string[] }) {
+  const { scene } = useGLTF(`${import.meta.env.BASE_URL}models/${file}.glb`, false, true);
   const layerOpacity = useStore((s) => s.opacity[layer]);
   const hidden = useStore((s) => s.hidden);
   const marks = useMarks();
@@ -127,41 +133,6 @@ function LayerModel({ layer, flagged }: { layer: LayerKey; flagged: string[] }) 
   });
 
   return <primitive object={scene} onClick={(e: ThreeEvent<MouseEvent>) => pick(e, (e.object as THREE.Mesh).material && ((e.object as THREE.Mesh).material as THREE.Material).opacity)} />;
-}
-
-/* ---------- 資料集沒有的構造：示意幾何 ---------- */
-function SchematicThyroid({ flagged }: { flagged: string[] }) {
-  const opacity = useStore((s) => s.opacity.organ);
-  const hidden = useStore((s) => s.hidden.includes(THYROID.id));
-  const marks = useMarks();
-  const mat = useMemo(() => new THREE.MeshStandardMaterial({ color: ORGAN_COLOR.thyroid, roughness: 0.5 }), []);
-  const mark = markOf(THYROID, flagged, marks);
-  useEffect(() => applyMaterial(mat, opacity, mark, false), [mat, opacity, mark]);
-  useFrame(({ clock }) => { if (mat.userData.pulse) mat.emissiveIntensity = 0.2 + Math.sin(clock.elapsedTime * 3) * 0.14; });
-  if (hidden || (opacity <= 0.01 && mark !== 'selected')) return null;
-  return (
-    <group position={THYROID.c} onClick={(e) => pick(e, mat.opacity)}>
-      {[1, -1].map((s) => (
-        <mesh key={s} position={[s * 0.013, 0, 0]} scale={[0.009, 0.019, 0.008]} rotation={[0, 0, s * -0.25]} material={mat} userData={{ partId: THYROID.id }}>
-          <sphereGeometry args={[1, 20, 16]} />
-        </mesh>
-      ))}
-      <mesh position={[0, -0.01, 0.004]} scale={[0.01, 0.005, 0.004]} material={mat} userData={{ partId: THYROID.id }}><sphereGeometry args={[1, 16, 12]} /></mesh>
-    </group>
-  );
-}
-
-function SchematicNerves({ flagged }: { flagged: string[] }) {
-  const opacity = useStore((s) => s.opacity.nerve);
-  const marks = useMarks();
-  const part = PART_MAP['x-nerves'];
-  const mat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#ecc94b', roughness: 0.5 }), []);
-  const geos = useMemo(() => NERVE_PATHS.map((p) => new THREE.TubeGeometry(new THREE.CatmullRomCurve3(p.pts.map((v) => new THREE.Vector3(...v))), 64, p.r, 8, false)), []);
-  const mark = markOf(part, flagged, marks);
-  useEffect(() => applyMaterial(mat, opacity, mark, true), [mat, opacity, mark]);
-  useEffect(() => () => geos.forEach((g) => g.dispose()), [geos]);
-  if (opacity <= 0.01) return null;
-  return <group onClick={(e) => pick(e, opacity)}>{geos.map((g, i) => <mesh key={i} geometry={g} material={mat} userData={{ partId: part.id }} />)}</group>;
 }
 
 /* ---------- 鏡頭聚焦 ---------- */
@@ -313,7 +284,7 @@ function Scene({ flagged, onProgress }: { flagged: string[]; onProgress(delta: n
   // 圖層第一次需要顯示時才下載，之後保留在記憶體
   const [mounted, setMounted] = useState<LayerKey[]>([]);
   useEffect(() => {
-    const need = PEEL_ORDER.filter((k) => k !== 'nerve' && (opacity[k] > 0.01 || (k === 'organ' && !!selectedOrgan)) && !mounted.includes(k));
+    const need = PEEL_ORDER.filter((k) => (opacity[k] > 0.01 || (k === 'organ' && !!selectedOrgan)) && !mounted.includes(k));
     if (need.length) setMounted((m) => [...m, ...need]);
   }, [opacity, selectedOrgan, mounted]);
 
@@ -328,13 +299,11 @@ function Scene({ flagged, onProgress }: { flagged: string[]; onProgress(delta: n
         <circleGeometry args={[0.75, 64]} /><meshBasicMaterial color="#cdd6df" />
       </mesh>
 
-      {mounted.map((layer) => (
-        <Suspense key={layer} fallback={<LoadFlag onProgress={onProgress} />}>
-          <LayerModel layer={layer} flagged={flagged} />
+      {mounted.flatMap((layer) => LAYER_FILES[layer].map((file) => (
+        <Suspense key={file} fallback={<LoadFlag onProgress={onProgress} />}>
+          <LayerModel layer={layer} file={file} flagged={flagged} />
         </Suspense>
-      ))}
-      <SchematicThyroid flagged={flagged} />
-      <SchematicNerves flagged={flagged} />
+      )))}
       <Flows />
       <Label />
 

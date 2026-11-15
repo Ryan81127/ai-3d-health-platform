@@ -1,13 +1,30 @@
-The 3D model files in this directory (*.glb) are derived from BodyParts3D v3.0.
+3D model files in this directory and their licences
+====================================================
 
-  BodyParts3D, (c) The Database Center for Life Science
-  licensed under Creative Commons Attribution-Share Alike 2.1 Japan (CC BY-SA 2.1 JP)
-  https://creativecommons.org/licenses/by-sa/2.1/jp/deed.en
-  Original project: http://lifesciencedb.jp/bp3d/
-  STL conversion: https://github.com/Kevin-Mattheus-Moerman/BodyParts3D
+1) skin.glb, muscle.glb, skeleton.glb, organ.glb, vessel.glb
+   Derived from BodyParts3D 3.0 (STL conversion: https://github.com/Kevin-Mattheus-Moerman/BodyParts3D)
+2) bp4-vessel.glb (limb arteries and veins), bp4-eye.glb (cornea, iris, lens, sclera, vitreous body,
+   eyelid tarsal plates, lacrimal gland and drainage)
+   Derived from BodyParts3D 4.0 (partof_BP3D_4.0_obj_99.zip, https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html)
 
-Changes made: meshes were simplified (triangle reduction), the skin mesh was reduced
-to its outer surface, coordinates were converted to metres with Y up, parts were
-grouped into layers, and files were compressed (glTF + meshopt). See scripts/build-model.py.
+   Attribution: "BodyParts3D, (c) The Database Center for Life Science"
+   Licence: the official licence page (https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html,
+   last updated 2025-02-27) states Creative Commons Attribution 4.0 International (CC BY 4.0).
+   The original data files carry the earlier notice "Creative Commons Attribution-Share Alike 2.1 Japan".
+   To comply with both, these derived files are attributed as above AND distributed under the same
+   share-alike terms (CC BY-SA 2.1 JP / compatible later versions).
 
-These derived files are distributed under the same licence, CC BY-SA 2.1 JP.
+3) za-nerve.glb (spinal cord and peripheral nerves), za-organ.glb (thyroid gland, tongue)
+   Derived from Z-Anatomy FBX models (https://github.com/LluisV/Z-Anatomy/tree/PC-Version/Resources/Models/FBX)
+   Attribution: "Z-Anatomy - The open source atlas of anatomy - CC-BY-SA 4.0"
+                "BodyParts3D - The Database Center for Life Science"
+   Licence: CC BY-SA 4.0. These derived files are distributed under CC BY-SA 4.0.
+   Deliberately EXCLUDED because of non-commercial or unstated licences in Z-Anatomy:
+   inner ear / cochlea (CC BY-NC-SA 4.0), kidney (CC BY-NC 4.0), Brainder / White matter brain models
+   (licence not stated), cranial nerves (University of Dundee, CC BY 4.0, not used here).
+
+Changes made (all files): triangle reduction, skin reduced to its outer surface, unit conversion to
+metres with Y up, alignment to a common body frame (Z-Anatomy aligned by organ centres, ~1 cm error),
+grouping into layers, glTF + meshopt compression. See scripts/build-model.py, build-bp4.py, build-za.py.
+
+These licences cover the model files only, not the application code or the health-education text.

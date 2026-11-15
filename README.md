@@ -61,11 +61,14 @@ npm run preview    # 預覽建置結果
 | 營養素資料庫（19 項、可搜尋） | 已完成 |
 | 健康管理師審核流程、操作紀錄 | 已完成（紀錄存在本機） |
 | A4 PDF 下載、列印 | 已完成。下載版是影像式 PDF，文字不可選取；列印版文字可選取 |
-| 女性模型、四肢血管、周邊神經、舌等資料集未收錄的構造 | 尚未完成（需另外取得授權模型） |
+| 四肢動脈、眼部細部與淚液系統 | 已完成（BodyParts3D 4.0） |
+| 周邊神經與脊髓、甲狀腺、舌 | 已完成（Z-Anatomy，CC BY-SA 4.0；排除非商用授權的部位） |
+| 女性模型、四肢深層靜脈 | 尚未完成（資料集未提供） |
 | 部位中文名稱 | 部分完成：常用的約 200 個部位有中文，其餘顯示英文解剖學名稱 |
 | AI 模型分析 API、醫學資料庫檢索 | 尚未完成（第二階段） |
 | 組織／血管／細胞微觀探索、器官與細胞層級的 3D 動畫 | 尚未完成（第三階段） |
-| 高血壓、動脈粥狀硬化、第二型糖尿病、脂肪肝、乾眼症主題 | 尚未完成 |
+| 高血壓、動脈粥狀硬化、第二型糖尿病、脂肪肝、乾眼症：標準化衛教資料模組 | 已完成初版（P1），每則說明標示來源與核對程度，全部「待醫學審閱」 |
+| 上述五個主題的 3D 機制動畫 | 尚未完成（P3），各模組已列出動畫規劃 |
 | 個案追蹤與前後比較 | 尚未完成（目前只能開啟、刪除本機紀錄） |
 | 加密儲存、帳號與存取控制、保存期限管理 | 尚未完成 |
 | 醫學內容專業審查 | **尚未完成**。知識庫是 `0.1.0-draft`，由文獻整理的草稿，未經醫師、營養師審閱 |
@@ -92,7 +95,9 @@ src/
     modelManifest.json   3D 模型部位清單（由 scripts/build-model.py 產生）
     partNames.ts         部位中文名稱
     nutrients.ts         營養素資料庫
-    topics.ts            機制主題（熬夜；其餘待補）
+    topics.ts            主題故事（熬夜）與主題清單
+    diseases.ts          五大疾病衛教資料模組（來源、核對程度、審閱紀錄）
+    guidelines.ts        醫學指引登錄表（P0 核對結果）
     references.ts        參考文獻與內容版本
   engine/
     provider.ts          AnalysisProvider 介面；remoteAIProvider 是第二階段的空殼
@@ -104,8 +109,10 @@ src/
   pdf/exportPdf.ts       PDF 產生（可換成後端服務）
   components/            介面（Home、Explore、StoryPlayer、MechanismAnim、OrganCard、諮詢流程各頁）
 scripts/engine-check.ts  知識庫一致性與引擎行為測試
-scripts/build-model.py   把 BodyParts3D 轉成分層 GLB（減面、擷取皮膚外層、座標轉換）
-public/models/           分層解剖模型（skin / muscle / skeleton / organ / vessel，共約 4.4 MB）
+scripts/build-model.py   把 BodyParts3D 3.0 轉成分層 GLB（減面、擷取皮膚外層、座標轉換）
+scripts/build-bp4.py     從 BodyParts3D 4.0 補上四肢動脈與眼部構造
+scripts/build-za.py      從 Z-Anatomy 補上周邊神經、甲狀腺與舌
+public/models/           分層解剖模型（共約 5.2 MB，授權見 public/models/LICENSE.txt）
 ```
 
 - **接 AI 模型**：實作 `AnalysisProvider`（`engine/provider.ts`）。必須檢查 `consent.thirdPartyAI`、只送去識別化資料、在 `audit` 記錄模型與版本，結果仍走同一個審核流程。
@@ -115,20 +122,25 @@ public/models/           分層解剖模型（skin / muscle / skeleton / organ /
 
 ## 3D 模型來源與授權
 
-3D 解剖模型來自 **BodyParts3D**（v3.0）：
+| 檔案 | 內容 | 來源 | 授權 |
+| --- | --- | --- | --- |
+| skin / muscle / skeleton / organ / vessel | 皮膚、肌肉、骨骼、內臟、軀幹血管（934 部位） | BodyParts3D 3.0 | 見下方說明 |
+| bp4-vessel、bp4-eye | 四肢動脈（約 60 條）、頭靜脈與貴要靜脈；角膜、虹膜、水晶體、鞏膜、玻璃體、眼瞼瞼板、淚腺、淚小管、淚囊、鼻淚管 | BodyParts3D 4.0 | 見下方說明 |
+| za-nerve、za-organ | 脊髓、臂神經叢與四肢周邊神經、肋間神經、交感神經幹；甲狀腺、舌 | Z-Anatomy | CC BY-SA 4.0 |
 
-> BodyParts3D, © The Database Center for Life Science, licensed under CC Attribution-Share Alike 2.1 Japan
-> Mitsuhashi N, et al. BodyParts3D: 3D structure database for anatomical concepts. Nucleic Acids Res. 2009;37:D782–5.
+- **BodyParts3D**：官方授權頁（2025-02-27 更新）為 **CC BY 4.0**；原始資料檔標頭仍寫 CC BY-SA 2.1 JP。本專案同時遵守兩者：標示「BodyParts3D, © The Database Center for Life Science」，衍生模型檔以相同條款釋出。
+- **Z-Anatomy**：CC BY-SA 4.0，需同時標示 Z-Anatomy 與 BodyParts3D。Z-Anatomy 內含其他授權的模型，以下**刻意排除**：內耳／耳蝸（CC BY-NC-SA 4.0，非商用）、腎臟（CC BY-NC 4.0，非商用）、Brainder／White matter 腦模型（授權未載明）、腦神經（Dundee CC BY 4.0，暫不納入）。
+- **Sketchfab**：標準授權禁止讓他人取得模型檔本身（no stand-alone file access），網頁 3D 檢視器會把模型檔傳到使用者瀏覽器，使用前須逐一確認；Editorial 授權不得商用。目前未使用。
+- **Zygote**：可授權單一構造或整套模型並可修改；互動網頁與使用者端渲染的範圍需在採購時以合約確認。目前未使用。
 
-STL 檔取自 <https://github.com/Kevin-Mattheus-Moerman/BodyParts3D>。`public/models/` 內的檔案是經減面、合併與壓縮的衍生作品，依相同的 **CC BY-SA 2.1 JP** 授權釋出（見 `public/models/LICENSE.txt`）。使用或再散布時必須保留上述標示；這項授權允許商業使用，但衍生的模型檔必須以相同條款分享。此授權只涵蓋模型檔，不涵蓋本專案的程式碼與衛教內容。
-
-重建模型：
-
-```bash
-pip install trimesh fast-simplification embreex
-python3 scripts/build-model.py <BodyParts3D_data 目錄> /tmp/model
-for l in skin muscle skeleton organ vessel; do npx @gltf-transform/cli meshopt /tmp/model/$l.glb public/models/$l.glb --level medium; done
-cp /tmp/model/manifest.json src/data/modelManifest.json
-```
+Z-Anatomy 模型以六個器官中心點與主模型對齊，誤差約 1 公分。重建方式見各腳本開頭說明（需要 `assimp`、`trimesh`、`fast-simplification`、`embreex`）。
 
 這是單一成年男性的通用教學模型，不是個案影像，也不代表個別差異。
+
+## 醫學內容來源與審閱
+
+- `src/data/guidelines.ts`：指引登錄表，記錄標題、組織、年份、期刊卷期、DOI、連結與核對狀態（2026-11-15 核對）。
+- `src/data/diseases.ts`：五大疾病模組，每則說明標示核對程度：「已對照原文」「出處已確認・內容待全文核對」「一般衛教知識・待醫學審閱」。
+- 每個模組記錄建議審閱專科、審閱者、審閱日期、指引版本與修改紀錄。完成醫療專業審閱前一律顯示「待醫學審閱」；`npm test` 會阻擋沒有審閱者卻標示「已審閱」的資料。
+
+需人工核對（本開發環境無法自動讀取）：國健署心血管疾病預防照護指引 PDF（伺服器拒絕連線）、台灣糖尿病學會臨床照護指引、JACC／AHA 指引頁面（防機器人驗證）。

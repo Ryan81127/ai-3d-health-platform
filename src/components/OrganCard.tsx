@@ -6,7 +6,7 @@ import { MECHANISMS } from '../data/knowledge';
 import { CATEGORIES } from '../data/symptoms';
 import { LAYER_ZH } from '../data/partNames';
 import { useStore } from '../store';
-import { PART_MAP, partLabel } from '../three/anatomy';
+import { PART_MAP, SOURCE_LABEL, partLabel } from '../three/anatomy';
 import { EvidenceBadge, Pending, Sources } from './ui';
 
 type Tab = 'normal' | 'effect' | 'action';
@@ -43,7 +43,7 @@ export default function OrganCard({ relatedReasons, onOpenStory }: { relatedReas
   return (
     <div className="organ-card">
       <h3>{o.name}<span className="tag">{o.system}</span></h3>
-      {part && <p className="small">點選的部位：{partLabel(part)}{partLabel(part) !== part.en && `（${part.en}）`}{part.schematic && '｜示意幾何，資料集未收錄此構造'}</p>}
+      {part && <p className="small">點選的部位：{partLabel(part)}{partLabel(part) !== part.en && `（${part.en}）`}｜模型來源：{SOURCE_LABEL[part.src ?? 'bp3']}</p>}
       {reasons && <p className="relate">問卷中相關的項目：{reasons.join('、')}（僅表示功能上可能相關）</p>}
       <div className="seg" role="tablist">
         {tabs.map(([k, label]) => <button key={k} role="tab" aria-selected={tab === k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}>{label}</button>)}

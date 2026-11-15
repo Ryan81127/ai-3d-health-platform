@@ -6,6 +6,9 @@ import { NUTRIENT_MAP, NUTRIENTS } from '../src/data/nutrients';
 import { ORGAN_MAP } from '../src/data/organs';
 import { REF_MAP } from '../src/data/references';
 import { TOPICS } from '../src/data/topics';
+import { DISEASES } from '../src/data/diseases';
+import { GUIDELINE_MAP } from '../src/data/guidelines';
+import manifest from '../src/data/modelManifest.json';
 import { analyzeRules, consultHash } from '../src/engine/ruleEngine';
 import { remoteAIProvider } from '../src/engine/provider';
 import type { Consult } from '../src/types';
@@ -38,6 +41,25 @@ const base = (): Consult => ({
   ageRange: '', sex: '', symptoms: {}, lifestyle: [], lifestyleNote: '', redFlags: {}, historyTags: [], history: '', medications: '',
   review: { excluded: [], note: '', reviewer: '', checks: [false, false, false] }, audit: [], updatedAt: '',
 });
+
+// 疾病模組：來源必須在指引登錄表內；未審閱前必須標示待醫學審閱
+for (const d of DISEASES) {
+  d.organs.forEach((o) => assert(ORGAN_MAP[o], `${d.id} 未知器官 ${o}`));
+  assert(TOPICS.some((t) => t.id === d.id), `${d.id} 沒有對應的主題`);
+  assert(d.review.status === '待醫學審閱' || (d.review.reviewer && d.review.reviewedAt), `${d.id} 標示已審閱但缺少審閱者或日期`);
+  assert(d.animPlan.length > 0, `${d.id} 缺少動畫規劃`);
+  for (const s of d.sections) for (const c of s.claims) {
+    c.src.forEach((x) => assert(GUIDELINE_MAP[x.g], `${d.id} 未知指引 ${x.g}`));
+    if (c.check !== 'general') assert(c.src.length > 0, `${d.id}「${c.text.slice(0, 20)}」標示已核對但沒有來源`);
+  }
+  assert(d.sections.some((s) => s.key === 'redflags'), `${d.id} 缺少就醫警訊`);
+}
+// 3D 模型部位：對應的器官必須存在，id 不可重複
+const ids = new Set<string>();
+for (const p of manifest as { id: string; organ: string | null }[]) {
+  assert(!ids.has(p.id), `模型部位 id 重複：${p.id}`); ids.add(p.id);
+  if (p.organ) assert(ORGAN_MAP[p.organ], `模型部位 ${p.id} 對應未知器官 ${p.organ}`);
+}
 
 // 空問卷
 assert(analyzeRules(base()).empty);

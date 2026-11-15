@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ORGAN_MAP } from '../data/organs';
 import { TOPIC_MAP, TOPICS } from '../data/topics';
+import { DISEASE_MAP } from '../data/diseases';
 import { useStore, type LayerOpacity } from '../store';
 import MechanismAnim from './MechanismAnim';
 import { EvidenceBadge, Sources } from './ui';
@@ -14,8 +15,8 @@ export function TopicPicker({ value, onPick }: { value?: string; onPick(id: stri
   return (
     <div className="topic-picker">
       {TOPICS.map((t) => (
-        <button key={t.id} className={`topic-chip ${t.id === value ? 'on' : ''}`} disabled={!t.ready} onClick={() => onPick(t.id)}>
-          <span>{t.icon}</span>{t.title}{!t.ready && <small>尚未完成</small>}
+        <button key={t.id} className={`topic-chip ${t.id === value ? 'on' : ''}`} disabled={!t.ready && !DISEASE_MAP[t.id]} onClick={() => onPick(t.id)}>
+          <span>{t.icon}</span>{t.title}{!t.ready && <small>{DISEASE_MAP[t.id] ? '衛教資料・動畫製作中' : '尚未完成'}</small>}
         </button>
       ))}
     </div>

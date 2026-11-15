@@ -1,0 +1,13 @@
+The 3D model files in this directory (*.glb) are derived from BodyParts3D v3.0.
+
+  BodyParts3D, (c) The Database Center for Life Science
+  licensed under Creative Commons Attribution-Share Alike 2.1 Japan (CC BY-SA 2.1 JP)
+  https://creativecommons.org/licenses/by-sa/2.1/jp/deed.en
+  Original project: http://lifesciencedb.jp/bp3d/
+  STL conversion: https://github.com/Kevin-Mattheus-Moerman/BodyParts3D
+
+Changes made: meshes were simplified (triangle reduction), the skin mesh was reduced
+to its outer surface, coordinates were converted to metres with Y up, parts were
+grouped into layers, and files were compressed (glTF + meshopt). See scripts/build-model.py.
+
+These derived files are distributed under the same licence, CC BY-SA 2.1 JP.

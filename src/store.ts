@@ -2,9 +2,14 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Consult, SymptomDetail, Tri } from './types';
 import { consultHash } from './engine/ruleEngine';
+import { ORGAN_MAP } from './data/organs';
 
 export type Step = 'setup' | 'work' | 'review';
-export type Layers = { muscle: boolean; skeleton: boolean; vessel: boolean; nerve: boolean; organ: boolean };
+export type LayerKey = 'skin' | 'muscle' | 'skeleton' | 'organ' | 'vessel' | 'nerve';
+export type LayerOpacity = Record<LayerKey, number>;
+/** 由外而內的剝離順序 */
+export const PEEL_ORDER: LayerKey[] = ['skin', 'muscle', 'skeleton', 'organ', 'vessel', 'nerve'];
+export const DEFAULT_OPACITY: LayerOpacity = { skin: 0.14, muscle: 0, skeleton: 0.3, organ: 1, vessel: 1, nerve: 0 };
 
 export interface Snapshot { id: string; label: string; dataUrl: string }
 
@@ -29,9 +34,11 @@ interface State {
   step: Step;
   /* 3D 檢視狀態（不持久化） */
   selectedOrgan: string | null;
+  selectedPart: string | null; // 模型部位 id（FMA 編號）
+  hidden: string[]; // 被隱藏的部位 id
   spotlight: string[] | null; // 主題教學時暫時標示的器官
-  skinOpacity: number;
-  layers: Layers;
+  opacity: LayerOpacity;
+  peel: number | null; // 分層滑桿位置；個別調整圖層後為 null
   snapshots: Snapshot[];
   capture: (() => string | null) | null;
 
@@ -50,9 +57,13 @@ interface State {
   remove(id: string): void;
   removeAll(): void;
   selectOrgan(id: string | null): void;
+  selectPart(partId: string, organId: string | null): void;
+  hideSelected(): void;
+  showAll(): void;
+  setPeel(v: number): void;
+  setLayerOpacity(k: LayerKey, v: number): void;
+  resetView(): void;
   setSpotlight(ids: string[] | null): void;
-  setSkinOpacity(v: number): void;
-  toggleLayer(k: keyof Layers): void;
   addSnapshot(label: string): boolean;
   removeSnapshot(id: string): void;
 }
@@ -67,8 +78,10 @@ export const useStore = create<State>()(
       step: 'setup',
       selectedOrgan: null,
       spotlight: null,
-      skinOpacity: 0.28,
-      layers: { muscle: false, skeleton: false, vessel: true, nerve: false, organ: true },
+      selectedPart: null,
+      hidden: [],
+      opacity: DEFAULT_OPACITY,
+      peel: null,
       snapshots: [],
       capture: null,
 
@@ -89,8 +102,8 @@ export const useStore = create<State>()(
       approve: () => get().update((c) => { c.review.approvedAt = now(); c.review.approvedHash = consultHash(c); }, `健康管理師審核通過（${get().consults[get().currentId].review.reviewer}）`),
       revoke: () => get().update((c) => { delete c.review.approvedAt; delete c.review.approvedHash; }, '撤回審核'),
       log: (action) => get().update(() => {}, action),
-      startNew: () => { const c = newConsult(); set((s) => ({ consults: { ...s.consults, [c.id]: c }, currentId: c.id, step: 'setup', snapshots: [], selectedOrgan: null, spotlight: null })); },
-      load: (id) => set({ currentId: id, step: 'work', snapshots: [], selectedOrgan: null, spotlight: null }),
+      startNew: () => { const c = newConsult(); set((s) => ({ consults: { ...s.consults, [c.id]: c }, currentId: c.id, step: 'setup', snapshots: [], selectedOrgan: null, selectedPart: null, hidden: [], spotlight: null })); },
+      load: (id) => set({ currentId: id, step: 'work', snapshots: [], selectedOrgan: null, selectedPart: null, hidden: [], spotlight: null }),
       remove: (id) => set((s) => {
         const consults = { ...s.consults };
         delete consults[id];
@@ -99,10 +112,23 @@ export const useStore = create<State>()(
         return { consults: { ...consults, [c.id]: c }, currentId: c.id, step: 'setup', snapshots: [] };
       }),
       removeAll: () => { const c = newConsult(); set({ consults: { [c.id]: c }, currentId: c.id, step: 'setup', snapshots: [] }); },
-      selectOrgan: (selectedOrgan) => set({ selectedOrgan }),
-      setSpotlight: (spotlight) => set({ spotlight }),
-      setSkinOpacity: (skinOpacity) => set({ skinOpacity }),
-      toggleLayer: (k) => set((s) => ({ layers: { ...s.layers, [k]: !s.layers[k] } })),
+      // 選取器官時自動調整圖層，讓它不被外層遮住
+      selectOrgan: (id) => set((s) => {
+        if (!id) return { selectedOrgan: null, selectedPart: null };
+        const layer = ORGAN_MAP[id].layer as LayerKey;
+        const op = { ...s.opacity };
+        if (layer !== 'skin') op.skin = Math.min(op.skin, 0.14);
+        if (layer !== 'skin' && layer !== 'muscle') { op.muscle = Math.min(op.muscle, 0); op.skeleton = Math.min(op.skeleton, 0.3); }
+        if (layer !== 'organ') op[layer] = Math.max(op[layer], layer === 'skin' ? 0.9 : 1);
+        return { selectedOrgan: id, selectedPart: null, opacity: op, peel: null };
+      }),
+      selectPart: (selectedPart, selectedOrgan) => set({ selectedPart, selectedOrgan }),
+      hideSelected: () => set((s) => (s.selectedPart ? { hidden: [...s.hidden, s.selectedPart], selectedPart: null, selectedOrgan: null } : {})),
+      showAll: () => set({ hidden: [] }),
+      setPeel: (peel) => set({ peel, opacity: Object.fromEntries(PEEL_ORDER.map((k, i) => [k, Math.min(1, Math.max(0, i + 1 - peel))])) as LayerOpacity }),
+      setLayerOpacity: (k, v) => set((s) => ({ peel: null, opacity: { ...s.opacity, [k]: v } })),
+      resetView: () => set({ opacity: DEFAULT_OPACITY, peel: null, hidden: [], selectedOrgan: null, selectedPart: null }),
+      setSpotlight: (spotlight) => set((s) => ({ spotlight, opacity: spotlight?.includes('muscles') && s.opacity.muscle < 0.2 ? { ...s.opacity, muscle: 0.22 } : s.opacity })),
       addSnapshot: (label) => {
         const url = get().capture?.();
         if (!url) return false;

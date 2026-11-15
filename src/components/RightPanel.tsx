@@ -6,6 +6,8 @@ import { TOPICS } from '../data/topics';
 import { CONTENT_VERSION } from '../data/references';
 import { PROVIDERS } from '../engine/provider';
 import { useStore } from '../store';
+import { PART_MAP, partLabel } from '../three/anatomy';
+import { LAYER_ZH } from '../data/partNames';
 import { EvidenceBadge, ItemCard, Pending, Sources } from './ui';
 
 type Tab = 'analysis' | 'organ' | 'topic' | 'nutrient';
@@ -73,20 +75,30 @@ function Analysis({ a }: { a: AnalysisResult }) {
 
 function OrganInfo({ a }: { a: AnalysisResult }) {
   const id = useStore((s) => s.selectedOrgan);
-  if (!id) return <p className="empty">在 3D 人體上點選器官，或使用「器官選單」，這裡會顯示名稱、功能與衛教資訊。</p>;
+  const partId = useStore((s) => s.selectedPart);
+  const part = partId ? PART_MAP[partId] : null;
+  if (!id && part) return (
+    <div className="card">
+      <h3>{partLabel(part)}<span className="tag">{LAYER_ZH[part.layer]}</span></h3>
+      <p className="small">英文解剖學名稱：{part.en}</p>
+      <p>這個部位目前沒有對應的衛教內容。可用「隱藏此部位」看到它後方的構造。</p>
+    </div>
+  );
+  if (!id) return <p className="empty">在 3D 人體上點選任一部位，或使用搜尋與「器官選單」，這裡會顯示名稱、功能與衛教資訊。</p>;
   const o = ORGAN_MAP[id];
   const related = a.organs.find((x) => x.organId === id);
   const nutrients = NUTRIENTS.filter((n) => n.organs.includes(id));
   return (
     <div className="card">
       <h3>{o.name}<span className="tag">{o.system}</span></h3>
+      {part && <p className="small">點選的部位：{partLabel(part)}{partLabel(part) !== part.en && `（${part.en}）`}{part.schematic && '｜示意幾何，資料集未收錄此構造'}</p>}
       {related && <p className="relate">問卷中相關的項目：{related.reasons.join('、')}（僅表示功能上可能相關）</p>}
       <h4>主要功能</h4><p>{o.fn}</p>
       <h4>正常生理</h4><p>{o.edu}</p>
       <h4>日常保養方向</h4><p>{o.care}</p>
       {nutrients.length > 0 && <><h4>相關營養素</h4><p>{nutrients.map((n) => n.name).join('、')}</p></>}
       <p><Pending>可能異常機制的動畫比較、組織與細胞層級放大（第三階段）</Pending></p>
-      <p className="small">3D 形狀為示意幾何，位置與大小僅供衛教說明。</p>
+      <p className="small">3D 模型為 BodyParts3D 成年男性解剖模型，是通用教學模型，不是個案的影像。</p>
     </div>
   );
 }
@@ -185,7 +197,8 @@ function NutrientDB() {
 export default function RightPanel({ a }: { a: AnalysisResult }) {
   const selected = useStore((s) => s.selectedOrgan);
   const [tab, setTab] = useState<Tab>('analysis');
-  useEffect(() => { if (selected && tab !== 'topic') setTab('organ'); }, [selected]); // eslint-disable-line
+  const selectedPart = useStore((s) => s.selectedPart);
+  useEffect(() => { if ((selected || selectedPart) && tab !== 'topic') setTab('organ'); }, [selected, selectedPart]); // eslint-disable-line
   const tabs: [Tab, string][] = [['analysis', '分析'], ['organ', '器官'], ['topic', '機制主題'], ['nutrient', '營養資料庫']];
   return (
     <div className="right">

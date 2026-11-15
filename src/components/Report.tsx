@@ -89,7 +89,7 @@ const Report = forwardRef<HTMLDivElement, Props>(({ c, a, snapshots, approved },
       <H n={4}>相關 3D 器官畫面</H>
       {snapshots.length ? (
         <div className="pdf-block r-snaps">
-          {snapshots.map((s) => <figure key={s.id}><img src={s.dataUrl} alt={s.label} /><figcaption>{s.label}（示意幾何模型，非解剖精確，亦非個案影像）</figcaption></figure>)}
+          {snapshots.map((s) => <figure key={s.id}><img src={s.dataUrl} alt={s.label} /><figcaption>{s.label}（通用解剖教學模型，非個案影像。BodyParts3D, © DBCLS, CC BY-SA 2.1 JP）</figcaption></figure>)}
         </div>
       ) : <p className="pdf-block r-muted">未擷取 3D 畫面。可回到 3D 檢視按「擷取畫面加入報告」。</p>}
 

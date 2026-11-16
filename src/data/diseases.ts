@@ -20,7 +20,7 @@ export interface Claim {
   check: Check;
 }
 
-export type SectionKey = 'define' | 'mechanism' | 'organs' | 'lifestyle' | 'nutrition' | 'meds' | 'redflags';
+export type SectionKey = 'define' | 'mechanism' | 'organs' | 'screening' | 'lifestyle' | 'nutrition' | 'meds' | 'redflags';
 
 export interface DiseaseModule {
   id: string; // 與 topics.ts 的主題 id 相同
@@ -38,6 +38,7 @@ export const SECTION_TITLE: Record<SectionKey, string> = {
   define: '定義與診斷（風險≠症狀≠診斷）',
   mechanism: '生理機制（衛教示意）',
   organs: '可能相關的器官影響',
+  screening: '篩檢與早期發現',
   lifestyle: '生活型態',
   nutrition: '飲食與營養',
   meds: '藥物（客觀衛教，非處方建議）',
@@ -55,6 +56,8 @@ const rev = (guidelineVersion: string, specialty: string): ReviewState => ({
   guidelineVersion, changelog: [{ date: '2026-11-15', note: '第一批常見疾病：依官方衛教頁面原文建立初版' }],
   roles: [{ role: specialty, required: true, records: [] }, { role: '合格營養師（飲食與營養）', required: true, records: [] }],
 });
+const TREAT = gen('治療方式由專科醫師依癌症種類與分期決定。');
+const MALE_MODEL = gen('目前的 3D 模型為成年男性，無法顯示這個器官。');
 const EMERGENCY = gen('出現胸痛、嚴重呼吸困難、突然單側無力或口齒不清、意識改變時，請立即撥打 119。');
 
 export const DISEASES: DiseaseModule[] = [
@@ -442,6 +445,226 @@ export const DISEASES: DiseaseModule[] = [
       sec('nutrition', [gen('更年期骨質流失加快，可多攝取含鈣與維生素 D 的食物（可參考「骨質疏鬆症」的飲食建議）。')]),
       sec('meds', [t('45 歲以上婦女身體不適時，可先與家庭醫學科或婦科醫師討論。', 'hpa-menopause'), MED_NOTE]),
       sec('redflags', [gen('停經一年以上又出現陰道出血，或經血量異常大、持續出血時，請儘速就醫。')]),
+    ],
+  },
+  /* ===== 第二批常見疾病（2026-11-16） ===== */
+  {
+    id: 'dyslipidemia', title: '高血脂', en: 'Dyslipidemia', organs: ['vessels', 'liver', 'heart'], specialty: '心臟內科或新陳代謝科',
+    review: rev('2022 台灣初級預防血脂指引；MedlinePlus Cholesterol', '心臟內科或新陳代謝科'),
+    animPlan: ['LDL 與 HDL 在血液中的運送', '膽固醇與斑塊堆積', '生活調整與藥物的作用'],
+    sections: [
+      sec('define', [
+        t('膽固醇是存在於全身細胞的類脂肪物質，身體需要它製造荷爾蒙、維生素 D 與幫助消化的物質。身體能自行製造所需的膽固醇，蛋黃、肉類、乳酪等動物性食物也含有膽固醇。', 'mp-chol', 'What is cholesterol'),
+        t('高膽固醇通常沒有徵兆或症狀，只能靠抽血檢查得知；檢查頻率依年齡、風險因子與家族史而定。', 'mp-chol', 'How is high cholesterol diagnosed'),
+        t('低密度脂蛋白膽固醇（LDL-C）升高是動脈粥狀硬化心血管疾病的主要風險因子；台灣初級預防指引依個人風險分級設定 LDL-C 目標。', 'tw-lipid-2022', '摘要'),
+      ]),
+      sec('mechanism', [
+        t('LDL 俗稱「壞膽固醇」，LDL 過高會使斑塊堆積在動脈；HDL 俗稱「好膽固醇」，負責把膽固醇帶回肝臟移除；VLDL 主要攜帶三酸甘油酯，也會促成斑塊堆積。', 'mp-chol', 'HDL, LDL, and VLDL'),
+        t('血中膽固醇過多時，會與其他物質形成斑塊並附著在動脈壁上。', 'mp-chol', 'What is cholesterol'),
+      ]),
+      sec('organs', [t('斑塊可能使冠狀動脈變窄甚至阻塞，並與冠狀動脈疾病、中風及周邊動脈疾病有關。', 'mp-chol')]),
+      sec('lifestyle', [
+        t('高膽固醇最常見的原因是不健康的生活型態：飽和脂肪吃太多會升高 LDL；缺乏運動、久坐會降低 HDL；吸菸會降低 HDL、升高 LDL。', 'mp-chol', 'What causes high cholesterol'),
+        t('可透過心臟健康飲食、體重管理與規律身體活動降低膽固醇。', 'mp-chol', 'How can I lower my cholesterol'),
+      ]),
+      sec('nutrition', [
+        t('飽和脂肪常見於紅肉、全脂乳製品、巧克力、部分烘焙食品，以及許多油炸與加工食品。', 'mp-chol', 'What causes high cholesterol'),
+        { text: '台灣初級預防指引提供食物、膳食補充品與飲酒的建議，具體內容需以指引全文確認。', src: [{ g: 'tw-lipid-2022', where: '摘要' }], check: 'citation' },
+      ]),
+      sec('meds', [t('若生活調整仍不足以降低膽固醇，可能需要藥物，例如 statin；服藥期間仍應持續生活調整。', 'mp-chol', 'How can I lower my cholesterol'), MED_NOTE]),
+      sec('redflags', [EMERGENCY]),
+    ],
+  },
+  {
+    id: 'atrial-fibrillation', title: '心房顫動', en: 'Atrial Fibrillation', organs: ['heart', 'brain'], specialty: '心臟內科',
+    review: rev('MedlinePlus Atrial Fibrillation', '心臟內科'),
+    animPlan: ['正常心跳的電訊號', '心房顫動時不規則的電訊號', '心房血栓與中風風險'],
+    sections: [
+      sec('define', [
+        t('心房顫動是最常見的心律不整之一：心跳不規則，有時比正常快很多，心臟上下腔室無法協調運作，使下方心室無法充分充血與送血。', 'mp-afib', 'What is atrial fibrillation'),
+        t('有些人沒有任何症狀，不知道自己有心房顫動；有症狀的人可能偶爾出現，也可能頻繁發生。', 'mp-afib', 'Symptoms'),
+        gen('是否為心房顫動需以心電圖等檢查確認，不能只靠自覺心跳判斷。'),
+      ]),
+      sec('mechanism', [t('最常見的原因是心臟組織或心跳電訊號的改變，可能與高血壓、冠狀動脈疾病、先天性心臟病、感染與老化有關，有時原因不明。', 'mp-afib', 'What causes')]),
+      sec('organs', [t('未治療的心房顫動可能導致中風、心臟衰竭、血栓、心因性猝死，以及認知障礙與失智。', 'mp-afib', 'What other problems can AFib cause')]),
+      sec('lifestyle', [t('心臟健康的生活調整：限制或避免飲酒（酒精可能使心跳加快）、維持健康體重、規律身體活動。', 'mp-afib', 'Treatments')]),
+      sec('nutrition', [
+        t('採用心臟健康飲食，限制飽和脂肪、鹽與膽固醇，例如得舒（DASH）飲食。', 'mp-afib', 'Treatments'),
+        gen('服用抗凝血劑者，飲食或保健食品（如大量深綠色蔬菜、魚油）有明顯改變前，請先詢問醫師或藥師。'),
+      ]),
+      sec('meds', [t('治療可能包括預防血栓的抗凝血藥物，以及控制心律與心跳速率的藥物。', 'mp-afib', 'Treatments'), MED_NOTE]),
+      sec('redflags', [
+        t('可能的症狀：極度疲倦（最常見）、心悸、呼吸困難（特別是平躺或運動時）、胸痛、頭暈或昏厥、血壓偏低。', 'mp-afib', 'Symptoms'),
+        gen('出現胸痛、昏厥，或單側無力、口齒不清等中風徵兆時，請立即撥打 119。'),
+      ]),
+    ],
+  },
+  {
+    id: 'heart-failure', title: '心臟衰竭', en: 'Heart Failure', organs: ['heart', 'lungs', 'kidneys'], specialty: '心臟內科',
+    review: rev('MedlinePlus Heart Failure', '心臟內科'),
+    animPlan: ['正常心臟的打血功能', '心臟打血不足與血液回堵', '體液堆積造成水腫'],
+    sections: [
+      sec('define', [
+        t('心臟衰竭是心臟無法打出足夠的含氧血液來滿足身體需要，並不是心臟已經停止或即將停止跳動。', 'mp-hf', 'What is heart failure'),
+        t('可能影響單側或兩側心臟：右心衰竭時心臟無力把血液送到肺部；左心衰竭較常見。', 'mp-hf', 'What is heart failure'),
+      ]),
+      sec('mechanism', [
+        t('大多數心臟衰竭是由長期疾病慢慢造成，也可能在疾病或傷害損傷心肌後突然發生；相關疾病包括心律不整、心肌病變、先天性心臟病、冠狀動脈疾病、心內膜炎、心肌梗塞、瓣膜疾病與高血壓等。', 'mp-hf', 'What causes heart failure'),
+        t('多數症狀來自器官血流減少與體液堆積：血液流經心臟變慢，回心的血管發生回堵，液體滲入身體組織造成水腫。', 'mp-hf', 'Symptoms'),
+      ]),
+      sec('organs', [
+        t('可能的症狀：爬樓梯等活動時喘（常是最早的症狀）、休息後仍疲倦無力、咳嗽、腳踝小腿或腹部因積水腫脹與體重增加、平躺難以入睡、噁心與食慾差、頸部靜脈腫脹、頻尿。初期可能沒有症狀或只有輕微症狀。', 'mp-hf', 'Symptoms'),
+      ]),
+      sec('lifestyle', [
+        t('多數治療計畫包括：戒菸、壓力管理、依醫療人員建議進行身體活動，並治療可能使心衰竭惡化的疾病。', 'mp-hf', 'Treatments'),
+        t('與醫療人員合作控制會增加風險的疾病，並改善飲食、運動等生活習慣，可能預防或延緩心臟衰竭。', 'mp-hf', 'Can heart failure be prevented'),
+      ]),
+      sec('nutrition', [t('減少鈉攝取並依醫療人員指示限制水分，以控制體液堆積。', 'mp-hf', 'Treatments')]),
+      sec('meds', [
+        t('心臟衰竭目前無法治癒，但治療可以延長壽命、減少症狀；即使接受治療，通常仍會隨時間惡化，多數人需要長期治療，治療計畫多包含藥物。', 'mp-hf', 'Treatments'),
+        MED_NOTE,
+      ]),
+      sec('redflags', [gen('喘明顯加重或休息時也喘、胸痛、昏厥，或短時間內體重快速增加、水腫明顯加重時，請儘速就醫或撥打 119。')]),
+    ],
+  },
+  {
+    id: 'cataract', title: '白內障', en: 'Cataract', organs: ['eyes'], specialty: '眼科',
+    review: rev('NEI Cataracts', '眼科'),
+    animPlan: ['透明水晶體與光線對焦', '水晶體混濁造成視線模糊', '手術置換人工水晶體（示意）'],
+    sections: [
+      sec('define', [
+        t('白內障是眼睛的水晶體出現混濁；水晶體是眼睛中幫助對焦的透明構造。年紀越大越常見，美國 80 歲以上的人有一半以上已有白內障或接受過手術。', 'nei-cataract', 'What are cataracts'),
+        t('初期可能沒有感覺；隨時間白內障變大，視力可能變得模糊、霧霧的或色彩變淡，影響閱讀等日常活動，最終可能導致視力喪失。', 'nei-cataract', 'What are cataracts'),
+        t('診斷需要散瞳眼科檢查。', 'nei-cataract'),
+      ]),
+      sec('mechanism', [gen('水晶體中的蛋白質隨年齡等因素改變，使原本透明的水晶體逐漸混濁，光線無法清楚通過。')]),
+      sec('organs', [t('可能的症狀：視力模糊或霧感、顏色看起來變淡、夜間看不清楚、燈光陽光或車燈顯得太刺眼、燈光周圍有光暈、複視。這些也可能是其他眼睛問題的徵兆。', 'nei-cataract', 'Symptoms')]),
+      sec('lifestyle', [
+        t('風險較高的情況：年紀增加、糖尿病等健康問題、吸菸、過量飲酒、家族史、眼睛受傷或手術、上半身放射治療、長時間日曬、使用類固醇。', 'nei-cataract', 'Am I at risk'),
+        t('保護眼睛：戴太陽眼鏡與寬邊帽遮陽；使用電動工具或從事特定運動時戴護目鏡；戒菸。', 'nei-cataract', 'How can I prevent cataracts'),
+      ]),
+      sec('nutrition', [gen('均衡飲食並控制血糖；目前沒有食物或保健食品能消除白內障。')]),
+      sec('meds', [t('手術可以移除白內障，安全且能矯正白內障造成的視力問題。', 'nei-cataract', 'What are cataracts'), gen('是否需要手術及時機由眼科醫師評估。')]),
+      sec('redflags', [gen('視力突然下降、突然看不見，或眼睛劇烈疼痛時，請立即就醫。')]),
+    ],
+  },
+  {
+    id: 'glaucoma', title: '青光眼', en: 'Glaucoma', organs: ['eyes', 'nerves'], specialty: '眼科',
+    review: rev('NEI Glaucoma', '眼科'),
+    animPlan: ['眼內液體循環與眼壓', '視神經受損', '視野從周邊逐漸縮小（示意）'],
+    sections: [
+      sec('define', [
+        t('青光眼是一群會損傷眼睛後方視神經、導致視力喪失與失明的眼睛疾病；症狀可能進展得很慢而不易察覺，唯一確認的方法是完整的散瞳眼科檢查。', 'nei-glaucoma', 'What is glaucoma'),
+      ]),
+      sec('mechanism', [t('最常見類型的確切原因尚不清楚，但許多患者眼壓偏高，而降低眼壓的治療有助減緩疾病。', 'nei-glaucoma', 'What causes glaucoma')]),
+      sec('organs', [t('初期通常沒有症狀，一半的患者不知道自己有青光眼；隨時間可能慢慢失去視力，通常從周邊視力開始（特別是靠近鼻側），未治療最終可能失明。', 'nei-glaucoma', 'Symptoms')]),
+      sec('screening', [
+        t('60 歲以上、有青光眼家族史等族群風險較高，應與醫師討論檢查頻率；高風險者需每 1–2 年接受完整的散瞳眼科檢查。', 'nei-glaucoma', 'Am I at risk'),
+        t('目前沒有方法能預防青光眼，因此定期眼科檢查很重要，才能在影響視力前發現。', 'nei-glaucoma', 'What causes glaucoma'),
+      ]),
+      sec('nutrition', [gen('目前沒有食物或保健食品能取代青光眼的治療。')]),
+      sec('meds', [t('青光眼無法治癒，但早期治療常能阻止損傷、保護視力；治療方式包括藥物（通常是眼藥水）、雷射與手術。', 'nei-glaucoma', 'What is glaucoma'), MED_NOTE]),
+      sec('redflags', [t('隅角閉鎖型青光眼可能突然出現劇烈眼痛、噁心、眼睛紅、視力模糊；出現這些症狀請立即就醫或前往急診。', 'nei-glaucoma', 'Angle-closure glaucoma')]),
+    ],
+  },
+  {
+    id: 'colorectal-cancer', title: '大腸直腸癌', en: 'Colorectal Cancer', organs: ['intestines'], specialty: '大腸直腸外科或腸胃科',
+    review: rev('國健署大腸癌防治與篩檢', '大腸直腸外科或腸胃科'),
+    animPlan: ['腺瘤息肉在大腸形成', '息肉出血與糞便潛血檢查', '大腸鏡切除息肉（示意）'],
+    sections: [
+      sec('define', [
+        t('自民國 95 年起，大腸癌居全國癌症發生數第 1 位，每年約有一萬多人診斷、超過五千人死亡。大腸癌可以早期發現、早期治療，早期妥善治療的存活率高達 90% 以上。', 'hpa-crc'),
+      ]),
+      sec('mechanism', [t('大腸癌主要由大腸內的腺瘤息肉癌化而來，若能早期發現腺瘤息肉並切除，可以減少大腸癌發生。', 'hpa-crc')]),
+      sec('organs', [t('大腸內的腫瘤或息肉受糞便摩擦而出血，血液附著在糞便表面排出，糞便潛血檢查就能測出是否含有血液。', 'hpa-crc-screen')]),
+      sec('screening', [
+        t('政府補助 45 歲至未滿 75 歲民眾，以及 40–44 歲有家族史者，每 2 年 1 次糞便潛血檢查。', 'hpa-cancer-screen'),
+        t('定期糞便潛血檢查可減少 34% 晚期大腸癌發生率、降低 40% 大腸癌死亡率。結果陰性請持續每 2 年檢查 1 次；陽性請接受大腸鏡檢查確診。', 'hpa-crc-screen'),
+        t('糞便潛血檢查並非百分之百準確，有任何異狀時仍應找專科醫師檢查。', 'hpa-crc'),
+      ]),
+      sec('nutrition', [gen('多蔬果、全穀與膳食纖維，減少紅肉與加工肉品。')]),
+      sec('meds', [TREAT]),
+      sec('redflags', [gen('出現血便、黑便、排便習慣持續改變或不明原因的體重下降時，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'breast-cancer', title: '乳癌', en: 'Breast Cancer', organs: [], specialty: '乳房外科',
+    review: rev('國健署乳癌與子宮頸癌防治、乳癌篩檢', '乳房外科'),
+    animPlan: ['乳房組織與乳腺（需女性模型）', '乳房 X 光攝影的原理（示意）'],
+    sections: [
+      sec('define', [
+        t('乳癌是女性常見、可經由篩檢早期發現早期治療的癌症；發生率急遽上升，不能只靠自我檢查，要透過專科醫師檢查及乳房攝影篩檢才能早期發現。', 'hpa-breast-cervical'),
+      ]),
+      sec('mechanism', [gen('乳房組織中的細胞不正常增生，形成惡性腫瘤。')]),
+      sec('organs', [MALE_MODEL]),
+      sec('screening', [
+        t('政府補助 40 至 74 歲婦女，每 2 年 1 次乳房 X 光攝影檢查。', 'hpa-cancer-screen'),
+        t('乳房攝影可降低 3 成乳癌死亡率。檢查時會以壓迫板緊壓乳房，以取得清晰影像並減少輻射劑量，因此會有疼痛感。', 'hpa-breast-screen'),
+        t('檢查結果：無異常請持續每 2 年檢查 1 次；有無法確定診斷的變化需再做其他影像檢查；疑似良性變化請 3–6 個月追蹤檢查。', 'hpa-breast-screen'),
+      ]),
+      sec('nutrition', [gen('維持健康體重、規律運動、減少飲酒。')]),
+      sec('meds', [TREAT]),
+      sec('redflags', [gen('乳房出現硬塊、乳頭異常分泌或凹陷、皮膚凹陷或變化時，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'cervical-cancer', title: '子宮頸癌', en: 'Cervical Cancer', organs: [], specialty: '婦產科',
+    review: rev('國健署乳癌與子宮頸癌防治、子宮頸癌篩檢', '婦產科'),
+    animPlan: ['子宮頸細胞的變化（需女性模型）', '抹片檢查的原理（示意）'],
+    sections: [
+      sec('define', [
+        t('子宮頸癌是女性常見、可經由篩檢早期發現的癌症，疾病發展相當緩慢；定期做抹片就能早期發現，子宮頸原位癌治癒率可達 100%。', 'hpa-breast-cervical'),
+      ]),
+      sec('mechanism', [gen('子宮頸細胞可能先出現癌前病變，再逐漸發展成癌症；多數與人類乳突病毒（HPV）持續感染有關。')]),
+      sec('organs', [MALE_MODEL]),
+      sec('screening', [
+        t('政府補助子宮頸抹片：25–29 歲婦女每 3 年 1 次；30 歲以上婦女每年 1 次（建議每 3 年至少做 1 次）。', 'hpa-cancer-screen'),
+        t('子宮頸抹片檢查可降低 6–9 成子宮頸癌死亡率。檢查時以擴陰器擴張陰道，輕輕刮取子宮頸剝落的細胞，以顯微鏡觀察是否有癌前病變或癌症。', 'hpa-cervical-screen'),
+        t('檢查結果：正常請持續每 3 年至少檢查 1 次；意義不明的鱗狀細胞變化，3–6 個月內再做抹片或 HPV 檢測；輕度癌前病變請接受陰道鏡檢查或 3–6 個月內再抹片；重度癌前病變請接受陰道鏡檢查與切片。', 'hpa-cervical-screen'),
+      ]),
+      sec('nutrition', [gen('不吸菸，均衡飲食。')]),
+      sec('meds', [TREAT]),
+      sec('redflags', [gen('非經期出血、性行為後出血或停經後出血時，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'oral-cancer', title: '口腔癌', en: 'Oral Cancer', organs: ['mouth'], specialty: '口腔顎面外科或耳鼻喉科',
+    review: rev('國健署檳榔危害與口腔癌防治、口腔癌篩檢', '口腔顎面外科或耳鼻喉科'),
+    animPlan: ['口腔黏膜構造', '檳榔與菸對口腔黏膜的刺激（示意）', '口腔黏膜檢查（示意）'],
+    sections: [
+      sec('define', [t('口腔癌是台灣青壯年（25–44 歲）男性常見的癌症，每年逾 8,000 名新診斷個案、3,300 人因口腔癌死亡。', 'hpa-oral')]),
+      sec('mechanism', [
+        t('國際癌症研究總署（IARC）認定「嚼含菸草的檳榔」或「同時吸菸與嚼檳榔」對人類有致癌性，部位主要在口腔、咽及食道；2003 年更認定檳榔子屬第一類致癌物，即使不含任何添加物也會致癌。', 'hpa-oral'),
+      ]),
+      sec('organs', [t('口腔黏膜檢查是由醫師目視檢查口腔黏膜，看是否有疑似癌前病變或癌症的病灶。', 'hpa-oral-screen')]),
+      sec('screening', [
+        t('政府補助 30 歲以上有嚼檳榔（含已戒）或吸菸者，以及 18 歲以上有嚼檳榔（含已戒）的原住民，每 2 年 1 次口腔黏膜檢查。', 'hpa-cancer-screen'),
+        t('口腔黏膜檢查可降低 4 成口腔癌死亡率。結果陰性請持續每 2 年檢查 1 次；陽性請至醫院口腔外科或耳鼻喉科確診，並遵照醫囑每 3–6 個月定期追蹤。', 'hpa-oral-screen'),
+      ]),
+      sec('lifestyle', [t('請戒嚼檳榔、戒菸與戒酒。', 'hpa-oral-screen')]),
+      sec('nutrition', [gen('均衡飲食，避免以檳榔提神。')]),
+      sec('meds', [TREAT]),
+      sec('redflags', [gen('口腔潰瘍超過 2 週未癒合，或出現白斑、紅斑、硬塊時，請至口腔外科或耳鼻喉科檢查。')]),
+    ],
+  },
+  {
+    id: 'lung-cancer', title: '肺癌', en: 'Lung Cancer', organs: ['lungs', 'airway'], specialty: '胸腔內科',
+    review: rev('國健署肺癌防治、危險因子、早期警訊', '胸腔內科'),
+    animPlan: ['支氣管與肺泡', '腫瘤在支氣管或肺泡生長（示意）', '低劑量電腦斷層篩檢（示意）'],
+    sections: [
+      sec('define', [t('肺癌是生長於支氣管或肺泡的惡性腫瘤，高居國人癌症死因首位，每年超過 9,000 人死於肺癌、約 1 萬 3,000 人新診斷。', 'hpa-lung')]),
+      sec('mechanism', [
+        t('吸菸是肺癌最大的危險因子，約佔 70–80%；二手菸暴露使罹患肺癌的機會比一般人高出 20–30%，三手菸殘留的有毒物質同樣會危害健康。', 'hpa-lung-risk', '一、菸害'),
+        t('其他危險因子：空氣污染、職場或居家環境暴露（石綿、砷、氡氣）、肺癌家族史、結核病或慢性阻塞性肺病病史、煮食未使用抽油煙機。', 'hpa-lung-risk'),
+      ]),
+      sec('organs', [t('肺癌初期通常症狀不明顯。', 'hpa-lung-warning')]),
+      sec('screening', [
+        t('政府補助低劑量電腦斷層檢查，每 2 年 1 次：(一) 有肺癌家族史（父母、子女或兄弟姊妹經診斷為肺癌）的 45–74 歲男性或 40–74 歲女性；(二) 50–74 歲、吸菸史達 20 包-年以上，有意願戒菸或戒菸 15 年內的重度吸菸者。', 'hpa-cancer-screen'),
+      ]),
+      sec('lifestyle', [t('戒菸並遠離二手菸、三手菸；在室內煮食時使用抽油煙機。', 'hpa-lung-risk')]),
+      sec('nutrition', [gen('均衡飲食，維持體力；戒菸是最重要的預防措施。')]),
+      sec('meds', [TREAT]),
+      sec('redflags', [t('常見症狀：持續咳嗽且未好轉、痰帶血絲或咳血、呼吸急促或喘鳴、持續且惡化的胸痛、聲音沙啞、異常的肢體疼痛、無預警的體重下降或食慾不振。雖然不一定是肺癌引起，仍建議就醫評估。', 'hpa-lung-warning')]),
     ],
   },
 ];

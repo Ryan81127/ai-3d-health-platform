@@ -65,7 +65,7 @@ export default function DiseaseView({ id, onExit }: { id: string; onExit?(): voi
         <span>建議審閱：{d.specialty}・指引版本：{d.review.guidelineVersion}</span>
         <span>審閱紀錄以書面為準。</span>
       </div>
-      <p className="small">3D 標示：{d.organs.map((o) => ORGAN_MAP[o]?.name).join('、')}。本頁為衛教資料，不是診斷；不能用單一症狀判斷疾病。</p>
+      <p className="small">{d.organs.length ? `3D 標示：${d.organs.map((o) => ORGAN_MAP[o]?.name).join('、')}。` : '目前的 3D 模型為成年男性，沒有可標示的相關器官。'}本頁為衛教資料，不是診斷；不能用單一症狀判斷疾病。</p>
       <div className="chk-summary">
         {(['text', 'citation', 'general'] as const).map((k) => counts[k] ? <span key={k} className={`chk ${k}`}>{CHECK_LABEL[k]} {counts[k]}</span> : null)}
       </div>

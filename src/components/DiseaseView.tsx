@@ -10,10 +10,13 @@ const TearFilm = lazy(() => import('./TearFilm'));
 const VesselFlow = lazy(() => import('./VesselFlow'));
 const MetabolismAnim = lazy(() => import('./MetabolismAnim'));
 const OrganAnims = lazy(() => import('./OrganAnims'));
+const LungAnims = lazy(() => import('./LungAnims'));
 const ORGAN_ANIM_DONE: Record<string, string> = {
   stroke: '已完成：正常血流、缺血性中風（血塊阻塞）與出血性中風（血管破裂）的示意。尚未完成：三高與腦血管風險的動畫。',
   ckd: '已完成：腎絲球過濾、微血管受損、腎絲球硬化與廢物堆積的示意。尚未完成：腎元整體結構的細部。',
   osteoporosis: '已完成：骨小樑從骨量高峰到骨質疏鬆的變化示意。尚未完成：負重運動與鈣質作用的動畫。',
+  asthma: '已完成：正常氣道、氣喘發作（發炎與肌肉收縮）、使用支氣管擴張劑後的示意。尚未完成：吸入藥物進入肺部的細部動畫。',
+  copd: '已完成：正常氣道與肺泡、慢性支氣管炎、肺氣腫的示意。尚未完成：吸菸對呼吸道影響的動畫。',
 };
 
 const VIEW_OPACITY: LayerOpacity = { skin: 0.08, muscle: 0, skeleton: 0.12, organ: 1, vessel: 0.85, nerve: 0.6 };
@@ -82,6 +85,11 @@ export default function DiseaseView({ id, onExit }: { id: string; onExit?(): voi
           <>
             <Suspense fallback={<p className="small">載入淚膜動畫…</p>}><TearFilm /></Suspense>
             <p className="small">已完成：眨眼、淚膜變薄與蒸發（示意）。尚未完成：淚膜各層的細部成分圖、眼表發炎機制。</p>
+          </>
+        ) : d.id === 'asthma' || d.id === 'copd' ? (
+          <>
+            <Suspense fallback={<p className="small">載入動畫…</p>}><LungAnims topic={d.id} /></Suspense>
+            <p className="small">{ORGAN_ANIM_DONE[d.id]}</p>
           </>
         ) : d.id === 'stroke' || d.id === 'ckd' || d.id === 'osteoporosis' ? (
           <>

@@ -436,6 +436,11 @@ dl { margin: .4em 0; } dt { font-weight: 700; color: var(--teal-2); font-size: .
 .tear { margin: .4rem 0 0; }
 .tear-canvas { height: 260px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); touch-action: none; }
 .tear-canvas canvas { display: block; }
+.eye-wrap { position: relative; }
+.eye-view { position: absolute; right: 8px; bottom: 8px; width: 34%; max-width: 150px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); background: #fff; pointer-events: none; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+.eye-view svg { display: block; width: 100%; height: auto; transition: filter .6s; }
+.eye-mask { position: absolute; inset: 0 0 18px 0; transition: opacity .6s; }
+.eye-view span { display: block; font-size: 11px; text-align: center; padding: 2px 0; color: var(--muted, #555); }
 .tear-controls { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin: .5rem 0; flex-wrap: wrap; }
 .tear-controls .seg { flex: 1; min-width: 200px; margin: 0; }
 .tear-readout { display: flex; flex-wrap: wrap; gap: .2rem .7rem; align-items: baseline; font-size: .84rem; color: var(--muted); }

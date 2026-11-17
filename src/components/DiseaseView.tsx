@@ -11,12 +11,18 @@ const VesselFlow = lazy(() => import('./VesselFlow'));
 const MetabolismAnim = lazy(() => import('./MetabolismAnim'));
 const OrganAnims = lazy(() => import('./OrganAnims'));
 const LungAnims = lazy(() => import('./LungAnims'));
+const HeartAnims = lazy(() => import('./HeartAnims'));
+const EyeAnims = lazy(() => import('./EyeAnims'));
 const ORGAN_ANIM_DONE: Record<string, string> = {
   stroke: '已完成：正常血流、缺血性中風（血塊阻塞）與出血性中風（血管破裂）的示意。尚未完成：三高與腦血管風險的動畫。',
   ckd: '已完成：腎絲球過濾、微血管受損、腎絲球硬化與廢物堆積的示意。尚未完成：腎元整體結構的細部。',
   osteoporosis: '已完成：骨小樑從骨量高峰到骨質疏鬆的變化示意。尚未完成：負重運動與鈣質作用的動畫。',
   asthma: '已完成：正常氣道、氣喘發作（發炎與肌肉收縮）、使用支氣管擴張劑後的示意。尚未完成：吸入藥物進入肺部的細部動畫。',
   copd: '已完成：正常氣道與肺泡、慢性支氣管炎、肺氣腫的示意。尚未完成：吸菸對呼吸道影響的動畫。',
+  'atrial-fibrillation': '已完成：正常心律的電訊號、心房顫動時的不規則跳動、血液淤積與血塊往腦部的示意。尚未完成：心電圖波形對照。',
+  'heart-failure': '已完成：正常打血、打血不足（心室擴大、收縮變弱）、血液回堵與肺部積水的示意。尚未完成：下肢水腫與右心衰竭的動畫。',
+  cataract: '已完成：光線對焦、水晶體混濁造成的阻擋與散射、人工水晶體的示意，以及看到的畫面對照。尚未完成：手術過程動畫。',
+  glaucoma: '已完成：眼內液體循環、眼壓升高、視神經受損與周邊視野縮小的示意。尚未完成：隅角閉鎖型青光眼的動畫。',
 };
 
 const VIEW_OPACITY: LayerOpacity = { skin: 0.08, muscle: 0, skeleton: 0.12, organ: 1, vessel: 0.85, nerve: 0.6 };
@@ -89,6 +95,16 @@ export default function DiseaseView({ id, onExit }: { id: string; onExit?(): voi
         ) : d.id === 'asthma' || d.id === 'copd' ? (
           <>
             <Suspense fallback={<p className="small">載入動畫…</p>}><LungAnims topic={d.id} /></Suspense>
+            <p className="small">{ORGAN_ANIM_DONE[d.id]}</p>
+          </>
+        ) : d.id === 'atrial-fibrillation' || d.id === 'heart-failure' ? (
+          <>
+            <Suspense fallback={<p className="small">載入動畫…</p>}><HeartAnims topic={d.id} /></Suspense>
+            <p className="small">{ORGAN_ANIM_DONE[d.id]}</p>
+          </>
+        ) : d.id === 'cataract' || d.id === 'glaucoma' ? (
+          <>
+            <Suspense fallback={<p className="small">載入動畫…</p>}><EyeAnims topic={d.id} /></Suspense>
             <p className="small">{ORGAN_ANIM_DONE[d.id]}</p>
           </>
         ) : d.id === 'stroke' || d.id === 'ckd' || d.id === 'osteoporosis' ? (

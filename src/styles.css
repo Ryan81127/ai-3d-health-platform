@@ -438,6 +438,10 @@ dl { margin: .4em 0; } dt { font-weight: 700; color: var(--teal-2); font-size: .
 .tear-canvas canvas { display: block; }
 .eye-wrap { position: relative; }
 .tear-canvas.tall { height: 340px; }
+.anim-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 8px 0 4px; }
+.anim-chips li { font-size: 12px; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--line); background: var(--card, #fff); opacity: 0.6; }
+.anim-chips li.on { opacity: 1; border-color: #12c9b4; }
+.mini-chart { display: block; width: 100%; max-width: 320px; height: auto; margin: 8px 0 0; color: var(--muted, #556); }
 .anim-label { background: rgba(10, 22, 36, 0.78); color: #fff; font-size: 11px; padding: 2px 6px; border-radius: 4px; white-space: nowrap; pointer-events: none; border: 1px solid rgba(255,255,255,.25); }
 .eye-view { position: absolute; right: 8px; bottom: 8px; width: 34%; max-width: 150px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); background: #fff; pointer-events: none; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
 .eye-view svg { display: block; width: 100%; height: auto; transition: filter .6s; }

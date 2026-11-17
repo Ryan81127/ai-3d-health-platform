@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
+import { mergeVertices } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
 /**
  * 從分層 GLB 取出指定部位的幾何（已套用世界座標、轉成 Float32、平滑法線），
@@ -72,3 +73,29 @@ float vnoise(vec3 x){
 }
 float fbm(vec3 p){ float a = 0.5, s = 0.0; for (int i = 0; i < 4; i++) { s += a * vnoise(p); p *= 2.03; a *= 0.5; } return s; }
 `;
+
+/** 拉普拉斯平滑：讓面數較少的模型（如 Z-Anatomy 的舌）表面較圓順；先合併重複頂點 */
+export function smoothGeometry(src: THREE.BufferGeometry, iters = 2, k = 0.5): THREE.BufferGeometry {
+  const g = mergeVertices(src.clone().deleteAttribute('normal'), 1e-6);
+  const p = g.attributes.position as THREE.BufferAttribute, idx = g.index!;
+  const nb: Set<number>[] = Array.from({ length: p.count }, () => new Set());
+  for (let i = 0; i < idx.count; i += 3) {
+    const a = idx.getX(i), b = idx.getX(i + 1), c = idx.getX(i + 2);
+    nb[a].add(b).add(c); nb[b].add(a).add(c); nb[c].add(a).add(b);
+  }
+  const cur = new Float32Array(p.array as ArrayLike<number>);
+  for (let it = 0; it < iters; it++) {
+    const next = cur.slice();
+    for (let i = 0; i < p.count; i++) {
+      if (!nb[i].size) continue;
+      let x = 0, y = 0, z = 0;
+      nb[i].forEach((j) => { x += cur[j * 3]; y += cur[j * 3 + 1]; z += cur[j * 3 + 2]; });
+      const n = nb[i].size;
+      next[i * 3] += (x / n - cur[i * 3]) * k; next[i * 3 + 1] += (y / n - cur[i * 3 + 1]) * k; next[i * 3 + 2] += (z / n - cur[i * 3 + 2]) * k;
+    }
+    cur.set(next);
+  }
+  g.setAttribute('position', new THREE.Float32BufferAttribute(cur, 3));
+  g.computeVertexNormals();
+  return g;
+}

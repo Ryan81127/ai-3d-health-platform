@@ -13,6 +13,8 @@ const OrganAnims = lazy(() => import('./OrganAnims'));
 const LungAnims = lazy(() => import('./LungAnims'));
 const HeartAnims = lazy(() => import('./HeartAnims'));
 const EyeAnims = lazy(() => import('./EyeAnims'));
+const LipidAnims = lazy(() => import('./LipidAnims'));
+const CancerAnims = lazy(() => import('./CancerAnims'));
 const ORGAN_ANIM_DONE: Record<string, string> = {
   stroke: '已完成：正常血流、缺血性中風（血塊阻塞）與出血性中風（血管破裂）的示意。尚未完成：三高與腦血管風險的動畫。',
   ckd: '已完成：腎絲球過濾、微血管受損、腎絲球硬化與廢物堆積的示意。尚未完成：腎元整體結構的細部。',
@@ -22,6 +24,10 @@ const ORGAN_ANIM_DONE: Record<string, string> = {
   'atrial-fibrillation': '已完成：正常心律的電訊號、心房顫動時的不規則跳動、血液淤積與血塊往腦部的示意。尚未完成：心電圖波形對照。',
   'heart-failure': '已完成：正常打血、打血不足（心室擴大、收縮變弱）、血液回堵與肺部積水的示意。尚未完成：下肢水腫與右心衰竭的動畫。',
   cataract: '已完成：光線對焦、水晶體混濁造成的阻擋與散射、人工水晶體的示意，以及看到的畫面對照。尚未完成：手術過程動畫。',
+  dyslipidemia: '已完成：剖開的冠狀動脈（內膜、中膜、外膜）、紅血球、LDL 與 HDL 的運送、膽固醇堆積與斑塊使管腔變窄，並可切換到真實心臟看冠狀動脈位置。尚未完成：藥物作用的動畫。',
+  'lung-cancer': '已完成：真實肺葉、氣管與支氣管模型上的呼吸氣流、腫瘤生長與低劑量電腦斷層掃描的示意。尚未完成：轉移與治療方式的動畫。',
+  'oral-cancer': '已完成：真實牙齒、牙齦、舌與顎骨模型上的舌緣病灶、檳榔染色與口腔黏膜檢查的示意。尚未完成：張口狀態的模型。',
+  'colorectal-cancer': '已完成：真實大腸模型剖面中的腺瘤息肉、出血與大腸鏡切除息肉的示意。尚未完成：糞便潛血檢查流程的動畫。',
   glaucoma: '已完成：眼內液體循環、眼壓升高、視神經受損與周邊視野縮小的示意。尚未完成：隅角閉鎖型青光眼的動畫。',
 };
 
@@ -100,6 +106,16 @@ export default function DiseaseView({ id, onExit }: { id: string; onExit?(): voi
         ) : d.id === 'atrial-fibrillation' || d.id === 'heart-failure' ? (
           <>
             <Suspense fallback={<p className="small">載入動畫…</p>}><HeartAnims topic={d.id} /></Suspense>
+            <p className="small">{ORGAN_ANIM_DONE[d.id]}</p>
+          </>
+        ) : d.id === 'lung-cancer' || d.id === 'oral-cancer' || d.id === 'colorectal-cancer' ? (
+          <>
+            <Suspense fallback={<p className="small">載入動畫…</p>}><CancerAnims topic={d.id} /></Suspense>
+            <p className="small">{ORGAN_ANIM_DONE[d.id]}</p>
+          </>
+        ) : d.id === 'dyslipidemia' ? (
+          <>
+            <Suspense fallback={<p className="small">載入動畫…</p>}><LipidAnims /></Suspense>
             <p className="small">{ORGAN_ANIM_DONE[d.id]}</p>
           </>
         ) : d.id === 'cataract' || d.id === 'glaucoma' ? (

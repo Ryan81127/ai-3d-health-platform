@@ -46,6 +46,7 @@ function makeHeartMat(u: U) {
     color: '#a3302c', roughness: 0.42, clearcoat: 0.55, clearcoatRoughness: 0.32,
     sheen: 0.7, sheenColor: new THREE.Color('#ff8f80'), sheenRoughness: 0.45, side: THREE.DoubleSide,
   });
+  m.customProgramCacheKey = () => 'heart-wall';
   m.onBeforeCompile = (sh) => {
     Object.assign(sh.uniforms, u);
     sh.vertexShader = sh.vertexShader
@@ -80,6 +81,7 @@ function makeHeartMat(u: U) {
 /** 動脈材質：每次心跳從主動脈根部往外傳的脈搏波 */
 function makeArteryMat(u: U, color: string) {
   const m = new THREE.MeshPhysicalMaterial({ color, roughness: 0.32, clearcoat: 0.8, clearcoatRoughness: 0.25, sheen: 0.4, sheenColor: new THREE.Color('#ffb0a0'), side: THREE.DoubleSide });
+  m.customProgramCacheKey = () => 'artery-pulse';
   m.onBeforeCompile = (sh) => {
     Object.assign(sh.uniforms, u);
     sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vP;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvP = position;');
@@ -263,7 +265,8 @@ function HeartScene({ topic, stage, frozen, cut, onReadout }: { topic: HeartTopi
   return (
     <group scale={S} position={c0.clone().multiplyScalar(-S)}>
       {mesh(wall, mats.heart, 'wall')}
-      {['FMA7234', 'FMA7235', 'FMA7246', 'FMA7260', 'FMA7261', 'FMA7262', 'FMA7266', 'FMA9352nsn'].map((id) => mesh(organ[id], mats.valve, id))}
+      {/* 瓣膜與乳頭肌在心腔內，只在剖面時顯示（簡化後的心壁較薄，外觀模式會穿出） */}
+      {cut && ['FMA7234', 'FMA7235', 'FMA7246', 'FMA7260', 'FMA7261', 'FMA7262', 'FMA7266', 'FMA9352nsn'].map((id) => mesh(organ[id], mats.valve, id))}
       {ART_IDS.map((id) => mesh(ves[id], mats.aorta, id))}
       {CORONARY.map((id) => mesh(ves[id], mats.coronary, id))}
       {VEIN_IDS.map((id) => mesh(ves[id], mats.vein, id))}

@@ -51,6 +51,7 @@ function pointsGeo(n: number) {
 /** 帶組織紋理的材質：以模型座標的雜訊調整顏色 */
 function textured(params: THREE.MeshPhysicalMaterialParameters, glsl: string, uniforms: Record<string, THREE.IUniform> = {}) {
   const m = new THREE.MeshPhysicalMaterial({ side: THREE.DoubleSide, ...params });
+  m.customProgramCacheKey = () => glsl; // 各材質 shader 不同，避免共用快取
   m.onBeforeCompile = (sh) => {
     Object.assign(sh.uniforms, uniforms);
     sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vP;').replace('#include <begin_vertex>', '#include <begin_vertex>\nvP = position;');

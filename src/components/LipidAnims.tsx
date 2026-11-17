@@ -185,14 +185,14 @@ function VesselScene({ stage, frozen, onReadout }: { stage: number; frozen: bool
   return (
     <group rotation={[0.1, -0.32, 0]}>
       <mesh geometry={geo} material={mat} />
-      <instancedMesh ref={rbc} args={[rbcGeo, undefined, N_RBC]}>
+      <instancedMesh frustumCulled={false} ref={rbc} args={[rbcGeo, undefined, N_RBC]}>
         <meshPhysicalMaterial color="#b3121c" roughness={0.35} clearcoat={0.6} sheen={0.5} sheenColor="#ff6b6b" />
       </instancedMesh>
-      <instancedMesh ref={ldl} args={[undefined, undefined, N_LDL]}>
+      <instancedMesh frustumCulled={false} ref={ldl} args={[undefined, undefined, N_LDL]}>
         <icosahedronGeometry args={[0.032, 2]} />
         <meshPhysicalMaterial color="#ffa62b" roughness={0.3} clearcoat={1} emissive="#7a3d00" emissiveIntensity={0.4} />
       </instancedMesh>
-      <instancedMesh ref={hdl} args={[undefined, undefined, N_HDL]}>
+      <instancedMesh frustumCulled={false} ref={hdl} args={[undefined, undefined, N_HDL]}>
         <icosahedronGeometry args={[0.02, 2]} />
         <meshPhysicalMaterial color="#bfe6ff" roughness={0.2} clearcoat={1} emissive="#3d7fb8" emissiveIntensity={0.35} />
       </instancedMesh>

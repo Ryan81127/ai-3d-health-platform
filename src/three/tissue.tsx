@@ -17,7 +17,7 @@ export function tissue(params: THREE.MeshPhysicalMaterialParameters, glsl: strin
   m.onBeforeCompile = (sh) => {
     Object.assign(sh.uniforms, u);
     sh.vertexShader = sh.vertexShader
-      .replace('#include <common>', `#include <common>\nvarying vec3 vP;\n${decl}`)
+      .replace('#include <common>', `#include <common>\nvarying vec3 vP;\n${decl}\n${vert ? GLSL_NOISE : ''}`)
       .replace('#include <begin_vertex>', `#include <begin_vertex>\nvP = position;\n${vert}`);
     sh.fragmentShader = sh.fragmentShader
       .replace('#include <common>', `#include <common>\nvarying vec3 vP;\n${decl}\n${GLSL_NOISE}`)
@@ -30,3 +30,26 @@ export function tissue(params: THREE.MeshPhysicalMaterialParameters, glsl: strin
 export const rnd = (n: number) => { const x = Math.sin(n * 127.1) * 43758.5453; return x - Math.floor(x); };
 
 export const Part = ({ p, m }: { p?: PartGeo; m: THREE.Material }) => (p ? <mesh geometry={p.geo} material={m} /> : null);
+
+/** 不規則團塊（腫瘤、結節、痛風石等） */
+export function lumpGeometry(r: number, seed: number, detail = 4) {
+  const g = new THREE.IcosahedronGeometry(r, detail), p = g.attributes.position, v = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) {
+    v.fromBufferAttribute(p, i);
+    const n = v.clone().normalize();
+    const k = 1 + 0.18 * Math.sin(n.x * 7 + seed) * Math.sin(n.y * 6 + seed * 2) + 0.12 * Math.sin(n.z * 11 + seed * 3) + 0.06 * Math.sin(n.x * 23 + n.y * 19);
+    v.multiplyScalar(k); p.setXYZ(i, v.x, v.y, v.z);
+  }
+  g.computeVertexNormals();
+  return g;
+}
+
+/** 在幾何表面取樣點（可依條件過濾），用於放置結晶、斑塊、病毒等示意物件 */
+export function samplePoints(geo: THREE.BufferGeometry, n: number, seed: number, keep: (v: THREE.Vector3) => boolean = () => true) {
+  const p = geo.attributes.position, out: THREE.Vector3[] = [];
+  for (let k = 0; out.length < n && k < n * 60; k++) {
+    const v = new THREE.Vector3().fromBufferAttribute(p, Math.floor(rnd(seed + k * 1.37) * p.count));
+    if (keep(v)) out.push(v);
+  }
+  return out;
+}

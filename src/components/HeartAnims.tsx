@@ -275,7 +275,7 @@ function HeartScene({ topic, stage, frozen, cut, onReadout }: { topic: HeartTopi
       {topic === 'heart-failure' && LUNG_IDS.map((id) => mesh(organ[id], mats.lung, id))}
       <mesh ref={clot} geometry={clotGeo} material={mats.clot} position={ref.LA} visible={false} />
       <mesh ref={emb} material={mats.clot} visible={false}><sphereGeometry args={[0.0028, 16, 12]} /></mesh>
-      <instancedMesh ref={dropMesh} args={[undefined, undefined, drops.length || 1]} material={mats.drop} visible={false}>
+      <instancedMesh frustumCulled={false} ref={dropMesh} args={[undefined, undefined, drops.length || 1]} material={mats.drop} visible={false}>
         <sphereGeometry args={[0.0032, 12, 8]} />
       </instancedMesh>
       {showClot && <>

@@ -301,7 +301,7 @@ function ColonScene({ stage, frozen }: { stage: number; frozen: boolean }) {
         <mesh position={[0, 0.004, 0]} material={mats.polyp}><cylinderGeometry args={[0.0026, 0.0036, 0.008, 16]} /></mesh>
         <mesh position={[0, 0.012, 0]} geometry={polypGeo} material={mats.polyp} />
       </group>
-      <instancedMesh ref={drops} args={[undefined, undefined, 10]} visible={false}>
+      <instancedMesh frustumCulled={false} ref={drops} args={[undefined, undefined, 10]} visible={false}>
         <sphereGeometry args={[0.0016, 10, 8]} />
         <meshPhysicalMaterial color="#9c0f16" roughness={0.15} clearcoat={1} />
       </instancedMesh>

@@ -40,7 +40,8 @@ const GUT = ['FMA7206', 'FMA7207', 'FMA7208', 'FMA14543nsn', 'FMA14544'];
 const WAIST_Y = 0.985;
 const FAT_N = 700;
 
-function MetSynScene({ stage, frozen }: { stage: number; frozen: boolean }) {
+/** levels：各情境的內臟脂肪程度（0–1）；showIns：第三個情境是否顯示胰島素阻抗。肥胖模組也共用這個場景 */
+export function MetSynScene({ stage, frozen, levels = [0.15, 1, 1], showIns = true }: { stage: number; frozen: boolean; levels?: number[]; showIns?: boolean }) {
   const reduce = useStore((s) => s.reduceMotion);
   const org = useParts('organ', [...Object.values(ABD), ...GUT, 'FMA7274']);
   const skin = useParts('skin', ['FMA7163']).FMA7163;
@@ -104,9 +105,9 @@ function MetSynScene({ stage, frozen }: { stage: number; frozen: boolean }) {
   const k = useRef(0.15), tape = useRef<THREE.Mesh>(null);
   useFrame(({ clock }, dt) => {
     const t = frozen || reduce ? T_FROZEN : clock.elapsedTime;
-    const target = [0.15, 1, 1][stage];
+    const target = levels[stage];
     k.current += (target - k.current) * (reduce ? 1 : 1 - Math.exp(-dt * 0.9));
-    u.uBelly.value = k.current; u.uIns.value = stage === 2 ? 1 : 0; u.uT.value = t;
+    u.uBelly.value = k.current; u.uIns.value = showIns && stage === 2 ? 1 : 0; u.uT.value = t;
     if (fatRef.current) fatRef.current.count = Math.round(FAT_N * k.current);
     if (tape.current) tape.current.scale.set(waist.rx + 0.006 + 0.02 * k.current, waist.rz + 0.006 + 0.04 * k.current, 1);
   });
@@ -117,13 +118,13 @@ function MetSynScene({ stage, frozen }: { stage: number; frozen: boolean }) {
       {P(ABD.liver, mats.liver)}{P(ABD.stomach, mats.stomach)}{P(ABD.rk, mats.kidney)}{P(ABD.lk, mats.kidney)}
       {P(ABD.spleen, mats.spleen)}{P(ABD.gb, mats.gb)}{P(ABD.pancreas, mats.pancreas)}{P('FMA7274', mats.heart)}
       {GUT.map((id) => P(id, mats.gut))}
-      <instancedMesh ref={fatRef} args={[lobe, mats.fat, FAT_N]} />
+      <instancedMesh frustumCulled={false} ref={fatRef} args={[lobe, mats.fat, FAT_N]} />
       <mesh ref={tape} position={[waist.cx, WAIST_Y, waist.cz + 0.01]} rotation={[Math.PI / 2, 0, 0]}>
         <torusGeometry args={[1, 0.004, 8, 96]} />
         <meshPhysicalMaterial color="#ffd54a" emissive="#b37a00" emissiveIntensity={0.5} roughness={0.3} />
       </mesh>
       <Html position={[waist.cx + waist.rx + 0.03, WAIST_Y, waist.cz + 0.04]} center className="anim-label">腰圍（示意）</Html>
-      {stage === 2 && org[ABD.pancreas] && <Html position={org[ABD.pancreas].center.clone().add(new THREE.Vector3(0.05, 0.03, 0.06))} center className="anim-label">胰臟：胰島素阻抗（示意）</Html>}
+      {showIns && stage === 2 && org[ABD.pancreas] && <Html position={org[ABD.pancreas].center.clone().add(new THREE.Vector3(0.05, 0.03, 0.06))} center className="anim-label">胰臟：胰島素阻抗（示意）</Html>}
     </group>
   );
 }
@@ -179,7 +180,7 @@ function BrainScene({ stage, frozen }: { stage: number; frozen: boolean }) {
   return (
     <group scale={S} position={C.clone().multiplyScalar(-S)}>
       {list.map((p) => <mesh key={p.id} geometry={p.geo} material={mat} />)}
-      <instancedMesh ref={sp} args={[undefined, undefined, N_SP]}>
+      <instancedMesh frustumCulled={false} ref={sp} args={[undefined, undefined, N_SP]}>
         <sphereGeometry args={[0.0017, 10, 8]} />
         <meshBasicMaterial color="#ffe08a" toneMapped={false} />
       </instancedMesh>

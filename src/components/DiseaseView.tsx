@@ -16,6 +16,9 @@ const EyeAnims = lazy(() => import('./EyeAnims'));
 const LipidAnims = lazy(() => import('./LipidAnims'));
 const CancerAnims = lazy(() => import('./CancerAnims'));
 const Batch1Anims = lazy(() => import('./Batch1Anims'));
+const Batch3Anims = lazy(() => import('./Batch3Anims'));
+const BATCH3 = ['dementia', 'sarcopenia', 'osteoarthritis', 'gout', 'gerd', 'viral-hepatitis', 'kidney-stones', 'obesity', 'thyroid-disorders', 'insomnia'] as const;
+type B3 = (typeof BATCH3)[number];
 const ORGAN_ANIM_DONE: Record<string, string> = {
   stroke: '已完成：正常血流、缺血性中風（血塊阻塞）與出血性中風（血管破裂）的示意。尚未完成：三高與腦血管風險的動畫。',
   ckd: '已完成：腎絲球過濾、微血管受損、腎絲球硬化與廢物堆積的示意。尚未完成：腎元整體結構的細部。',
@@ -32,6 +35,16 @@ const ORGAN_ANIM_DONE: Record<string, string> = {
   'metabolic-syndrome': '已完成：真實腹腔器官與皮膚上的內臟脂肪堆積、腰圍變粗、胰島素阻抗與五項判定指標的示意。尚未完成：血壓、血脂變化的細部動畫。',
   depression: '已完成：真實大腦模型，以光線明暗比喻情緒與活力，並列出 WHO 所列症狀與治療、自我照顧方式。尚未完成：壓力與恢復循環的動畫。',
   menopause: '已完成：女性荷爾蒙下降趨勢、熱潮紅（上半身血管）、骨質流失（脊椎與骨盆）的示意。尚未完成：卵巢與女性生殖器官（需要女性模型）。',
+  dementia: '已完成：真實大腦模型上的阿茲海默症斑塊與糾結、腦萎縮與血管性失智的示意。尚未完成：神經細胞層級的動畫。',
+  sarcopenia: '已完成：真實大腿肌群與股骨，肌肉變細、油花與運動收縮的示意。尚未完成：握力與步速測量的動畫。',
+  osteoarthritis: '已完成：真實膝關節骨骼上的軟骨磨損、骨刺、關節間隙變窄，以及肌力訓練與減輕負擔的示意。尚未完成：髖關節與手部關節。',
+  gout: '已完成：真實右腳骨骼上的尿酸結晶、紅腫發作與痛風石的示意。尚未完成：腎臟排出尿酸的動畫。',
+  gerd: '已完成：真實食道與胃（剖面）上的括約肌關閉與鬆弛、胃酸逆流與食道發紅的示意。尚未完成：橫膈與食道裂孔疝氣。',
+  'viral-hepatitis': '已完成：真實肝臟上的病毒感染、發炎、肝硬化結節與腫瘤的示意。尚未完成：肝細胞層級的動畫。',
+  'kidney-stones': '已完成：真實腎臟（剖面）、輸尿管與膀胱上的尿液流動、結石形成與卡在輸尿管的示意。尚未完成：震波碎石的動畫。',
+  obesity: '已完成：真實腹腔器官與皮膚上的內臟脂肪增加、腹部變粗與減重後減少的示意。尚未完成：熱量收支的互動計算。',
+  'thyroid-disorders': '已完成：真實甲狀腺、氣管與頸部血管上的荷爾蒙分泌，功能低下與亢進、甲狀腺腫的示意。尚未完成：心跳與代謝變化的連動動畫。',
+  insomnia: '已完成：真實大腦模型以光線比喻夜間入睡與失眠時的清醒狀態，並列出治療方式。尚未完成：睡眠週期的動畫。',
   glaucoma: '已完成：眼內液體循環、眼壓升高、視神經受損與周邊視野縮小的示意。尚未完成：隅角閉鎖型青光眼的動畫。',
 };
 
@@ -110,6 +123,11 @@ export default function DiseaseView({ id, onExit }: { id: string; onExit?(): voi
         ) : d.id === 'atrial-fibrillation' || d.id === 'heart-failure' ? (
           <>
             <Suspense fallback={<p className="small">載入動畫…</p>}><HeartAnims topic={d.id} /></Suspense>
+            <p className="small">{ORGAN_ANIM_DONE[d.id]}</p>
+          </>
+        ) : (BATCH3 as readonly string[]).includes(d.id) ? (
+          <>
+            <Suspense fallback={<p className="small">載入動畫…</p>}><Batch3Anims topic={d.id as B3} /></Suspense>
             <p className="small">{ORGAN_ANIM_DONE[d.id]}</p>
           </>
         ) : d.id === 'metabolic-syndrome' || d.id === 'depression' || d.id === 'menopause' ? (

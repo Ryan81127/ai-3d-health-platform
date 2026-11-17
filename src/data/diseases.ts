@@ -671,6 +671,259 @@ export const DISEASES: DiseaseModule[] = [
       sec('redflags', [t('常見症狀：持續咳嗽且未好轉、痰帶血絲或咳血、呼吸急促或喘鳴、持續且惡化的胸痛、聲音沙啞、異常的肢體疼痛、無預警的體重下降或食慾不振。雖然不一定是肺癌引起，仍建議就醫評估。', 'hpa-lung-warning')]),
     ],
   },
+  /* ===== 第三批常見疾病（2026-11-17） ===== */
+  {
+    id: 'dementia', title: '失智症', en: 'Dementia', organs: ['brain'], specialty: '神經內科或精神科',
+    review: rev('MedlinePlus Dementia', '神經內科或精神科'),
+    animPlan: ['大腦與記憶、語言等功能', '阿茲海默症的類澱粉斑塊與神經纖維糾結（示意）', '血管性失智與腦部血流'],
+    sections: [
+      sec('define', [
+        t('失智症是心智功能退化到影響日常生活與活動，包括記憶、語言、視覺理解、解決問題、處理日常事務與專注力。', 'mp-dementia', 'What is dementia'),
+        t('年紀大了稍微健忘是正常的，但失智症不是正常老化，而是會干擾日常生活的嚴重疾病。', 'mp-dementia', 'What is dementia'),
+        t('診斷可能包括病史、身體檢查、思考記憶與語言能力測驗，以及抽血、基因或腦部影像檢查，並評估是否有精神疾病影響症狀。', 'mp-dementia', 'How is dementia diagnosed'),
+      ]),
+      sec('mechanism', [
+        t('最常見的失智症屬於神經退化性疾病，腦細胞停止運作或死亡。阿茲海默症是老年人最常見的類型：β-類澱粉蛋白在腦細胞之間聚集成斑塊，tau 蛋白在神經細胞內形成糾結，神經細胞之間的連結也減少。', 'mp-dementia', 'Types of dementia'),
+        t('血管性失智症與腦部血液供應改變有關，常由中風或腦部動脈粥狀硬化造成；也有兩種以上類型同時存在的混合型失智症。', 'mp-dementia', 'Types of dementia'),
+      ]),
+      sec('organs', [
+        t('常見症狀：健忘常是第一個症狀；也可能在熟悉的社區迷路、用奇怪的詞指稱熟悉物品、忘記親友名字或舊記憶、需要別人協助原本能自己完成的事；部分人情緒與個性改變、變得冷漠。', 'mp-dementia', 'Symptoms'),
+      ]),
+      sec('lifestyle', [
+        t('風險因子包括：年齡（最大的風險因子）、吸菸、未控制的糖尿病、高血壓、過量飲酒、近親有失智症。', 'mp-dementia', 'Who is at risk'),
+        t('目前沒有經證實能預防失智症的方法，但健康的生活方式可能影響部分風險因子。', 'mp-dementia', 'Can dementia be prevented'),
+      ]),
+      sec('nutrition', [gen('均衡飲食並控制血糖、血壓；目前沒有食物或保健食品能治療失智症。')]),
+      sec('meds', [
+        t('多數失智症（包括阿茲海默症）無法治癒；治療可能幫助較久維持心智功能、處理行為症狀並減緩症狀，包括藥物、職能治療、語言治療、心理諮商，以及音樂或藝術治療。', 'mp-dementia', 'Treatments'),
+        MED_NOTE,
+      ]),
+      sec('redflags', [gen('記憶力明顯變差並影響日常生活時，請至神經內科或精神科評估；突然出現意識混亂、單側無力或口齒不清時，請立即撥打 119。')]),
+    ],
+  },
+  {
+    id: 'sarcopenia', title: '肌少症', en: 'Sarcopenia', organs: ['muscles'], specialty: '家醫科或老年醫學科',
+    review: rev('AWGS 2019 亞洲肌少症共識', '家醫科或老年醫學科'),
+    animPlan: ['肌肉量與肌力', '隨年齡流失的肌肉（示意）', '阻力運動與營養（示意）'],
+    sections: [
+      sec('define', [
+        t('亞洲肌少症工作小組（AWGS）定義肌少症為「與年齡相關的肌肉量流失，加上肌力低下和／或身體功能表現低下」。', 'awgs-2019', 'Abstract'),
+        t('AWGS 2019 的判定：握力男性 <28 公斤、女性 <18 公斤為肌力低下；6 公尺步行速度 <1.0 公尺／秒、簡易身體功能量表（SPPB）≤9 分，或連續起立 5 次 ≥12 秒為身體功能表現低下。', 'awgs-2019', 'Abstract'),
+        t('社區可先以小腿圍（男性 <34、女性 <33 公分）、SARC-F 問卷（≥4 分）或 SARC-CalF（≥11 分）篩檢；只有肌力或身體功能低下者稱為「可能肌少症」，以便及早進行生活型態介入。', 'awgs-2019', 'Abstract'),
+        gen('是否為肌少症需由醫療人員依肌力、身體功能與肌肉量量測判定。'),
+      ]),
+      sec('mechanism', [gen('隨年齡增長，肌肉量與肌力逐漸減少；活動量少、營養不足時可能更明顯。')]),
+      sec('organs', [gen('肌力與行動能力下降時，日常活動與平衡可能受影響，跌倒風險增加。')]),
+      sec('lifestyle', [t('生活型態介入，特別是運動與營養補充，是肌少症治療的主軸。', 'awgs-2019', 'Abstract'), gen('運動以阻力運動（如彈力帶、深蹲起立）搭配有氧與平衡訓練為主，強度依個人狀況漸進。')]),
+      sec('nutrition', [gen('每餐攝取足夠的蛋白質（豆魚蛋肉類、乳品），並維持足夠熱量；腎臟病患者的蛋白質攝取量需與醫師或營養師討論。')]),
+      sec('meds', [gen('目前肌少症以運動與營養為主；其他治療需由醫師評估。'), MED_NOTE]),
+      sec('redflags', [gen('短時間內體重或肌力明顯下降、反覆跌倒時，請就醫評估原因。')]),
+    ],
+  },
+  {
+    id: 'osteoarthritis', title: '退化性關節炎', en: 'Osteoarthritis', organs: ['bones'], specialty: '骨科或復健科',
+    review: rev('MedlinePlus Osteoarthritis', '骨科或復健科'),
+    animPlan: ['健康關節的軟骨', '軟骨磨損與骨刺（示意）', '減重與肌力訓練減輕關節負擔（示意）'],
+    sections: [
+      sec('define', [
+        t('退化性關節炎是最常見的關節炎，只影響關節，通常在手、膝、髖、頸部與下背。', 'mp-oa', 'What is osteoarthritis'),
+        t('診斷沒有單一的檢查，醫師會詢問症狀與病史、做身體檢查，可能安排 X 光等影像或抽血排除其他問題。', 'mp-oa', 'How is osteoarthritis diagnosed'),
+      ]),
+      sec('mechanism', [
+        t('健康關節的骨頭末端覆蓋著光滑的軟骨，緩衝並讓關節順暢活動；退化性關節炎時軟骨磨損變粗糙，有時完全磨光使骨頭互相摩擦，關節附近也可能長出骨刺。', 'mp-oa', 'What is osteoarthritis'),
+      ]),
+      sec('organs', [t('常見症狀：活動時疼痛、休息後改善；起床後最初 30 分鐘特別僵硬；大量使用後關節腫脹；活動範圍變小；關節感覺鬆動不穩。不是每個人都會痛。', 'mp-oa', 'Symptoms')]),
+      sec('lifestyle', [
+        t('風險因子：年齡（50 歲後女性多於男性）、體重過重（增加關節壓力）、關節受傷或手術、大量跳躍扭轉的過度使用、關節排列不正、家族史。', 'mp-oa', 'Who is more likely'),
+        t('治療通常從增加肌力、柔軟度與平衡的運動開始，需要時減重以改善髖、膝疼痛，並可使用醫療人員配置的護具或鞋墊。', 'mp-oa', 'Treatments'),
+      ]),
+      sec('nutrition', [gen('維持健康體重可減輕髖、膝負擔；目前沒有保健食品能讓軟骨再生。')]),
+      sec('meds', [t('可使用非處方止痛藥或藥膏，但最好先與醫療人員討論；效果不足時，醫師可能安排關節注射或處方止痛藥，必要時考慮手術。熱敷、冰敷也可能有幫助。', 'mp-oa', 'Treatments'), MED_NOTE]),
+      sec('redflags', [gen('關節突然紅腫熱痛、發燒，或受傷後無法承重時，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'gout', title: '痛風', en: 'Gout', organs: ['bones', 'kidneys'], specialty: '風濕免疫科',
+    review: rev('MedlinePlus Gout', '風濕免疫科'),
+    animPlan: ['尿酸在血液中與腎臟排出', '尿酸結晶沉積在大腳趾關節（示意）', '控制尿酸與生活調整（示意）'],
+    sections: [
+      sec('define', [
+        t('痛風是常見的發炎性關節炎，造成一個或多個關節疼痛、腫脹、發紅；通常以急性發作出現，持續一兩週後改善，常從大腳趾或下肢開始。', 'mp-gout', 'What is gout'),
+        t('血中尿酸過高稱為高尿酸血症，不一定對每個人造成健康問題；診斷可能包括抽取關節液檢查尿酸結晶、血液或尿液尿酸檢查，以及超音波或特殊電腦斷層。', 'mp-gout', 'What causes gout；How is gout diagnosed'),
+      ]),
+      sec('mechanism', [
+        t('尿酸是身體分解普林時產生的廢物，普林存在於身體組織與許多食物中。尿酸多數溶在血液中，經腎臟過濾由尿液排出；當身體製造太多或排出不足時，尿酸會在體內累積。', 'mp-gout', 'What causes gout'),
+        t('部分人的尿酸會形成針狀結晶，沉積在關節造成痛風，也可能造成腎結石。', 'mp-gout', 'What causes gout'),
+      ]),
+      sec('organs', [
+        t('發作常在夜間突然開始，患部劇痛（可能痛到醒來）、腫脹、發紅、發熱；長期未治療時發作可能更頻繁、更久，並可能在皮下形成尿酸結晶硬塊（痛風石），造成骨骼與軟組織損傷、關節變形。', 'mp-gout', 'Symptoms'),
+      ]),
+      sec('lifestyle', [
+        t('較容易發生的情況：男性、中年以上、肥胖、心臟衰竭、高血壓、代謝症候群、慢性腎臟病、家族史、飲酒，以及大量攝取高普林食物（紅肉、內臟、部分海鮮）或含果糖的食物與飲料。', 'mp-gout', 'Who is more likely'),
+        t('預防發作：減重、限制飲酒、避免高普林食物；若正在服用可能升高尿酸的藥物，醫師可能建議調整。', 'mp-gout', 'Treatments'),
+      ]),
+      sec('nutrition', [gen('減少紅肉、內臟、部分海鮮與含糖（果糖）飲料，限制飲酒，多喝水。')]),
+      sec('meds', [
+        t('急性發作可用非類固醇消炎止痛藥、秋水仙素或類固醇緩解疼痛；需要時使用降尿酸藥物預防發作、痛風石與腎結石。及早診斷治療並調整生活，痛風是最能控制的關節炎之一。', 'mp-gout', 'Treatments'),
+        MED_NOTE,
+      ]),
+      sec('redflags', [gen('關節紅腫熱痛合併發燒時，需儘速就醫排除關節感染。')]),
+    ],
+  },
+  {
+    id: 'gerd', title: '胃食道逆流', en: 'Gastroesophageal Reflux Disease (GERD)', organs: ['stomach'], specialty: '腸胃科',
+    review: rev('MedlinePlus GERD', '腸胃科'),
+    animPlan: ['食道下端括約肌正常關閉', '括約肌鬆弛使胃酸逆流（示意）', '少量多餐、飯後不躺等生活調整'],
+    sections: [
+      sec('define', [
+        t('偶爾逆流很常見；若每週出現症狀兩次以上，或已造成食道黏膜損傷，可能是胃食道逆流疾病（GERD），這是會造成不適、長期可能引起其他健康問題的慢性疾病。', 'mp-gerd', 'What is GERD'),
+        t('檢查可能包括上消化道內視鏡、切片、X 光、食道酸鹼值檢測與食道壓力檢查。', 'mp-gerd', 'How is GERD diagnosed'),
+      ]),
+      sec('mechanism', [
+        t('食道末端的肌肉沒有好好關閉時，胃內容物會往上移動並刺激食道；當這條肌肉變弱或在錯誤時間放鬆，就可能發生胃食道逆流。', 'mp-gerd', 'What causes GERD'),
+      ]),
+      sec('organs', [
+        t('最常見的症狀是胸口或喉嚨的灼熱感（火燒心），也可能嘴裡有酸味或食物味、乾咳或聲音沙啞、類似氣喘的症狀、吞嚥困難。', 'mp-gerd', 'Symptoms'),
+        t('未治療時可能造成食道發炎、結疤或黏膜組織改變（巴瑞特氏食道），也可能使氣喘惡化或造成慢性咳嗽、沙啞。', 'mp-gerd', 'How is GERD treated'),
+      ]),
+      sec('lifestyle', [
+        t('較容易發生的情況：體重過重或肥胖、懷孕、吸菸或接觸二手菸、食道裂孔疝氣。', 'mp-gerd', 'What causes GERD'),
+        t('生活調整：少量進食、飯後至少 2–3 小時不躺下、避免誘發症狀的食物、需要時減重、床頭墊高、戒菸；也可穿寬鬆衣物、左側睡。', 'mp-gerd', 'How is GERD treated；prevention'),
+      ]),
+      sec('nutrition', [t('避免會誘發症狀的食物，例如辛辣食物、巧克力、咖啡因或油膩食物；避免飲酒、不要在睡前進食。', 'mp-gerd', 'How is GERD treated；prevention')]),
+      sec('meds', [t('多數人可透過生活調整與藥物控制，包括非處方制酸劑與處方藥；少數需要手術。', 'mp-gerd', 'How is GERD treated'), MED_NOTE]),
+      sec('redflags', [t('胸痛合併呼吸急促，或下巴、手臂疼痛時，可能是心臟問題，請立即就醫。', 'mp-gerd', 'Symptoms'), gen('吞嚥困難持續加重、吐血或解黑便、體重不明原因下降時，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'viral-hepatitis', title: 'B 型與 C 型肝炎', en: 'Hepatitis B and C', organs: ['liver'], specialty: '腸胃肝膽科',
+    review: rev('MedlinePlus Hepatitis B、Hepatitis C；國健署成人預防保健', '腸胃肝膽科'),
+    animPlan: ['肝臟的功能', '病毒感染造成肝臟發炎（示意）', '長期發炎、肝硬化與肝癌風險（示意）'],
+    sections: [
+      sec('define', [
+        t('肝炎是肝臟發炎，組織受傷或感染時出現的腫脹會損傷肝臟、影響肝功能。B 型肝炎由 B 型肝炎病毒造成，可能是急性或慢性感染；C 型肝炎由 C 型肝炎病毒造成，多數急性感染會轉為慢性。', 'mp-hbv', 'What is hepatitis；What is hepatitis B'),
+        t('B 型肝炎常沒有症狀；慢性感染者可能直到數十年後出現併發症才有症狀，因此即使沒有症狀，篩檢也很重要。', 'mp-hbv', 'Symptoms'),
+        t('多數 C 型肝炎感染者沒有症狀，慢性感染可能數十年後出現併發症，因此即使沒有症狀，篩檢也很重要。', 'mp-hcv', 'Symptoms'),
+      ]),
+      sec('mechanism', [
+        t('B 型肝炎病毒經由接觸感染者的血液、精液或其他體液傳染。', 'mp-hbv', 'What causes hepatitis B'),
+        t('C 型肝炎經由接觸感染者的血液傳染，例如共用針具、被用過的針扎傷、使用未消毒的刺青穿洞工具或墨水、共用刮鬍刀或牙刷，或由母親傳給新生兒。', 'mp-hcv', 'How is hepatitis C spread'),
+      ]),
+      sec('organs', [
+        t('慢性 B 型肝炎可能演變為肝硬化（肝臟結疤）、肝癌與肝衰竭；未治療的 C 型肝炎可能導致肝硬化、肝衰竭與肝癌，及早診斷治療可預防這些併發症。', 'mp-hbv', 'What other problems'),
+        t('急性肝炎可能出現深黃色尿、疲倦、發燒、灰白色糞便、關節痛、食慾不振、噁心嘔吐、腹痛與黃疸（眼睛、皮膚變黃）。', 'mp-hcv', 'Symptoms'),
+      ]),
+      sec('screening', [
+        t('國健署成人預防保健：民國 75 年次以前出生至 79 歲的民眾，可搭配成人預防保健服務終身接受 1 次 B 型肝炎表面抗原（HBsAg）及 C 型肝炎抗體（anti-HCV）檢查。', 'hpa-adult-check', '服務內容'),
+      ]),
+      sec('lifestyle', [
+        t('預防 B 型肝炎最好的方法是接種 B 型肝炎疫苗；不共用針具、牙刷、刮鬍刀、指甲剪，接觸他人血液時戴手套，刺青穿洞確認器具消毒，性行為使用保險套。', 'mp-hbv', 'Can hepatitis B be prevented'),
+        t('C 型肝炎目前沒有疫苗，預防方式是不共用針具、接觸血液時戴手套、刺青穿洞使用無菌器具與未開封墨水。', 'mp-hcv', 'Can hepatitis C be prevented'),
+      ]),
+      sec('nutrition', [gen('避免飲酒，不自行服用來路不明的草藥或保健食品，以免增加肝臟負擔。')]),
+      sec('meds', [
+        t('慢性 B 型肝炎若血液檢查顯示肝臟可能受損，可能需要抗病毒藥物；C 型肝炎以抗病毒藥物治療，多數可以治癒。', 'mp-hcv', 'Treatments'),
+        MED_NOTE,
+      ]),
+      sec('redflags', [gen('出現黃疸、茶色尿、意識混亂、吐血或解黑便時，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'kidney-stones', title: '腎結石', en: 'Kidney Stones', organs: ['kidneys', 'bladder'], specialty: '泌尿科',
+    review: rev('MedlinePlus Kidney Stones；NIDDK Kidney Stones', '泌尿科'),
+    animPlan: ['腎臟過濾尿液', '礦物質在尿中結晶成結石（示意）', '結石卡在輸尿管與多喝水預防（示意）'],
+    sections: [
+      sec('define', [
+        t('腎結石是在腎臟中由尿液物質形成的固體，小如沙粒、大如珍珠；多數會自行排出，但有時會卡在泌尿道、阻塞尿流並造成劇痛。', 'mp-kstone', 'Summary'),
+        t('醫師會以尿液、血液與影像檢查診斷腎結石。', 'mp-kstone', 'Summary'),
+      ]),
+      sec('mechanism', [t('腎結石是因為尿液中鈣、草酸、磷的濃度過高；這些礦物質平時就存在尿液中，濃度低時不會造成問題。', 'niddk-kstone', 'Symptoms & Causes')]),
+      sec('organs', [
+        t('症狀包括：背部、側腹、下腹或鼠蹊部劇痛，粉紅、紅或褐色血尿，一直想解尿、解尿疼痛、解不出或只解少量，尿液混濁或有異味；可能伴隨噁心嘔吐、發燒、畏寒。', 'niddk-kstone', 'Symptoms & Causes'),
+      ]),
+      sec('lifestyle', [
+        t('喝足夠的水是預防腎結石最重要的事；除非有腎衰竭，許多醫療人員建議每天喝 6–8 杯（每杯約 240 毫升），實際量請與醫療人員討論。', 'niddk-kstone', 'Eating, Diet, & Nutrition'),
+        t('體重過重會增加腎結石風險；研究顯示得舒（DASH）飲食可以降低腎結石風險。', 'niddk-kstone', 'Eating, Diet, & Nutrition'),
+      ]),
+      sec('nutrition', [t('依過去結石的種類，可能需要調整鈉、動物性蛋白質、鈣或草酸的攝取量；可請專精結石預防的營養師協助規劃。', 'niddk-kstone', 'Eating, Diet, & Nutrition')]),
+      sec('meds', [t('無法自行排出的結石可用震波碎石、經尿道內視鏡或手術處理。', 'mp-kstone', 'Summary'), MED_NOTE]),
+      sec('redflags', [t('背部或側腹劇痛不緩解、血尿、發燒畏寒、嘔吐、尿液混濁有異味或解尿灼熱，可能需要醫師協助，請儘速就醫。', 'mp-kstone', 'Summary')]),
+    ],
+  },
+  {
+    id: 'obesity', title: '肥胖', en: 'Obesity', organs: ['heart', 'liver', 'pancreas', 'bones'], specialty: '家醫科或新陳代謝科',
+    review: rev('國健署成人健康體位標準；MedlinePlus Obesity', '家醫科或新陳代謝科'),
+    animPlan: ['熱量攝取與消耗', '多餘熱量變成脂肪儲存（示意）', '減重 5–10% 對健康的幫助（示意）'],
+    sections: [
+      sec('define', [
+        t('我國 18 歲以上成人依 BMI 分為：過輕（BMI <18.5）、健康體重（18.5 ≦ BMI <24）、過重（24 ≦ BMI <27）、肥胖（BMI ≧27）。BMI＝體重（公斤）÷身高（公尺）÷身高（公尺）。', 'hpa-bmi1824'),
+        t('世界衛生組織指出 BMI 是判定體位常用的簡易方法，但不同個案可能有差異。', 'hpa-bmi'),
+        t('BMI 無法區分脂肪、肌肉與骨骼重量；腰圍大、脂肪多集中在腹部時，體重相關健康問題的風險更高。', 'mp-obesity', 'How is obesity diagnosed'),
+      ]),
+      sec('mechanism', [t('肥胖是長期攝取的熱量多於身體活動與日常生活消耗的熱量，身體把多餘熱量以脂肪儲存；遺傳、飲食習慣、活動量、部分藥物或疾病都可能影響體重。', 'mp-obesity', 'What raises your risk')]),
+      sec('organs', [
+        t('研究顯示過重或肥胖（BMI ≧24）是糖尿病、心血管疾病、惡性腫瘤等慢性疾病的主要風險因素。', 'hpa-bmi1824'),
+        t('體型較大會讓心臟更費力、增加關節壓力，並增加第二型糖尿病、心臟病、高血壓、中風、代謝症候群、退化性關節炎、睡眠呼吸中止與部分癌症的風險。', 'mp-obesity', 'What health problems'),
+      ]),
+      sec('lifestyle', [
+        t('肥胖者即使只減少 5–10% 體重，也能延緩或預防部分疾病。', 'mp-obesity', 'What health problems'),
+        t('每天「進」與「出」創造 500 大卡的落差，就可以每週減重約 0.5 至 1 公斤。', 'hpa-calorie'),
+      ]),
+      sec('nutrition', [t('計算一天所需熱量：輕度工作者每天約每公斤體重 20–25 大卡；例如少喝一杯 500 毫升珍珠奶茶（約 300 大卡）並少吃 3 塊炸雞塊（約 200 大卡），即可減少約 500 大卡。', 'hpa-calorie')]),
+      sec('meds', [t('治療可能包括飲食與運動目標、諮商或支持團體、減重藥物，嚴重肥胖或有嚴重相關疾病者可考慮減重手術。', 'mp-obesity', 'Treatments'), MED_NOTE]),
+      sec('redflags', [gen('不要自行購買來路不明的減肥藥；體重在短時間內不明原因大幅改變時，請就醫評估。')]),
+    ],
+  },
+  {
+    id: 'thyroid-disorders', title: '甲狀腺功能異常', en: 'Thyroid Disorders', organs: ['thyroid', 'heart'], specialty: '新陳代謝科',
+    review: rev('MedlinePlus Hypothyroidism、Hyperthyroidism', '新陳代謝科'),
+    animPlan: ['甲狀腺的位置與荷爾蒙', '功能低下：身體機能變慢（示意）', '功能亢進：心跳加快等（示意）'],
+    sections: [
+      sec('define', [
+        t('甲狀腺是頸部前方小小的蝴蝶形腺體，製造控制身體使用能量的荷爾蒙，幾乎影響每個器官，包括呼吸、心跳、體重、消化與情緒。', 'mp-hypothyroid', 'What is hypothyroidism'),
+        t('甲狀腺功能低下是甲狀腺製造的荷爾蒙不足；甲狀腺功能亢進是製造的荷爾蒙超過身體需要。', 'mp-hyperthyroid', 'What is hyperthyroidism'),
+        t('診斷包括病史、身體檢查、TSH、T3、T4 與甲狀腺抗體等血液檢查，以及甲狀腺掃描、超音波等影像。', 'mp-hyperthyroid', 'How is hyperthyroidism diagnosed'),
+      ]),
+      sec('mechanism', [
+        t('功能低下最常見的原因是橋本氏甲狀腺炎（免疫系統攻擊甲狀腺）；功能亢進最常見的原因是葛瑞夫茲氏病（免疫攻擊使甲狀腺製造過多荷爾蒙），其他原因包括甲狀腺結節、甲狀腺炎與碘攝取過多。', 'mp-hyperthyroid', 'What causes hyperthyroidism'),
+      ]),
+      sec('organs', [
+        t('功能低下可能出現：疲倦、體重增加、臉部浮腫、怕冷、關節肌肉痛、便秘、皮膚乾燥、頭髮稀疏、心跳變慢、憂鬱、甲狀腺腫；症狀發展慢，可能數月甚至數年都沒注意到。', 'mp-hypothyroid', 'Symptoms'),
+        t('功能亢進可能出現：緊張易怒、疲倦、肌肉無力、怕熱、失眠、手抖、心跳快且不規則、排便次數多或腹瀉、體重減輕、情緒起伏、甲狀腺腫；未治療可能導致心律不整、血栓、中風、心臟衰竭、眼病變與骨質疏鬆。', 'mp-hyperthyroid', 'Symptoms；What other problems'),
+      ]),
+      sec('lifestyle', [t('風險較高的情況：女性、60 歲以上、曾有甲狀腺問題或手術、家族史、近 6 個月內懷孕或生產等。', 'mp-hypothyroid', 'Who is at risk')]),
+      sec('nutrition', [t('自體免疫甲狀腺疾病或甲狀腺功能亢進者要避免碘攝取過多（如大量海藻類、含碘藥物或補充品），應與醫療人員討論需避免的食物；懷孕時碘需求增加。', 'mp-hyperthyroid', 'Treatments')]),
+      sec('meds', [
+        t('功能低下以藥物補充甲狀腺荷爾蒙，開始後約 6–8 週抽血調整劑量，不可自行停藥；功能亢進的治療包括抗甲狀腺藥物、乙型阻斷劑緩解症狀、放射碘治療與手術。', 'mp-hypothyroid', 'Treatments'),
+        MED_NOTE,
+      ]),
+      sec('redflags', [gen('心跳很快或不規則、胸痛、呼吸困難、意識改變或頸部腫大壓迫呼吸吞嚥時，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'insomnia', title: '失眠症', en: 'Insomnia', organs: ['brain'], specialty: '精神科、身心科或睡眠醫學',
+    review: rev('MedlinePlus Insomnia', '精神科、身心科或睡眠醫學'),
+    animPlan: ['睡眠與清醒的節律', '失眠：難入睡、易醒、早醒（示意）', '睡眠衛生與認知行為治療（示意）'],
+    sections: [
+      sec('define', [
+        t('失眠是常見的睡眠障礙，可能難以入睡、難以維持睡眠或兩者都有，因此睡得太少或睡眠品質差，醒來不覺得恢復精神。', 'mp-insomnia', 'What is insomnia'),
+        t('急性失眠常見，常由工作壓力、家庭壓力或創傷事件引起，通常持續數天或數週；慢性失眠持續一個月以上，多數是其他問題（疾病、藥物、其他睡眠障礙，或咖啡因、菸、酒）造成的。', 'mp-insomnia', 'Types of insomnia'),
+        t('診斷包括病史、睡眠習慣、身體檢查，必要時安排睡眠檢查。', 'mp-insomnia', 'How is insomnia diagnosed'),
+      ]),
+      sec('mechanism', [t('原發性失眠的原因仍不完全清楚，長期壓力、情緒困擾、旅行時差與輪班工作都可能是因素。', 'mp-insomnia', 'Types of insomnia')]),
+      sec('organs', [
+        t('症狀：躺很久才睡著、每次只睡一小段、半夜大部分時間醒著、覺得完全沒睡、太早醒。', 'mp-insomnia', 'Symptoms'),
+        t('失眠可能造成白天想睡、沒精神、焦慮、憂鬱或易怒，以及專注、學習與記憶困難；開車時想睡可能造成車禍。', 'mp-insomnia', 'What other problems'),
+      ]),
+      sec('lifestyle', [
+        t('風險較高的情況：壓力大、憂鬱或情緒困擾、夜班或常換班、跨時區旅行、缺乏活動；女性與年長者較常見。', 'mp-insomnia', 'Who is at risk'),
+        t('良好的睡眠習慣等生活調整常能緩解急性失眠。', 'mp-insomnia', 'Treatments'),
+      ]),
+      sec('nutrition', [gen('下午後避免咖啡因，睡前避免飲酒與大餐；酒精不能幫助好眠。')]),
+      sec('meds', [t('治療包括生活調整、諮商與藥物；認知行為治療（CBT）可緩解慢性失眠相關的焦慮；若失眠是其他問題造成的，應同時治療該問題。', 'mp-insomnia', 'Treatments'), MED_NOTE]),
+      sec('redflags', [gen('長期失眠合併情緒低落、有傷害自己的念頭，或睡眠時打鼾、呼吸暫停時，請就醫評估；有自殺念頭請立即撥打 119。')]),
+    ],
+  },
 ];
 
 export const DISEASE_MAP: Record<string, DiseaseModule> = Object.fromEntries(DISEASES.map((d) => [d.id, d]));

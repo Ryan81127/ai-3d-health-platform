@@ -924,6 +924,212 @@ export const DISEASES: DiseaseModule[] = [
       sec('redflags', [gen('長期失眠合併情緒低落、有傷害自己的念頭，或睡眠時打鼾、呼吸暫停時，請就醫評估；有自殺念頭請立即撥打 119。')]),
     ],
   },
+  /* ===== 第四批常見疾病（2026-11-18） ===== */
+  {
+    id: 'anxiety', title: '焦慮症', en: 'Anxiety Disorders', organs: ['brain', 'heart'], specialty: '精神科或身心科',
+    review: rev('MedlinePlus Anxiety', '精神科或身心科'),
+    animPlan: ['壓力時身體的反應（示意）', '焦慮持續不退（示意）', '心理治療與壓力管理'],
+    sections: [
+      sec('define', [
+        t('焦慮是恐懼、擔憂與不安的感覺，可能讓人流汗、坐立不安、心跳加快；面對壓力時的焦慮是正常反應，有時能幫助專注與應對。', 'mp-anxiety', 'What is anxiety'),
+        t('焦慮症是焦慮持續不退、可能隨時間惡化，並影響工作、課業與人際關係。類型包括廣泛性焦慮症（幾乎每天過度擔心健康、金錢、工作、家庭等日常事務，至少 6 個月）、恐慌症與恐懼症。', 'mp-anxiety', 'What are anxiety disorders'),
+        t('診斷時醫療人員會詢問症狀與病史，並以身體檢查與檢驗排除其他健康問題，再進行心理評估。', 'mp-anxiety', 'How are anxiety disorders diagnosed'),
+      ]),
+      sec('mechanism', [t('焦慮症的原因不明，遺傳、大腦生理與化學、壓力與環境等因素可能都有影響。', 'mp-anxiety', 'What causes anxiety disorders')]),
+      sec('organs', [t('焦慮症同時有難以控制的焦慮想法，身體症狀（心跳快或重、不明原因的疼痛、頭暈、呼吸急促），以及行為改變（避開以前會做的日常活動）。', 'mp-anxiety', 'Symptoms')]),
+      sec('lifestyle', [
+        t('風險因子包括：面對新情境容易害羞退縮的個性、童年或成年的創傷事件、焦慮或其他精神疾病家族史，以及甲狀腺問題、心律不整等身體疾病。', 'mp-anxiety', 'Who is at risk'),
+        t('支持團體與壓力管理技巧可能有幫助；咖啡因、其他物質與某些藥物可能使症狀惡化。', 'mp-anxiety', 'Treatments；Symptoms'),
+      ]),
+      sec('nutrition', [gen('減少咖啡因與酒精，規律飲食與睡眠。')]),
+      sec('meds', [t('主要治療是心理治療（如認知行為治療、接納與承諾治療）、藥物（抗焦慮藥與部分抗憂鬱藥），或兩者合併；可能需要嘗試不只一種藥物才能找到合適的。', 'mp-anxiety', 'Treatments'), MED_NOTE]),
+      sec('redflags', [gen('胸痛、呼吸困難或昏厥時，請先就醫排除心臟或其他身體疾病；有傷害自己的念頭請立即撥打 119。')]),
+    ],
+  },
+  {
+    id: 'panic-disorder', title: '恐慌症', en: 'Panic Disorder', organs: ['brain', 'heart', 'lungs'], specialty: '精神科或身心科',
+    review: rev('MedlinePlus Panic Disorder', '精神科或身心科'),
+    animPlan: ['恐慌發作時心跳與呼吸加快（示意）', '發作後的擔心與逃避', '認知行為治療與生活調整'],
+    sections: [
+      sec('define', [
+        t('恐慌症是焦慮症的一種，會反覆恐慌發作：在沒有真正危險時，突然出現強烈恐懼、不適或失控感，常伴隨心跳很快很重，感覺像心臟病發作。', 'mp-panic', 'What is panic disorder'),
+        t('有過恐慌發作不代表就是恐慌症，許多人一生只發作一兩次且不需治療就好轉；恐慌症不會危及生命，但會影響生活品質，未治療時可能引發憂鬱或物質使用問題。', 'mp-panic', 'What is panic disorder'),
+        t('診斷時醫療人員可能以身體檢查、抽血檢查甲狀腺等問題，以及心臟檢查排除其他身體原因。', 'mp-panic', 'How is panic disorder diagnosed'),
+      ]),
+      sec('mechanism', [t('原因不明，遺傳、大腦生理與化學、環境與重大壓力可能都有影響；童年經歷創傷者較容易發生。', 'mp-panic', 'What causes panic disorder')]),
+      sec('organs', [t('發作時可能心跳很快或很重、流汗或發冷、發抖、呼吸困難、窒息感、無力或頭暈、胸痛、胃痛或噁心；發作可在任何時候毫無預警出現，持續幾分鐘到超過一小時。', 'mp-panic', 'Symptoms')]),
+      sec('lifestyle', [t('女性較男性常見，常從青少年後期或成年早期開始。醫療人員可能建議健康的生活方式，例如避免飲酒、減少咖啡因。', 'mp-panic', 'Who is more likely；Treatments')]),
+      sec('nutrition', [gen('減少咖啡因、避免飲酒。')]),
+      sec('meds', [t('治療可能包括心理治療（如認知行為治療），以及抗憂鬱藥（SSRI、SNRI）或抗焦慮藥。', 'mp-panic', 'Treatments'), MED_NOTE]),
+      sec('redflags', [gen('第一次出現胸痛、呼吸困難或昏厥時，請立即就醫或撥打 119，不要自行判斷為恐慌發作。')]),
+    ],
+  },
+  {
+    id: 'autonomic-dysfunction', title: '自律神經失調', en: 'Autonomic Nervous System Disorders', organs: ['nerves', 'heart', 'vessels'], specialty: '神經內科、家醫科或身心科',
+    review: rev('MedlinePlus Autonomic Nervous System Disorders', '神經內科、家醫科或身心科'),
+    animPlan: ['自律神經控制心跳與血管（示意）', '自律神經功能異常（示意）', '找出原因與改善症狀'],
+    sections: [
+      sec('define', [
+        gen('台灣常說的「自律神經失調」是民眾常用的說法，不是單一的醫學診斷名稱；出現心悸、頭暈、腸胃不適、失眠等症狀時，需要由醫師找出原因，例如焦慮、甲狀腺問題、心律不整或其他疾病。'),
+        t('自律神經系統是控制非自主動作的神經，例如心臟跳動、血管擴張或收縮。', 'mp-ans', 'Summary'),
+      ]),
+      sec('mechanism', [t('自律神經系統疾病可能單獨發生，也可能由其他疾病造成，例如帕金森氏症、酒精成癮與糖尿病；可能影響系統的一部分或全部，有些是暫時的，許多會隨時間惡化。', 'mp-ans', 'Summary')]),
+      sec('organs', [t('自律神經系統出問題時，可能造成血壓問題、心臟問題、呼吸與吞嚥困難，以及男性勃起功能障礙；影響呼吸或心臟功能時可能危及生命。', 'mp-ans', 'Summary')]),
+      sec('lifestyle', [gen('規律作息與睡眠、適度運動、練習放鬆與壓力管理，減少咖啡因與酒精；記錄症狀出現的時間與情境，就醫時提供給醫師。')]),
+      sec('nutrition', [gen('規律進食、足夠水分；避免以酒精或大量咖啡因提神。')]),
+      sec('meds', [t('部分自律神經系統疾病在治療原本的疾病後會改善；但常常無法治癒，此時治療目標是改善症狀。', 'mp-ans', 'Summary'), MED_NOTE]),
+      sec('redflags', [gen('昏厥、胸痛、呼吸或吞嚥困難、站起來就頭暈到快跌倒時，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'pneumonia', title: '肺炎', en: 'Pneumonia', organs: ['lungs', 'airway'], specialty: '胸腔內科或感染科',
+    review: rev('MedlinePlus Pneumonia', '胸腔內科或感染科'),
+    animPlan: ['正常的肺泡與氣體交換', '肺泡充滿液體或膿（示意）', '疫苗、洗手與戒菸預防'],
+    sections: [
+      sec('define', [
+        t('肺炎是單側或雙側肺部的感染，使肺部的氣囊（肺泡）充滿液體或膿；嚴重程度從輕微到嚴重，取決於病原、年齡與整體健康狀況。', 'mp-pneumonia', 'What is pneumonia'),
+        t('肺炎症狀可能與感冒或流感相似，有時不易診斷；醫師會詢問病史、用聽診器聽肺部，可能安排胸部 X 光與抽血檢查。', 'mp-pneumonia', 'How is pneumonia diagnosed'),
+      ]),
+      sec('mechanism', [
+        t('細菌、病毒與黴菌感染都可能造成肺炎，細菌最常見，也可能在感冒或流感後發生；不小心把食物或液體吸入肺部（吸入性）也可能造成肺炎。', 'mp-pneumonia', 'What causes pneumonia'),
+      ]),
+      sec('organs', [
+        t('症狀包括發燒、畏寒、咳嗽（通常有痰）、呼吸急促、呼吸或咳嗽時胸痛、噁心嘔吐、腹瀉；年長者症狀可能較少較輕，甚至體溫偏低，或突然虛弱、意識混亂。', 'mp-pneumonia', 'Symptoms'),
+        t('嚴重時可能併發菌血症（可能導致敗血性休克）、肺膿瘍、肋膜疾病、腎衰竭與呼吸衰竭。', 'mp-pneumonia', 'What other problems'),
+      ]),
+      sec('lifestyle', [
+        t('風險較高：2 歲以下與 65 歲以上、吸菸、大量飲酒、營養不良、肺部疾病、免疫力低下、中風等造成咳嗽或吞嚥困難、近期感冒或流感，以及糖尿病、心臟衰竭、肝病、腎病等慢性病。', 'mp-pneumonia', 'Who is more likely'),
+        t('疫苗可以預防肺炎鏈球菌或流感病毒造成的肺炎；勤洗手、不吸菸與健康的生活方式也可能有幫助。', 'mp-pneumonia', 'Can pneumonia be prevented'),
+      ]),
+      sec('nutrition', [gen('生病期間補充足夠水分與營養；吞嚥困難的長者，進食時要坐正、放慢速度，必要時請語言治療師評估。')]),
+      sec('meds', [t('抗生素治療細菌性肺炎，對病毒性肺炎無效；部分病毒性肺炎可用抗病毒藥，黴菌性肺炎用抗黴菌藥。症狀嚴重或有併發症風險時需住院。', 'mp-pneumonia', 'Treatments'), MED_NOTE]),
+      sec('redflags', [gen('呼吸困難、嘴唇發紫、意識混亂、高燒不退，或長者突然虛弱、意識改變時，請立即就醫。')]),
+    ],
+  },
+  {
+    id: 'uti', title: '泌尿道感染', en: 'Urinary Tract Infection', organs: ['bladder', 'kidneys'], specialty: '泌尿科或家醫科',
+    review: rev('MedlinePlus Urinary Tract Infections', '泌尿科或家醫科'),
+    animPlan: ['泌尿系統：腎、輸尿管、膀胱、尿道', '細菌感染膀胱（示意）', '感染往上到腎臟的警訊（示意）'],
+    sections: [
+      sec('define', [
+        t('泌尿系統是身體排除廢物與多餘水分的系統，包括兩個腎臟、兩條輸尿管、膀胱與尿道；泌尿道感染是身體第二常見的感染。', 'mp-uti', 'Summary'),
+        t('醫師可以用尿液檢查判斷是否為泌尿道感染。', 'mp-uti', 'Summary'),
+      ]),
+      sec('mechanism', [gen('細菌進入泌尿道並在膀胱等處繁殖，引起發炎。')]),
+      sec('organs', [t('可能的症狀：解尿疼痛或灼熱、發燒、疲倦或發抖、頻尿、下腹壓迫感、尿液有異味或混濁帶紅、肋骨下方的背部或側腹疼痛。', 'mp-uti', 'Summary')]),
+      sec('lifestyle', [t('任何年齡與性別都可能發生，但女性約為男性的 4 倍；糖尿病、需要導尿管或脊髓損傷者風險較高。', 'mp-uti', 'Summary')]),
+      sec('nutrition', [gen('喝足夠的水，不要憋尿。')]),
+      sec('meds', [t('治療使用抗生素。', 'mp-uti', 'Summary'), gen('抗生素請依醫囑完整服用，不要症狀改善就自行停藥。'), MED_NOTE]),
+      sec('redflags', [t('懷疑泌尿道感染時應就醫。', 'mp-uti', 'Summary'), gen('發燒、畏寒、腰背痛或嘔吐時，可能是腎臟感染，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'urinary-incontinence', title: '尿失禁', en: 'Urinary Incontinence', organs: ['bladder'], specialty: '泌尿科或婦產科',
+    review: rev('MedlinePlus Urinary Incontinence', '泌尿科或婦產科'),
+    animPlan: ['膀胱儲尿與骨盆底肌', '腹壓增加時漏尿（應力性，示意）', '凱格爾運動與膀胱訓練（示意）'],
+    sections: [
+      sec('define', [
+        t('尿失禁是無法控制排尿、膀胱失去控制，是常見的問題，從輕微到大幅影響日常生活都有可能，經適當治療可以改善。', 'mp-ui', 'What is urinary incontinence'),
+        t('常見類型：應力性（咳嗽、打噴嚏、大笑、提重物時漏尿，原因包括骨盆底肌無力）、急迫性（突然很想解尿、來不及到廁所，常與膀胱過動有關）、滿溢性（膀胱排不乾淨，男性較常見）、功能性，以及混合型。', 'mp-ui', 'Types'),
+        t('診斷可能包括病史與排尿日記、身體檢查、尿液或血液檢查、膀胱功能檢查與影像檢查。', 'mp-ui', 'How is urinary incontinence diagnosed'),
+      ]),
+      sec('mechanism', [t('隨年齡增長，泌尿道的肌肉變弱，較難憋住尿液。', 'mp-ui', 'Who is at risk')]),
+      sec('organs', [gen('漏尿可能影響外出、運動、睡眠與心情，也可能造成皮膚問題。')]),
+      sec('lifestyle', [
+        t('風險較高：女性（特別是懷孕、生產或停經後）、年長者、男性攝護腺問題、糖尿病、肥胖、長期便秘、吸菸。', 'mp-ui', 'Who is at risk'),
+        t('自我照顧：在適當時間喝適量的水、規律活動、維持健康體重、避免便秘、不吸菸；膀胱訓練（依排尿日記定時排尿、逐漸拉長間隔）；凱格爾運動（收縮與放鬆控制排尿的肌肉）強化骨盆底肌。', 'mp-ui', 'Treatments'),
+      ]),
+      sec('nutrition', [gen('減少咖啡因與酒精；多攝取膳食纖維與水分避免便秘。')]),
+      sec('meds', [t('若自我照顧無效，可能使用放鬆膀胱或阻斷頻尿訊號的藥物、男性縮小攝護腺的藥物、導尿管或其他醫療器材、膨脹劑注射等。', 'mp-ui', 'Treatments'), MED_NOTE]),
+      sec('redflags', [gen('突然無法解尿、血尿、發燒或解尿疼痛，或合併下肢無力麻木時，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'ibs', title: '大腸激躁症', en: 'Irritable Bowel Syndrome', organs: ['intestines'], specialty: '腸胃科',
+    review: rev('MedlinePlus Irritable Bowel Syndrome', '腸胃科'),
+    animPlan: ['大腸的蠕動', '蠕動與感覺異常：腹痛、脹氣（示意）', '飲食、壓力管理與治療'],
+    sections: [
+      sec('define', [
+        t('大腸激躁症是影響大腸的問題，可能造成腹部絞痛、脹氣與排便習慣改變（便秘、腹瀉或兩者交替）；雖然可能很不舒服，但不會傷害腸道。', 'mp-ibs', 'Summary'),
+        t('沒有特定的檢查能診斷大腸激躁症；醫師可能安排糞便、血液、X 光、乙狀結腸鏡或大腸鏡檢查，以排除其他疾病。', 'mp-ibs', 'Summary'),
+      ]),
+      sec('mechanism', [t('目前沒有人知道大腸激躁症的確切原因。', 'mp-ibs', 'Summary')]),
+      sec('organs', [gen('症狀主要在腸道，常在進食或壓力大時加重。')]),
+      sec('lifestyle', [t('大腸激躁症很常見，女性約為男性的兩倍，多見於 45 歲以下。', 'mp-ibs', 'Summary')]),
+      sec('nutrition', [t('多數人可透過飲食調整、壓力管理、益生菌與藥物控制症狀。', 'mp-ibs', 'Summary'), gen('可記錄飲食與症狀，找出誘發的食物；調整飲食前可與醫師或營養師討論。')]),
+      sec('meds', [gen('藥物依便秘型、腹瀉型等症狀由醫師評估。'), MED_NOTE]),
+      sec('redflags', [gen('出現血便、黑便、體重不明原因下降、夜間腹痛或腹瀉、貧血，或 50 歲以後才開始出現症狀時，請就醫排除其他疾病。')]),
+    ],
+  },
+  {
+    id: 'gallstones', title: '膽結石', en: 'Gallstones', organs: ['liver', 'stomach'], specialty: '腸胃肝膽科或一般外科',
+    review: rev('MedlinePlus Gallstones', '腸胃肝膽科或一般外科'),
+    animPlan: ['膽囊儲存膽汁並經膽管送到小腸', '膽汁物質變硬形成結石（示意）', '結石阻塞膽管（示意）'],
+    sections: [
+      sec('define', [
+        t('膽囊是肝臟下方梨形的器官，儲存肝臟製造、用來消化脂肪的膽汁；進食消化時，膽囊經總膽管把膽汁送到小腸。', 'mp-gallstones', 'Summary'),
+        t('膽結石常在因其他問題做影像檢查時被發現；沒有症狀時通常不需要治療。', 'mp-gallstones', 'Summary'),
+      ]),
+      sec('mechanism', [t('膽汁中的物質變硬就會形成膽結石；結石阻塞膽管中膽汁的流動時，最容易造成問題。', 'mp-gallstones', 'Summary')]),
+      sec('organs', [t('膽結石發作通常在進食後，可能出現噁心、嘔吐，或腹部、背部、右側腋下附近疼痛。', 'mp-gallstones', 'Summary')]),
+      sec('lifestyle', [t('膽結石最常見於年長者、女性與體重過重者。', 'mp-gallstones', 'Summary')]),
+      sec('nutrition', [gen('均衡飲食、維持健康體重；避免過快減重。')]),
+      sec('meds', [t('最常見的治療是切除膽囊；沒有膽囊也能生活，膽汁有其他途徑到達小腸。', 'mp-gallstones', 'Summary'), MED_NOTE]),
+      sec('redflags', [gen('右上腹劇痛持續數小時、發燒畏寒、眼睛或皮膚變黃時，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'iron-deficiency-anemia', title: '缺鐵性貧血', en: 'Iron-Deficiency Anemia', organs: ['heart', 'vessels'], specialty: '血液科或家醫科',
+    review: rev('NHLBI Iron-Deficiency Anemia；MedlinePlus Anemia、Iron', '血液科或家醫科'),
+    animPlan: ['紅血球與血紅素運送氧氣', '缺鐵使紅血球變少、攜氧變差（示意）', '找出原因與補鐵'],
+    sections: [
+      sec('define', [
+        t('缺鐵性貧血是身體鐵質不足造成的貧血，是最常見的貧血類型。', 'nhlbi-ida', 'What is iron-deficiency anemia'),
+        t('貧血時血液無法運送足夠的氧氣到全身；身體需要鐵來製造血紅素，血紅素是讓血液呈紅色、把氧氣從肺部送到全身的含鐵蛋白質。', 'mp-anemia', 'Summary'),
+        t('醫師會以身體檢查與血液檢查診斷貧血，治療依貧血種類而定。', 'mp-anemia', 'Summary'),
+      ]),
+      sec('mechanism', [
+        t('失血會流失鐵質，例如腸胃道出血（發炎性腸道疾病、潰瘍、大腸癌）、外傷或手術、經血量多或生產出血、長期使用阿斯匹靈或非類固醇消炎止痛藥；乳糜瀉、幽門桿菌感染、腸胃手術等也可能影響鐵的吸收。', 'nhlbi-ida', 'Causes'),
+      ]),
+      sec('organs', [t('輕度或中度可能沒有症狀；較嚴重時可能疲倦、呼吸急促、胸痛、頭暈、手腳冰冷、皮膚蒼白。', 'nhlbi-ida', 'Symptoms')]),
+      sec('lifestyle', [t('較容易缺鐵的族群：經血量多、懷孕或哺乳、經常捐血、癌症、部分消化道疾病、心臟衰竭、洗腎等。', 'mp-iron', 'What causes low iron')]),
+      sec('nutrition', [
+        t('含鐵較多的食物：瘦肉、海鮮與家禽，強化鐵的早餐穀片與麵包，白豆、扁豆、菠菜、腰豆與豌豆，堅果與葡萄乾等果乾。', 'mp-iron', 'How do you get iron'),
+        t('鐵太多也會傷害身體：健康的人服用過多鐵補充劑可能便秘、噁心嘔吐、腹痛、腹瀉，極高劑量可能造成器官損傷甚至死亡。', 'mp-iron', 'What happens if you get too much iron'),
+      ]),
+      sec('meds', [t('缺鐵與缺鐵性貧血通常以鐵補充劑治療。', 'mp-iron', 'What happens if you don’t get enough iron'), gen('補鐵前應先找出缺鐵原因（例如腸胃道出血），補充劑量請依醫師指示。'), MED_NOTE]),
+      sec('redflags', [gen('出現黑便、血便、嘔血，或胸痛、呼吸困難、昏厥時，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'low-back-pain', title: '下背痛與椎間盤突出', en: 'Low Back Pain and Herniated Disk', organs: ['bones', 'nerves'], specialty: '骨科、神經外科或復健科',
+    review: rev('MedlinePlus Back Pain、Herniated Disk', '骨科、神經外科或復健科'),
+    animPlan: ['脊椎與椎間盤', '椎間盤破裂壓迫神經（示意）', '活動、運動與物理治療'],
+    sections: [
+      sec('define', [
+        t('背痛是最常見的醫療問題之一，10 個人中有 8 個一生中曾經背痛；可能是持續的悶痛，也可能是突然的劇痛。急性背痛突然發生，通常持續幾天到幾週；超過三個月稱為慢性背痛。', 'mp-backpain', 'Summary'),
+        t('脊椎由 26 塊椎骨組成，椎骨之間有充滿膠狀物質的椎間盤，負責緩衝並固定椎骨；醫師以身體檢查、有時加上影像檢查診斷椎間盤突出。', 'mp-disk', 'Summary'),
+      ]),
+      sec('mechanism', [
+        t('隨著年紀增長，椎間盤會退化、失去緩衝能力，背部受壓時可能疼痛；椎間盤突出是椎間盤破裂，中央的膠狀物質流出刺激附近神經，可能造成坐骨神經痛或背痛。', 'mp-disk', 'Summary'),
+      ]),
+      sec('organs', [gen('神經受刺激時，疼痛可能沿著臀部、大腿後側延伸到小腿，並可能麻木或無力。')]),
+      sec('lifestyle', [
+        t('大多數背痛會自行好轉，雖然可能需要一段時間；非處方止痛藥與休息可能有幫助，但臥床超過 1–2 天可能讓背痛更糟。', 'mp-backpain', 'Summary'),
+        gen('搬重物時蹲下、用腿出力，避免彎腰扭轉；久坐時定時起身活動；規律運動強化核心肌群。'),
+      ]),
+      sec('nutrition', [gen('維持健康體重，減輕脊椎負擔。')]),
+      sec('meds', [
+        t('背痛的治療依疼痛種類與原因而定，可能包括冷熱敷、運動、藥物、注射、輔助療法，有時需要手術。', 'mp-backpain', 'Summary'),
+        t('多數椎間盤突出的人經治療會恢復，治療包括休息、止痛與消炎藥、物理治療，有時需要手術。', 'mp-disk', 'Summary'),
+        MED_NOTE,
+      ]),
+      sec('redflags', [
+        t('背痛嚴重或三天沒有改善時應聯絡醫療人員；受傷後背痛也應就醫。', 'mp-backpain', 'Summary'),
+        gen('合併大小便失禁、會陰部麻木、下肢逐漸無力，或發燒、不明原因體重下降時，請立即就醫。'),
+      ]),
+    ],
+  },
 ];
 
 export const DISEASE_MAP: Record<string, DiseaseModule> = Object.fromEntries(DISEASES.map((d) => [d.id, d]));

@@ -85,13 +85,13 @@ function useInstances(pts: THREE.Vector3[], size: (i: number) => number, rot = t
 
 /* ===================== 大腦（失智症、失眠） ===================== */
 const BRAIN_IDS = PARTS.filter((p) => p.organ === 'brain' && !p.src).map((p) => p.id);
-function useBrain() {
+export function useBrain() {
   const parts = useParts('organ', BRAIN_IDS);
   const list = useMemo(() => Object.values(parts), [parts]);
   const C = useMemo(() => { const b = new THREE.Box3(); list.forEach((p) => b.union(p.box)); return b.getCenter(new THREE.Vector3()); }, [list]);
   return { list, C };
 }
-function brainMat(u: Record<string, THREE.IUniform>) {
+export function brainMat(u: Record<string, THREE.IUniform>) {
   return tissue({ roughness: 0.42, clearcoat: 0.6, clearcoatRoughness: 0.3, sheen: 0.6, sheenColor: new THREE.Color('#ffd6d0') },
     `float f = fbm(vP * 700.0);
      vec3 base = mix(vec3(0.94, 0.7, 0.68), vec3(0.8, 0.52, 0.53), f);

@@ -306,6 +306,16 @@ export const GUIDELINES: Guideline[] = [
   { id: 'mp-endo', short: 'MedlinePlus：子宮內膜異位症', org: '美國國家醫學圖書館（MedlinePlus）', year: 2026,
     title: 'Endometriosis', citation: 'MedlinePlus Health Topics', url: 'https://medlineplus.gov/endometriosis.html',
     status: 'verified', checkedAt: '2026-11-18', note: '已讀取網頁原文。' },
+  /* 血管淋巴疾病（2026-11-18 讀取官方頁面原文核對） */
+  { id: 'mp-varicose', short: 'MedlinePlus：靜脈曲張', org: '美國國家醫學圖書館（MedlinePlus）', year: 2026,
+    title: 'Varicose Veins', citation: 'MedlinePlus Health Topics', url: 'https://medlineplus.gov/varicoseveins.html',
+    status: 'verified', checkedAt: '2026-11-18', note: '已讀取網頁原文。' },
+  { id: 'mp-dvt', short: 'MedlinePlus：深部靜脈血栓', org: '美國國家醫學圖書館（MedlinePlus）', year: 2026,
+    title: 'Deep Vein Thrombosis', citation: 'MedlinePlus Health Topics', url: 'https://medlineplus.gov/deepveinthrombosis.html',
+    status: 'verified', checkedAt: '2026-11-18', note: '已讀取網頁原文。' },
+  { id: 'mp-lymphedema', short: 'MedlinePlus：淋巴水腫', org: '美國國家醫學圖書館（MedlinePlus）', year: 2026,
+    title: 'Lymphedema', citation: 'MedlinePlus Health Topics', url: 'https://medlineplus.gov/lymphedema.html',
+    status: 'verified', checkedAt: '2026-11-18', note: '已讀取網頁原文。' },
 ];
 
 export const GUIDELINE_MAP: Record<string, Guideline> = Object.fromEntries(GUIDELINES.map((g) => [g.id, g]));

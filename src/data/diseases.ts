@@ -1379,6 +1379,55 @@ export const DISEASES: DiseaseModule[] = [
       sec('redflags', [gen('突然劇烈下腹痛、發燒，或經痛嚴重到影響日常生活時，請就醫評估。')]),
     ],
   },
+  /* ===== 血管淋巴疾病（2026-11-18） ===== */
+  {
+    id: 'varicose-veins', title: '靜脈曲張', en: 'Varicose Veins', organs: ['vessels'], specialty: '心臟血管外科',
+    review: rev('MedlinePlus Varicose Veins', '心臟血管外科'),
+    animPlan: ['靜脈的單向瓣膜', '瓣膜無力、血液回堵（示意）', '運動、抬腿與避免久站'],
+    sections: [
+      sec('define', [
+        t('靜脈曲張是皮膚下看得到、腫脹扭曲的靜脈，通常在腿部，也可能出現在身體其他部位；痔瘡也是一種靜脈曲張。', 'mp-varicose', 'Summary'),
+        t('醫師常以身體檢查診斷，有時需要其他檢查。', 'mp-varicose', 'Summary'),
+      ]),
+      sec('mechanism', [t('靜脈有單向瓣膜，幫助血液流回心臟；瓣膜無力或受損時，血液會回堵並淤積在靜脈中，使靜脈腫脹，形成靜脈曲張。', 'mp-varicose', 'Summary')]),
+      sec('organs', [gen('可能出現腿部沉重、痠脹、夜間抽筋或腳踝水腫，久站後較明顯。')]),
+      sec('lifestyle', [
+        t('靜脈曲張很常見；年紀較長、女性、肥胖、不運動或有家族史者風險較高，懷孕時也較常見。', 'mp-varicose', 'Summary'),
+        t('運動、減重、休息時抬高腿、坐時不翹腳，穿寬鬆衣物並避免長時間站立，可以避免惡化。', 'mp-varicose', 'Summary'),
+      ]),
+      sec('nutrition', [gen('維持健康體重；多攝取膳食纖維預防便秘。')]),
+      sec('meds', [t('若靜脈曲張疼痛或在意外觀，醫師可能建議以處置移除。', 'mp-varicose', 'Summary'), MED_NOTE]),
+      sec('redflags', [gen('單側小腿突然紅腫熱痛，可能是深部靜脈血栓，請儘速就醫；靜脈曲張處出血不止時請就醫。')]),
+    ],
+  },
+  {
+    id: 'dvt', title: '深部靜脈血栓', en: 'Deep Vein Thrombosis', organs: ['vessels', 'lungs'], specialty: '心臟內科或心臟血管外科',
+    review: rev('MedlinePlus Deep Vein Thrombosis', '心臟內科或心臟血管外科'),
+    animPlan: ['腿部深層靜脈的血流', '血栓形成（示意）', '血栓脫落到肺部（肺栓塞，示意）'],
+    sections: [
+      sec('define', [t('深部靜脈血栓是在身體深層靜脈形成的血塊，多數發生在小腿或大腿；血栓可能脫落，造成肺部的嚴重問題，稱為肺栓塞。', 'mp-dvt', 'Summary')]),
+      sec('mechanism', [t('長時間不動會增加深部靜脈血栓的風險；部分藥物與增加血栓風險的疾病也可能造成。', 'mp-dvt', 'Summary')]),
+      sec('organs', [t('常見症狀：靜脈上方發熱與壓痛、患部疼痛或腫脹、皮膚發紅。', 'mp-dvt', 'Summary')]),
+      sec('lifestyle', [t('長途開車或搭飛機時，要休息、走動或伸展雙腿，並多喝水。', 'mp-dvt', 'Summary')]),
+      sec('nutrition', [gen('長時間坐著時補充足夠水分；服用抗凝血劑者，飲食或保健食品有明顯改變前請先詢問醫師或藥師。')]),
+      sec('meds', [t('治療包括緩解疼痛與發炎、溶解血栓並預防新血栓形成的藥物；抬高患部與濕熱敷也可能有幫助。', 'mp-dvt', 'Summary'), MED_NOTE]),
+      sec('redflags', [gen('突然呼吸困難、胸痛、咳血或心跳很快時，可能是肺栓塞，請立即撥打 119。')]),
+    ],
+  },
+  {
+    id: 'lymphedema', title: '淋巴水腫', en: 'Lymphedema', organs: ['vessels', 'skin'], specialty: '復健科或整形外科',
+    review: rev('MedlinePlus Lymphedema', '復健科或整形外科'),
+    animPlan: ['淋巴液沿淋巴管回流', '淋巴系統受損或阻塞，液體堆積（示意）', '運動、壓力衣、皮膚照顧與按摩'],
+    sections: [
+      sec('define', [t('淋巴水腫是一種腫脹：淋巴系統受損或阻塞時，淋巴液堆積在身體的軟組織，通常發生在手臂或腿部。淋巴液含有對抗病菌的白血球。', 'mp-lymphedema', 'Summary')]),
+      sec('mechanism', [t('原因包括感染、癌症、放射治療或淋巴結手術切除造成的疤痕組織，以及先天淋巴結或淋巴管缺少或異常。', 'mp-lymphedema', 'Summary')]),
+      sec('organs', [gen('患肢可能腫脹、沉重、緊繃，皮膚變厚，較容易感染。')]),
+      sec('lifestyle', [t('治療可以控制症狀，包括運動、壓力裝置（如壓力衣）、皮膚照顧與按摩。', 'mp-lymphedema', 'Summary')]),
+      sec('nutrition', [gen('維持健康體重；均衡飲食。')]),
+      sec('meds', [gen('淋巴引流按摩與壓力治療請由受過訓練的治療師指導。'), MED_NOTE]),
+      sec('redflags', [gen('患肢突然紅、腫、熱、痛或發燒時，可能是感染（蜂窩性組織炎），請儘速就醫。')]),
+    ],
+  },
 ];
 
 export const DISEASE_MAP: Record<string, DiseaseModule> = Object.fromEntries(DISEASES.map((d) => [d.id, d]));

@@ -28,6 +28,9 @@ type B5 = (typeof BATCH5)[number];
 const FemaleAnims = lazy(() => import('./FemaleAnims'));
 const FEMALE = ['pcos', 'uterine-fibroids', 'endometriosis', 'cervical-cancer', 'breast-cancer'] as const;
 type FT = (typeof FEMALE)[number];
+const VascAnims = lazy(() => import('./VascAnims'));
+const VASC = ['varicose-veins', 'dvt', 'lymphedema'] as const;
+type VT = (typeof VASC)[number];
 const ORGAN_ANIM_DONE: Record<string, string> = {
   stroke: '已完成：正常血流、缺血性中風（血塊阻塞）與出血性中風（血管破裂）的示意。尚未完成：三高與腦血管風險的動畫。',
   ckd: '已完成：腎絲球過濾、微血管受損、腎絲球硬化與廢物堆積的示意。尚未完成：腎元整體結構的細部。',
@@ -79,6 +82,9 @@ const ORGAN_ANIM_DONE: Record<string, string> = {
   endometriosis: '已完成：程式繪製的子宮、卵巢、輸卵管、膀胱與腸道示意模型，內膜異位病灶的示意。尚未完成：真實女性解剖模型。',
   'cervical-cancer': '已完成：程式繪製的子宮頸示意模型，癌前病變與抹片刮取細胞的示意。尚未完成：真實女性解剖模型、HPV 疫苗說明。',
   'breast-cancer': '已完成：程式繪製的乳房示意模型（乳小葉、乳管），腫瘤與乳房 X 光攝影壓迫板的示意。尚未完成：真實女性解剖模型。',
+  'varicose-veins': '已完成：真實右腿骨骼、肌肉與動脈，以及示意的表淺靜脈、瓣膜與血液回堵、靜脈腫脹扭曲。尚未完成：真實下肢靜脈模型。',
+  dvt: '已完成：真實右腿動脈旁示意的深層靜脈，血栓形成與脫落往肺部的示意。尚未完成：肺栓塞的肺部動畫。',
+  lymphedema: '已完成：真實右腿與皮膚，示意的淋巴管、淋巴回流受阻造成腫脹與壓力衣。尚未完成：手臂淋巴水腫。',
   glaucoma: '已完成：眼內液體循環、眼壓升高、視神經受損與周邊視野縮小的示意。尚未完成：隅角閉鎖型青光眼的動畫。',
 };
 
@@ -157,6 +163,11 @@ export default function DiseaseView({ id, onExit }: { id: string; onExit?(): voi
         ) : d.id === 'atrial-fibrillation' || d.id === 'heart-failure' ? (
           <>
             <Suspense fallback={<p className="small">載入動畫…</p>}><HeartAnims topic={d.id} /></Suspense>
+            <p className="small">{ORGAN_ANIM_DONE[d.id]}</p>
+          </>
+        ) : (VASC as readonly string[]).includes(d.id) ? (
+          <>
+            <Suspense fallback={<p className="small">載入動畫…</p>}><VascAnims topic={d.id as VT} /></Suspense>
             <p className="small">{ORGAN_ANIM_DONE[d.id]}</p>
           </>
         ) : (FEMALE as readonly string[]).includes(d.id) ? (

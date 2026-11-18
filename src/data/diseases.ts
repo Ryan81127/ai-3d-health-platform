@@ -1130,6 +1130,195 @@ export const DISEASES: DiseaseModule[] = [
       ]),
     ],
   },
+  /* ===== 第五批常見疾病（2026-11-18） ===== */
+  {
+    id: 'rheumatoid-arthritis', title: '類風濕性關節炎', en: 'Rheumatoid Arthritis', organs: ['bones'], specialty: '風濕免疫科',
+    review: rev('MedlinePlus Rheumatoid Arthritis', '風濕免疫科'),
+    animPlan: ['手部的小關節', '免疫攻擊關節滑膜造成發炎（示意）', '及早治療減少關節損傷'],
+    sections: [
+      sec('define', [
+        t('類風濕性關節炎是一種自體免疫疾病，造成關節疼痛、腫脹與僵硬；最常見於手腕與手指，但免疫系統可能攻擊任何關節組織，發炎也可能影響眼睛、皮膚、心臟、神經、血液等。', 'mp-ra', 'What is rheumatoid arthritis'),
+        t('與常隨年齡出現的退化性關節炎不同，類風濕性關節炎影響關節的內襯，並損傷覆蓋骨頭末端的組織，最終可能使關節功能變差。', 'mp-ra', 'What is rheumatoid arthritis'),
+        t('沒有單一檢查能診斷；醫師會詢問病史與家族史、檢查關節，並安排抽血或 X 光、超音波，可能轉介風濕科醫師。', 'mp-ra', 'How is rheumatoid arthritis diagnosed'),
+      ]),
+      sec('mechanism', [t('原因不明，可能與基因、環境（如香菸）及性荷爾蒙有關；免疫系統可能在出現症狀前數年就開始攻擊關節與組織。', 'mp-ra', 'What causes；Symptoms')]),
+      sec('organs', [t('症狀可能包括：活動時關節疼痛或僵硬（早上或久未活動後更明顯），通常兩側對稱；關節壓痛、發紅、發熱、腫脹；疲倦、發燒、食慾差；關節附近皮下硬塊（類風濕結節）。', 'mp-ra', 'Symptoms')]),
+      sec('lifestyle', [
+        t('風險較高：年紀較長、女性、家族史、長期吸菸，以及肥胖、牙周病與肺部疾病。', 'mp-ra', 'Who is more likely'),
+        t('自我管理：保持活動、維持健康體重、避免關節受傷與反覆動作、戒菸或不吸菸。', 'mp-ra', 'Treatments'),
+      ]),
+      sec('nutrition', [gen('均衡飲食、維持健康體重；目前沒有食物或保健食品能治癒類風濕性關節炎。')]),
+      sec('meds', [t('類風濕性關節炎無法治癒，但及早治療可避免症狀惡化與關節損傷；治療可能包括藥物、生活調整與手術。', 'mp-ra', 'Treatments'), MED_NOTE]),
+      sec('redflags', [gen('多處關節紅腫熱痛合併發燒，或出現呼吸困難、胸痛時，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'sle', title: '全身性紅斑性狼瘡', en: 'Systemic Lupus Erythematosus', organs: ['skin', 'kidneys', 'heart'], specialty: '風濕免疫科',
+    review: rev('MedlinePlus Lupus', '風濕免疫科'),
+    animPlan: ['免疫系統誤攻擊健康組織（示意）', '臉部蝴蝶斑與多器官發炎（示意）', '預防與治療發作'],
+    sections: [
+      sec('define', [
+        t('紅斑性狼瘡是慢性的自體免疫疾病：免疫系統誤攻擊健康的細胞與組織，造成發炎，可能損傷關節、皮膚、腎臟、心臟、肺與腦；全身性紅斑性狼瘡是最常見的類型。', 'mp-lupus', 'What is lupus'),
+        t('沒有專一的檢查，常被誤認為其他症狀相似的疾病，可能需要一段時間才能確診。', 'mp-lupus', 'How is lupus diagnosed'),
+      ]),
+      sec('mechanism', [t('原因不明，研究中的可能因素包括基因、環境（病毒感染、陽光、某些藥物、吸菸）與免疫系統問題。', 'mp-lupus', 'What causes lupus')]),
+      sec('organs', [
+        t('常見症狀：關節炎與晨僵、發燒、疲倦、臉部紅疹（蝴蝶斑）、深呼吸時胸痛、掉髮、手指腳趾遇冷或壓力變白或發紫（雷諾氏現象）、對陽光敏感、腿或眼周水腫、口腔潰瘍、淋巴腺腫、頭痛頭暈、意識混亂與記憶問題；症狀時好時壞，出現症狀稱為發作。', 'mp-lupus', 'Symptoms'),
+        t('全身發炎可能造成腎臟損傷（狼瘡性腎炎）、心肌炎或心包膜炎、血管炎、血栓、肋膜炎，也較容易發生冠狀動脈疾病與動脈粥狀硬化。', 'mp-lupus', 'What other problems'),
+      ]),
+      sec('lifestyle', [t('任何人都可能罹患，但女性遠多於男性；亞洲人也較常見。', 'mp-lupus', 'Who is more likely'), gen('外出做好防曬、避免吸菸、規律作息，新症狀出現時及早告知醫師。')]),
+      sec('nutrition', [gen('均衡飲食；有腎臟侵犯時，鹽分與蛋白質攝取需與醫師或營養師討論。')]),
+      sec('meds', [t('紅斑性狼瘡無法治癒，但藥物與生活調整可以控制；治療目標是預防與治療發作、減少器官損傷並改善生活品質。通常由家庭醫師協調，搭配風濕科與其他專科。', 'mp-lupus', 'Treatments'), MED_NOTE]),
+      sec('redflags', [gen('胸痛、呼吸困難、明顯水腫或尿量減少、抽搐或意識改變時，請立即就醫。')]),
+    ],
+  },
+  {
+    id: 'frailty-falls', title: '衰弱與跌倒', en: 'Frailty and Falls', organs: ['bones', 'muscles'], specialty: '家醫科或老年醫學科',
+    review: rev('MedlinePlus Falls（NIA）', '家醫科或老年醫學科'),
+    animPlan: ['站立與平衡', '肌力不足、平衡差時跌倒與髖部骨折（示意）', '運動、居家安全與鈣質'],
+    sections: [
+      sec('define', [
+        gen('衰弱是長者體力、肌力與身體儲備能力下降的狀態，容易疲倦、走路變慢、體重減輕，跌倒與失能的風險較高；是否為衰弱需由醫療人員評估。'),
+        t('長者跌倒特別嚴重：跌倒風險較高，也較容易骨折（特別是有骨質疏鬆時）；髖部骨折甚至可能造成失能與失去獨立生活能力。', 'mp-falls', 'Summary'),
+      ]),
+      sec('mechanism', [t('常見跌倒原因：平衡問題、會讓人頭暈或反應變慢的藥物、視力問題、酒精、肌肉無力（特別是腿部）、低血壓、糖尿病、神經病變等疾病、反射變慢，以及絆倒或滑倒。', 'mp-falls', 'Summary')]),
+      sec('organs', [gen('跌倒可能造成髖部、手腕或脊椎骨折與頭部外傷；害怕再跌倒也可能讓活動減少，使肌力更差。')]),
+      sec('lifestyle', [
+        t('規律運動可強化肌肉、改善平衡、保持骨骼強健，降低跌倒風險；定期做眼睛檢查，並讓居家更安全，例如移除絆倒物、在樓梯與浴室加裝扶手。', 'mp-falls', 'Summary'),
+      ]),
+      sec('nutrition', [t('攝取足夠的鈣質與維生素 D，可降低跌倒時骨折的機會。', 'mp-falls', 'Summary'), gen('每餐攝取足夠蛋白質以維持肌肉量（可參考「肌少症」）。')]),
+      sec('meds', [gen('服用多種藥物或有頭暈副作用的藥物時，請請醫師或藥師檢視用藥。'), MED_NOTE]),
+      sec('redflags', [gen('跌倒後無法站立、髖部疼痛、頭部撞擊後頭痛嘔吐或意識改變時，請立即就醫或撥打 119。')]),
+    ],
+  },
+  {
+    id: 'allergic-rhinitis', title: '過敏性鼻炎', en: 'Allergic Rhinitis (Hay Fever)', organs: ['airway', 'eyes'], specialty: '耳鼻喉科或過敏免疫科',
+    review: rev('MedlinePlus Hay Fever', '耳鼻喉科或過敏免疫科'),
+    animPlan: ['鼻腔與鼻甲', '過敏原引起鼻黏膜腫脹（示意）', '藥物、鼻噴劑與生理食鹽水沖洗'],
+    sections: [
+      sec('define', [
+        t('樹木、雜草與草地會釋放花粉到空氣中，部分花粉進入鼻子與喉嚨，可能引發稱為花粉熱的過敏（過敏性鼻炎的一種）。', 'mp-hayfever', 'Summary'),
+        t('醫療人員可依身體檢查與症狀診斷，有時會做皮膚或血液檢查。', 'mp-hayfever', 'Summary'),
+      ]),
+      sec('mechanism', [gen('身體的免疫系統把花粉、塵蟎等無害物質當成威脅，引起鼻腔黏膜發炎腫脹與分泌物增加。')]),
+      sec('organs', [t('症狀可能包括：打噴嚏（常伴隨流鼻水或鼻塞）、咳嗽與鼻涕倒流、眼睛鼻子喉嚨癢、眼睛紅與流淚、黑眼圈。', 'mp-hayfever', 'Summary')]),
+      sec('lifestyle', [gen('記錄誘發症狀的環境；花粉多時減少外出、關窗並使用空氣清淨機，定期清洗寢具以減少塵蟎。')]),
+      sec('nutrition', [gen('目前沒有食物能治癒過敏性鼻炎；均衡飲食、充足睡眠。')]),
+      sec('meds', [t('藥物與鼻噴劑可以緩解症狀；也可以沖洗鼻腔，但要使用蒸餾水或滅菌水調製的生理食鹽水。減敏注射可降低對花粉的敏感度，提供長期緩解。', 'mp-hayfever', 'Summary'), MED_NOTE]),
+      sec('redflags', [gen('出現呼吸困難、喘鳴、臉或喉嚨腫脹時，請立即撥打 119。')]),
+    ],
+  },
+  {
+    id: 'hearing-loss', title: '聽力損失', en: 'Hearing Loss', organs: ['nerves'], specialty: '耳鼻喉科',
+    review: rev('MedlinePlus Hearing Disorders；Age-related hearing loss', '耳鼻喉科'),
+    animPlan: ['聲音從外耳傳到內耳', '內耳毛細胞受損（示意）', '助聽器與人工電子耳'],
+    sections: [
+      sec('define', [
+        t('聽力損失主要有兩種：內耳或聽神經受損，通常是永久的；聲波無法到達內耳（耳垢、積液或耳膜破洞），治療或手術常可恢復。', 'mp-hearing', 'Summary'),
+        t('老年性聽力損失是隨年齡增長慢慢失去聽力；醫師會用耳鏡檢查耳道，必要時轉介耳鼻喉科與聽力師做聽力檢查。', 'mp-presby', 'Exams and Tests'),
+      ]),
+      sec('mechanism', [
+        t('內耳的細小毛細胞接收聲波，轉換成大腦可解讀的神經訊號；毛細胞受損或死亡就會造成聽力損失，毛細胞不會再生，因此這類損失是永久的。', 'mp-presby', 'Causes'),
+        t('可能原因包括遺傳、耳朵感染與腦膜炎等疾病、外傷、某些藥物、長期暴露於大聲噪音與老化。', 'mp-hearing', 'Summary'),
+      ]),
+      sec('organs', [t('症狀：聽不清楚周遭的人說話、需要把電視音量調大、常請別人重複、在吵雜環境更難聽清楚、分不清「ㄙ」等高頻音、耳鳴；聽力損失可能讓人避免出門而社交孤立。', 'mp-presby', 'Symptoms；Outlook')]),
+      sec('lifestyle', [t('相關因素包括家族史、反覆暴露於噪音、吸菸、糖尿病等疾病與某些藥物。', 'mp-presby', 'Causes'), gen('減少噪音暴露：使用耳機時音量勿過大、時間勿過長，在吵雜環境配戴耳塞。')]),
+      sec('nutrition', [gen('控制血糖與血壓；不吸菸。')]),
+      sec('meds', [t('老年性聽力損失無法治癒，治療以改善日常功能為主：助聽器、電話擴音器等輔具、讀唇；嚴重者可考慮人工電子耳，能偵測聲音，但無法恢復正常聽力。', 'mp-presby', 'Treatment'), MED_NOTE]),
+      sec('redflags', [t('聽力突然改變，或聽力損失合併其他症狀時，請立即聯絡醫療人員。', 'mp-presby', 'When to Contact a Medical Professional'), gen('突發性聽力損失需儘快就醫，愈早治療愈好。')]),
+    ],
+  },
+  {
+    id: 'overactive-bladder', title: '膀胱過動症', en: 'Overactive Bladder', organs: ['bladder'], specialty: '泌尿科或婦產科',
+    review: rev('MedlinePlus Bladder Diseases、Urinary Incontinence；NIDDK Bladder Control', '泌尿科或婦產科'),
+    animPlan: ['膀胱逐漸充滿', '膀胱在錯誤的時間收縮（示意）', '膀胱訓練與藥物'],
+    sections: [
+      sec('define', [
+        t('膀胱過動症是膀胱在錯誤的時間把尿液擠出的狀況；診斷可能包括尿液檢查、X 光與膀胱鏡檢查。', 'mp-bladder', 'Summary'),
+        t('急迫性尿失禁是突然很想解尿、來不及到廁所就漏尿，常與膀胱過動有關；也可能是泌尿道感染的徵兆。', 'mp-ui', 'Types'),
+      ]),
+      sec('mechanism', [gen('膀胱肌肉在尚未充滿時就不自主收縮，產生強烈尿意。')]),
+      sec('organs', [t('常常突然很想上廁所，或在日常活動中漏尿，可能是膀胱控制問題，請與醫療人員討論。', 'niddk-bladder', 'Symptoms & Causes')]),
+      sec('lifestyle', [
+        t('膀胱訓練：依排尿日記定時排尿，再逐漸拉長間隔，幫助膀胱容納更多尿液；凱格爾運動可強化骨盆底肌。', 'mp-ui', 'Treatments'),
+        t('良好的習慣，例如飲食均衡、喝足夠的水、維持健康體重，可能幫助維持膀胱健康。', 'niddk-bladder', 'Prevention'),
+      ]),
+      sec('nutrition', [gen('減少咖啡因、酒精與碳酸飲料；不要因為怕頻尿而喝太少水。')]),
+      sec('meds', [t('若自我照顧無效，可能使用放鬆膀胱肌肉、預防膀胱痙攣或阻斷頻尿急尿神經訊號的藥物。', 'mp-ui', 'Treatments'), MED_NOTE]),
+      sec('redflags', [gen('解尿疼痛、血尿、發燒，或突然解不出尿時，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'thalassemia', title: '地中海型貧血', en: 'Thalassemia', organs: ['vessels', 'liver'], specialty: '血液科',
+    review: rev('MedlinePlus Thalassemia', '血液科'),
+    animPlan: ['紅血球與血紅素', '健康紅血球與血紅素較少（示意）', '輸血與排鐵治療'],
+    sections: [
+      sec('define', [
+        t('地中海型貧血是遺傳性血液疾病：身體製造的健康紅血球與血紅素較少，因而造成貧血；常見於義大利、希臘、中東、南亞與非洲裔族群。', 'mp-thal', 'Summary'),
+        t('醫師以血液檢查診斷地中海型貧血。', 'mp-thal', 'Summary'),
+      ]),
+      sec('mechanism', [t('血紅素是把氧氣運送到全身的蛋白質；地中海型貧血者的血紅素與健康紅血球製造較少。', 'mp-thal', 'Summary')]),
+      sec('organs', [t('嚴重程度從輕微到嚴重；有些人沒有症狀或只有輕微貧血，重型可能在出生後兩年內出現嚴重貧血、生長與青春期遲緩，以及脾臟、肝臟、心臟或骨骼問題。', 'mp-thal', 'Summary')]),
+      sec('lifestyle', [gen('地中海型貧血是遺傳疾病；計畫懷孕前可與醫師討論血液檢查與遺傳諮詢。')]),
+      sec('nutrition', [gen('不要自行補充鐵劑：地中海型貧血與缺鐵性貧血不同，是否需要補鐵請由醫師依檢查決定。')]),
+      sec('meds', [t('治療包括輸血與移除體內過多鐵質；症狀輕微或沒有症狀者可能不需要治療，部分嚴重個案需要骨髓移植。', 'mp-thal', 'Summary'), MED_NOTE]),
+      sec('redflags', [gen('明顯喘、心悸、極度疲倦或臉色非常蒼白時，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'bph', title: '良性攝護腺肥大', en: 'Benign Prostatic Hyperplasia (BPH)', organs: ['bladder'], specialty: '泌尿科',
+    review: rev('MedlinePlus Enlarged Prostate (BPH)', '泌尿科'),
+    animPlan: ['攝護腺位於膀胱下方、包圍尿道', '攝護腺變大壓迫尿道（示意）', '生活調整與藥物'],
+    sections: [
+      sec('define', [
+        t('攝護腺是男性生殖系統的腺體，位於膀胱正下方，製造精液的一部分液體；良性攝護腺肥大是攝護腺比正常大，不是癌症，也不會增加攝護腺癌風險。', 'mp-bph', 'What is the prostate；What is an enlarged prostate'),
+        t('攝護腺在成年期持續生長，因此良性攝護腺肥大是 50 歲以上最常見的攝護腺問題。', 'mp-bph', 'What is an enlarged prostate'),
+      ]),
+      sec('mechanism', [t('攝護腺變大時可能壓迫膀胱、擠壓尿道，使尿流變慢或受阻；長期下來膀胱肌肉可能因用力排尿而變弱，無法完全排空。研究者認為可能與老化的荷爾蒙變化有關。', 'mp-bph', 'What is an enlarged prostate；What causes')]),
+      sec('organs', [t('症狀：頻尿或急尿、夜間多次起床解尿、不易開始解尿、尿流弱慢或斷斷續續、解完後滴尿、尿失禁、覺得沒有解乾淨、射精後或解尿時疼痛。', 'mp-bph', 'Symptoms')]),
+      sec('lifestyle', [
+        t('風險較高：40 歲以上、家族史、肥胖、心臟病與循環問題、第二型糖尿病、勃起功能障礙、活動量不足。', 'mp-bph', 'Who is more likely'),
+        t('輕微症狀可透過生活調整改善：睡前或外出前少喝水、減少含咖啡因飲料與酒精、膀胱訓練與鍛鍊控制排尿的肌肉、預防或治療便秘。', 'mp-bph', 'Treatments'),
+      ]),
+      sec('nutrition', [gen('減少咖啡因與酒精，多攝取蔬果與膳食纖維預防便秘。')]),
+      sec('meds', [t('不是每個人都需要治療；藥物可抑制攝護腺生長、縮小攝護腺或放鬆肌肉改善尿流，有時合併兩種藥物效果較好。', 'mp-bph', 'Treatments'), MED_NOTE]),
+      sec('redflags', [t('完全解不出尿，或解尿疼痛、頻尿急尿合併發燒畏寒時，請立即就醫。', 'mp-bph', 'Symptoms')]),
+    ],
+  },
+  {
+    id: 'erectile-dysfunction', title: '勃起功能障礙', en: 'Erectile Dysfunction', organs: ['vessels', 'nerves'], specialty: '泌尿科',
+    review: rev('MedlinePlus Erectile Dysfunction', '泌尿科'),
+    animPlan: ['陰莖海綿體的血流（示意）', '血管阻塞或神經受損使血流不足（示意）', '運動、減重、戒菸與治療'],
+    sections: [
+      sec('define', [
+        t('勃起功能障礙是常見的男性性功能障礙，指難以勃起或維持勃起；年紀越大越常見，但不是老化的正常現象。', 'mp-ed', 'Summary'),
+      ]),
+      sec('mechanism', [t('勃起功能障礙可能是健康問題的徵兆，例如血管阻塞，或糖尿病造成的神經損傷。', 'mp-ed', 'Summary')]),
+      sec('organs', [gen('陰莖血管與心臟血管同樣可能受動脈粥狀硬化影響，因此也應評估血壓、血糖與血脂。')]),
+      sec('lifestyle', [t('增加運動、減重或戒菸可能有幫助。', 'mp-ed', 'Summary')]),
+      sec('nutrition', [gen('採用心臟健康飲食，控制血糖、血壓與血脂；限制飲酒。')]),
+      sec('meds', [t('有勃起功能障礙應告訴醫師；若不就醫，背後的健康問題可能沒有被治療。醫師可提供多種治療，許多人只需服用藥物。', 'mp-ed', 'Summary'), gen('不要自行購買來路不明的壯陽藥；服用硝酸鹽類心臟藥物者，用藥前必須告知醫師。'), MED_NOTE]),
+      sec('redflags', [gen('勃起持續超過 4 小時且疼痛時，請立即就醫。')]),
+    ],
+  },
+  {
+    id: 'late-onset-hypogonadism', title: '男性更年期（睪固酮低下）', en: 'Late-onset Hypogonadism', organs: ['bones', 'muscles'], specialty: '泌尿科或新陳代謝科',
+    review: rev('MedlinePlus Testosterone Levels Test', '泌尿科或新陳代謝科'),
+    animPlan: ['睪固酮的作用', '睪固酮低下：肌肉與骨骼變化（示意）', '抽血檢查與醫師評估'],
+    sections: [
+      sec('define', [
+        t('睪固酮可幫助控制性慾，並協助肌肉與骨骼生長；在男性也與體毛、精子製造與紅血球生成有關。', 'mp-testo', 'What is a testosterone levels test'),
+        t('睪固酮隨年齡下降是正常的；檢驗結果不正常不一定代表需要治療，需由醫師依年齡、症狀與其他檢查判斷。', 'mp-testo', 'What do the results mean'),
+        gen('「男性更年期」是民眾常用的說法，醫學上與年齡相關的睪固酮低下需由醫師依症狀與抽血結果綜合評估。'),
+      ]),
+      sec('mechanism', [t('醫師可安排總睪固酮（最常用）、游離睪固酮或生物可利用睪固酮檢查，找出睪固酮異常的原因。', 'mp-testo', 'What is a testosterone levels test')]),
+      sec('organs', [t('男性睪固酮低下的症狀可能包括：性慾低、勃起功能障礙、不孕、男性女乳、臉部或體毛稀少、不明原因的骨質變薄或貧血、肌肉量流失。', 'mp-testo', 'Why do I need a testosterone levels test')]),
+      sec('lifestyle', [gen('規律運動（特別是阻力運動）、維持健康體重、充足睡眠、限制飲酒，有助維持肌肉與骨骼健康。')]),
+      sec('nutrition', [gen('均衡飲食，攝取足夠蛋白質、鈣與維生素 D；不要自行使用來路不明的荷爾蒙或補品。')]),
+      sec('meds', [gen('是否需要荷爾蒙治療由醫師評估，需考量益處與風險並定期追蹤。'), MED_NOTE]),
+      sec('redflags', [gen('出現胸痛、單側無力，或乳房出現硬塊時，請儘速就醫。')]),
+    ],
+  },
 ];
 
 export const DISEASE_MAP: Record<string, DiseaseModule> = Object.fromEntries(DISEASES.map((d) => [d.id, d]));

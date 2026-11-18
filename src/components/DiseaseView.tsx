@@ -22,6 +22,9 @@ type B3 = (typeof BATCH3)[number];
 const Batch4Anims = lazy(() => import('./Batch4Anims'));
 const BATCH4 = ['anxiety', 'panic-disorder', 'autonomic-dysfunction', 'pneumonia', 'uti', 'urinary-incontinence', 'ibs', 'gallstones', 'iron-deficiency-anemia', 'low-back-pain'] as const;
 type B4 = (typeof BATCH4)[number];
+const Batch5Anims = lazy(() => import('./Batch5Anims'));
+const BATCH5 = ['rheumatoid-arthritis', 'sle', 'frailty-falls', 'allergic-rhinitis', 'hearing-loss', 'overactive-bladder', 'thalassemia', 'bph', 'erectile-dysfunction', 'late-onset-hypogonadism'] as const;
+type B5 = (typeof BATCH5)[number];
 const ORGAN_ANIM_DONE: Record<string, string> = {
   stroke: '已完成：正常血流、缺血性中風（血塊阻塞）與出血性中風（血管破裂）的示意。尚未完成：三高與腦血管風險的動畫。',
   ckd: '已完成：腎絲球過濾、微血管受損、腎絲球硬化與廢物堆積的示意。尚未完成：腎元整體結構的細部。',
@@ -58,6 +61,16 @@ const ORGAN_ANIM_DONE: Record<string, string> = {
   gallstones: '已完成：真實肝臟、膽囊（剖面）與十二指腸，膽結石形成與阻塞膽管的示意（膽管為示意）。尚未完成：膽囊切除手術的動畫。',
   'iron-deficiency-anemia': '已完成：剖開的血管段中紅血球變少變淡、補鐵後恢復的示意。尚未完成：骨髓製造紅血球的動畫。',
   'low-back-pain': '已完成：真實腰椎、椎間盤、馬尾與坐骨神經，椎間盤突出刺激神經的示意。尚未完成：正確搬重物姿勢的動畫。',
+  'rheumatoid-arthritis': '已完成：真實右手骨骼上的關節發炎腫脹與治療後消退的示意。尚未完成：關節內滑膜與軟骨破壞的剖面。',
+  sle: '已完成：真實頭部皮膚上的蝴蝶斑發作與控制的示意，並列出可能受影響的器官。尚未完成：腎臟等器官發炎的動畫。',
+  'frailty-falls': '已完成：真實全身骨骼的平衡搖晃、跌倒與髖部骨折風險示意，並列出預防方法。尚未完成：居家安全的互動檢查。',
+  'allergic-rhinitis': '已完成：真實頭部骨骼與下鼻甲，花粉進入、鼻甲腫脹與食鹽水沖洗的示意。尚未完成：眼睛過敏症狀的動畫。',
+  'hearing-loss': '已完成：真實外耳，以及示意的耳蝸毛細胞受損與助聽器放大聲音。尚未完成：內耳真實模型（目前模型沒有內耳）。',
+  'overactive-bladder': '已完成：真實膀胱、尿道與骨盆，膀胱不自主收縮造成急尿的示意。尚未完成：女性骨盆（需要女性模型）。',
+  thalassemia: '已完成：血管段中紅血球變少變小、輸血後補充的示意。尚未完成：遺傳方式的圖解。',
+  bph: '已完成：真實膀胱、攝護腺、尿道與儲精囊，攝護腺變大壓迫尿道、尿流變弱的示意。尚未完成：手術治療的動畫。',
+  'erectile-dysfunction': '已完成：真實骨盆動脈與海綿體，動脈斑塊使血流不足的示意。尚未完成：神經訊號的動畫。',
+  'late-onset-hypogonadism': '已完成：真實睪丸、骨盆、股骨與大腿肌群，睪固酮減少時肌肉變細、骨質變化的示意。尚未完成：抽血檢查流程。',
   glaucoma: '已完成：眼內液體循環、眼壓升高、視神經受損與周邊視野縮小的示意。尚未完成：隅角閉鎖型青光眼的動畫。',
 };
 
@@ -136,6 +149,11 @@ export default function DiseaseView({ id, onExit }: { id: string; onExit?(): voi
         ) : d.id === 'atrial-fibrillation' || d.id === 'heart-failure' ? (
           <>
             <Suspense fallback={<p className="small">載入動畫…</p>}><HeartAnims topic={d.id} /></Suspense>
+            <p className="small">{ORGAN_ANIM_DONE[d.id]}</p>
+          </>
+        ) : (BATCH5 as readonly string[]).includes(d.id) ? (
+          <>
+            <Suspense fallback={<p className="small">載入動畫…</p>}><Batch5Anims topic={d.id as B5} /></Suspense>
             <p className="small">{ORGAN_ANIM_DONE[d.id]}</p>
           </>
         ) : (BATCH4 as readonly string[]).includes(d.id) ? (

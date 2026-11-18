@@ -57,7 +57,7 @@ const rev = (guidelineVersion: string, specialty: string): ReviewState => ({
   roles: [{ role: specialty, required: true, records: [] }, { role: '合格營養師（飲食與營養）', required: true, records: [] }],
 });
 const TREAT = gen('治療方式由專科醫師依癌症種類與分期決定。');
-const MALE_MODEL = gen('目前的 3D 模型為成年男性，無法顯示這個器官。');
+const MALE_MODEL = gen('目前的真實解剖模型為成年男性，沒有女性器官；本頁的 3D 動畫為程式繪製的示意模型，形狀與比例經過簡化，不是真實解剖模型。');
 const EMERGENCY = gen('出現胸痛、嚴重呼吸困難、突然單側無力或口齒不清、意識改變時，請立即撥打 119。');
 
 export const DISEASES: DiseaseModule[] = [
@@ -1317,6 +1317,66 @@ export const DISEASES: DiseaseModule[] = [
       sec('nutrition', [gen('均衡飲食，攝取足夠蛋白質、鈣與維生素 D；不要自行使用來路不明的荷爾蒙或補品。')]),
       sec('meds', [gen('是否需要荷爾蒙治療由醫師評估，需考量益處與風險並定期追蹤。'), MED_NOTE]),
       sec('redflags', [gen('出現胸痛、單側無力，或乳房出現硬塊時，請儘速就醫。')]),
+    ],
+  },
+  /* ===== 女性疾病（2026-11-18） ===== */
+  {
+    id: 'pcos', title: '多囊性卵巢症候群', en: 'Polycystic Ovary Syndrome (PCOS)', organs: [], specialty: '婦產科或新陳代謝科',
+    review: rev('MedlinePlus Polycystic Ovary Syndrome', '婦產科或新陳代謝科'),
+    animPlan: ['卵巢與排卵（示意）', '濾泡停止發育、不排卵（示意）', '生活調整與治療'],
+    sections: [
+      sec('define', [
+        t('多囊性卵巢症候群是一種荷爾蒙疾病，影響卵巢與身體許多部位；通常至少有以下兩項：不排卵（月經不規則或沒有月經）、雄性素過高（臉部或身體毛髮過多），以及單側或雙側卵巢有停止發育的濾泡聚集，看起來像許多小囊泡。', 'mp-pcos', 'What is PCOS'),
+        t('沒有專一的檢查；醫師會做身體檢查、詢問病史與家族史，可能安排骨盆檢查、骨盆超音波（看卵巢與子宮內膜厚度）與荷爾蒙抽血檢查。', 'mp-pcos', 'How is PCOS diagnosed'),
+        MALE_MODEL,
+      ]),
+      sec('mechanism', [t('確切原因不明，可能與遺傳、雄性素失衡與胰島素阻抗有關。', 'mp-pcos', 'What causes PCOS')]),
+      sec('organs', [
+        t('症狀可能包括：月經不規則或沒來、臉胸腹或大腿毛髮過多、肥胖或不易減重、嚴重青春痘、皮膚油、皮膚出現增厚的深色區塊（黑色棘皮症）、不孕。', 'mp-pcos', 'Symptoms'),
+        t('與多種健康問題有關：胰島素阻抗（可能導致糖尿病前期與第二型糖尿病）、心臟病、高血壓、血脂異常、子宮內膜增生、睡眠呼吸中止、憂鬱與焦慮。', 'mp-pcos', 'What other health problems'),
+      ]),
+      sec('lifestyle', [t('生活調整可減少許多症狀，並降低或幫助管理相關健康問題：維持健康體重、規律身體活動、健康飲食。', 'mp-pcos', 'Treatments')]),
+      sec('nutrition', [gen('減少精緻糖與含糖飲料，多攝取蔬菜、全穀與優質蛋白質，有助控制體重與血糖。')]),
+      sec('meds', [t('藥物可能包括荷爾蒙避孕藥（使月經規律）、抗雄性素藥物、改善胰島素阻抗的藥物、青春痘藥物與除毛治療；想懷孕時可考慮生育治療。', 'mp-pcos', 'Treatments'), MED_NOTE]),
+      sec('redflags', [gen('月經長時間沒來、大量不正常出血，或出現糖尿病症狀時，請就醫評估。')]),
+    ],
+  },
+  {
+    id: 'uterine-fibroids', title: '子宮肌瘤', en: 'Uterine Fibroids', organs: [], specialty: '婦產科',
+    review: rev('MedlinePlus Uterine Fibroids', '婦產科'),
+    animPlan: ['子宮的構造（示意）', '肌瘤在子宮壁生長（示意）', '依症狀決定是否治療'],
+    sections: [
+      sec('define', [
+        t('子宮肌瘤是生育年齡女性最常見的良性（非癌症）腫瘤，由肌肉細胞與其他組織構成，生長在子宮壁內或周圍，數量與大小不一，可能單顆或成群；常沒有症狀。', 'mp-fibroids', 'What are uterine fibroids'),
+        t('醫師可能在骨盆檢查或影像檢查時發現肌瘤。', 'mp-fibroids', 'How are uterine fibroids diagnosed'),
+        MALE_MODEL,
+      ]),
+      sec('mechanism', [t('原因不明，可能與遺傳與生長激素有關；雌激素與黃體素似乎會幫助肌瘤生長。', 'mp-fibroids', 'What causes uterine fibroids')]),
+      sec('organs', [
+        t('症狀依位置、大小與數量而定，可能包括：經血量多或經痛、經期間出血、下腹脹滿感、頻尿、性交疼痛、下背痛、不易懷孕或反覆流產。', 'mp-fibroids', 'Symptoms'),
+      ]),
+      sec('lifestyle', [t('風險較高：年紀較長、家族史、月經 10 歲前開始或從未懷孕、肥胖或維生素 D 缺乏；每次懷孕與長期使用避孕藥或避孕針會降低風險。', 'mp-fibroids', 'Who is more likely')]),
+      sec('nutrition', [gen('經血量多時注意鐵質攝取（可參考「缺鐵性貧血」），必要時抽血檢查。')]),
+      sec('meds', [t('沒有症狀可能不需要治療；有症狀時依年齡、肌瘤位置大小與是否想懷孕決定，可能包括減緩或停止肌瘤生長的藥物，或手術（如子宮切除）。肌瘤有時在更年期後縮小。', 'mp-fibroids', 'Treatments'), MED_NOTE]),
+      sec('redflags', [gen('大量出血、頭暈心悸，或下腹劇痛時，請儘速就醫。')]),
+    ],
+  },
+  {
+    id: 'endometriosis', title: '子宮內膜異位症', en: 'Endometriosis', organs: [], specialty: '婦產科',
+    review: rev('MedlinePlus Endometriosis', '婦產科'),
+    animPlan: ['子宮內膜（示意）', '類似內膜的組織長在子宮外（示意）', '止痛、荷爾蒙與手術治療'],
+    sections: [
+      sec('define', [
+        t('子宮內膜異位症是類似子宮內膜的組織長在身體其他地方，稱為植入、結節或病灶；最常見於卵巢表面或下方、輸卵管、子宮後方、固定子宮的組織，以及腸道或膀胱。', 'mp-endo', 'What is endometriosis'),
+        t('手術是確診的唯一方法，最常見的是腹腔鏡；在此之前醫師會詢問症狀與病史，並做骨盆檢查與影像檢查。', 'mp-endo', 'How is endometriosis diagnosed'),
+        MALE_MODEL,
+      ]),
+      sec('mechanism', [t('研究者還不知道子宮內膜異位症的原因。', 'mp-endo', 'What causes endometriosis')]),
+      sec('organs', [t('主要症狀是骨盆疼痛（常在經期）與不孕；其他可能包括經痛愈來愈嚴重、性交中或後疼痛、腸道或下腹痛、經期排便或解尿疼痛、經血量多、經期間點狀出血、腸胃症狀與疲倦。', 'mp-endo', 'Symptoms')]),
+      sec('lifestyle', [t('風險較高：母親、姊妹或女兒有子宮內膜異位症，月經 11 歲前開始，月經週期短於 27 天，經血量多且超過 7 天；曾經懷孕、較晚初經、哺乳者風險較低。', 'mp-endo', 'Who is at risk')]),
+      sec('nutrition', [gen('經血量多時注意鐵質攝取；均衡飲食與規律運動有助整體健康。')]),
+      sec('meds', [t('無法治癒，但可治療症狀：止痛藥（如非類固醇消炎止痛藥）、荷爾蒙治療（避孕藥、黃體素、GnRH 類藥物），嚴重疼痛可手術移除病灶；不孕可考慮腹腔鏡手術或試管嬰兒。', 'mp-endo', 'Treatments'), MED_NOTE]),
+      sec('redflags', [gen('突然劇烈下腹痛、發燒，或經痛嚴重到影響日常生活時，請就醫評估。')]),
     ],
   },
 ];

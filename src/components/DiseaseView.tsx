@@ -25,6 +25,9 @@ type B4 = (typeof BATCH4)[number];
 const Batch5Anims = lazy(() => import('./Batch5Anims'));
 const BATCH5 = ['rheumatoid-arthritis', 'sle', 'frailty-falls', 'allergic-rhinitis', 'hearing-loss', 'overactive-bladder', 'thalassemia', 'bph', 'erectile-dysfunction', 'late-onset-hypogonadism'] as const;
 type B5 = (typeof BATCH5)[number];
+const FemaleAnims = lazy(() => import('./FemaleAnims'));
+const FEMALE = ['pcos', 'uterine-fibroids', 'endometriosis', 'cervical-cancer', 'breast-cancer'] as const;
+type FT = (typeof FEMALE)[number];
 const ORGAN_ANIM_DONE: Record<string, string> = {
   stroke: '已完成：正常血流、缺血性中風（血塊阻塞）與出血性中風（血管破裂）的示意。尚未完成：三高與腦血管風險的動畫。',
   ckd: '已完成：腎絲球過濾、微血管受損、腎絲球硬化與廢物堆積的示意。尚未完成：腎元整體結構的細部。',
@@ -71,6 +74,11 @@ const ORGAN_ANIM_DONE: Record<string, string> = {
   bph: '已完成：真實膀胱、攝護腺、尿道與儲精囊，攝護腺變大壓迫尿道、尿流變弱的示意。尚未完成：手術治療的動畫。',
   'erectile-dysfunction': '已完成：真實骨盆動脈與海綿體，動脈斑塊使血流不足的示意。尚未完成：神經訊號的動畫。',
   'late-onset-hypogonadism': '已完成：真實睪丸、骨盆、股骨與大腿肌群，睪固酮減少時肌肉變細、骨質變化的示意。尚未完成：抽血檢查流程。',
+  pcos: '已完成：程式繪製的子宮、卵巢與輸卵管示意模型，正常排卵與多囊卵巢濾泡的對照。尚未完成：真實女性解剖模型。',
+  'uterine-fibroids': '已完成：程式繪製的子宮剖面示意模型，肌瘤在子宮壁生長的示意。尚未完成：真實女性解剖模型。',
+  endometriosis: '已完成：程式繪製的子宮、卵巢、輸卵管、膀胱與腸道示意模型，內膜異位病灶的示意。尚未完成：真實女性解剖模型。',
+  'cervical-cancer': '已完成：程式繪製的子宮頸示意模型，癌前病變與抹片刮取細胞的示意。尚未完成：真實女性解剖模型、HPV 疫苗說明。',
+  'breast-cancer': '已完成：程式繪製的乳房示意模型（乳小葉、乳管），腫瘤與乳房 X 光攝影壓迫板的示意。尚未完成：真實女性解剖模型。',
   glaucoma: '已完成：眼內液體循環、眼壓升高、視神經受損與周邊視野縮小的示意。尚未完成：隅角閉鎖型青光眼的動畫。',
 };
 
@@ -120,7 +128,7 @@ export default function DiseaseView({ id, onExit }: { id: string; onExit?(): voi
         <span>建議審閱：{d.specialty}・指引版本：{d.review.guidelineVersion}</span>
         <span>審閱紀錄以書面為準。</span>
       </div>
-      <p className="small">{d.organs.length ? `3D 標示：${d.organs.map((o) => ORGAN_MAP[o]?.name).join('、')}。` : '目前的 3D 模型為成年男性，沒有可標示的相關器官。'}本頁為衛教資料，不是診斷；不能用單一症狀判斷疾病。</p>
+      <p className="small">{d.organs.length ? `3D 標示：${d.organs.map((o) => ORGAN_MAP[o]?.name).join('、')}。` : '真實解剖模型為成年男性，沒有可標示的女性器官；下方動畫為程式繪製的示意模型。'}本頁為衛教資料，不是診斷；不能用單一症狀判斷疾病。</p>
       <div className="chk-summary">
         {(['text', 'citation', 'general'] as const).map((k) => counts[k] ? <span key={k} className={`chk ${k}`}>{CHECK_LABEL[k]} {counts[k]}</span> : null)}
       </div>
@@ -149,6 +157,11 @@ export default function DiseaseView({ id, onExit }: { id: string; onExit?(): voi
         ) : d.id === 'atrial-fibrillation' || d.id === 'heart-failure' ? (
           <>
             <Suspense fallback={<p className="small">載入動畫…</p>}><HeartAnims topic={d.id} /></Suspense>
+            <p className="small">{ORGAN_ANIM_DONE[d.id]}</p>
+          </>
+        ) : (FEMALE as readonly string[]).includes(d.id) ? (
+          <>
+            <Suspense fallback={<p className="small">載入動畫…</p>}><FemaleAnims topic={d.id as FT} /></Suspense>
             <p className="small">{ORGAN_ANIM_DONE[d.id]}</p>
           </>
         ) : (BATCH5 as readonly string[]).includes(d.id) ? (

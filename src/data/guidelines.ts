@@ -296,6 +296,16 @@ export const GUIDELINES: Guideline[] = [
   { id: 'niddk-bladder', short: 'NIDDK：膀胱控制問題', org: '美國國家糖尿病、消化及腎臟疾病研究所（NIDDK）', year: 2026,
     title: 'Bladder Control Problems (Urinary Incontinence)', citation: 'NIH / NIDDK Health Information', url: 'https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-control-problems',
     status: 'verified', checkedAt: '2026-11-18', note: '已讀取網頁原文。' },
+  /* 女性疾病（2026-11-18 讀取官方頁面原文核對） */
+  { id: 'mp-pcos', short: 'MedlinePlus：多囊性卵巢症候群', org: '美國國家醫學圖書館（MedlinePlus）', year: 2026,
+    title: 'Polycystic Ovary Syndrome', citation: 'MedlinePlus Health Topics', url: 'https://medlineplus.gov/polycysticovarysyndrome.html',
+    status: 'verified', checkedAt: '2026-11-18', note: '已讀取網頁原文。' },
+  { id: 'mp-fibroids', short: 'MedlinePlus：子宮肌瘤', org: '美國國家醫學圖書館（MedlinePlus）', year: 2026,
+    title: 'Uterine Fibroids', citation: 'MedlinePlus Health Topics', url: 'https://medlineplus.gov/uterinefibroids.html',
+    status: 'verified', checkedAt: '2026-11-18', note: '已讀取網頁原文。' },
+  { id: 'mp-endo', short: 'MedlinePlus：子宮內膜異位症', org: '美國國家醫學圖書館（MedlinePlus）', year: 2026,
+    title: 'Endometriosis', citation: 'MedlinePlus Health Topics', url: 'https://medlineplus.gov/endometriosis.html',
+    status: 'verified', checkedAt: '2026-11-18', note: '已讀取網頁原文。' },
 ];
 
 export const GUIDELINE_MAP: Record<string, Guideline> = Object.fromEntries(GUIDELINES.map((g) => [g.id, g]));

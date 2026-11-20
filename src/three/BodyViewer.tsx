@@ -270,6 +270,15 @@ function Label() {
   );
 }
 
+/** 腳下的柔和陰影（徑向漸層），深色與淺色背景都適用 */
+const FLOOR = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 256;
+  const g = c.getContext('2d')!, r = g.createRadialGradient(128, 128, 0, 128, 128, 128);
+  r.addColorStop(0, 'rgba(0,0,0,0.38)'); r.addColorStop(0.45, 'rgba(0,0,0,0.16)'); r.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = r; g.fillRect(0, 0, 256, 256);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+})();
+
 /** Suspense fallback：掛載期間代表有圖層正在下載 */
 function LoadFlag({ onProgress }: { onProgress(delta: number): void }) {
   useEffect(() => { onProgress(1); return () => onProgress(-1); }, [onProgress]);
@@ -290,13 +299,12 @@ function Scene({ flagged, onProgress }: { flagged: string[]; onProgress(delta: n
 
   return (
     <>
-      <color attach="background" args={['#dfe6ec']} />
       <Studio />
       <hemisphereLight args={['#ffffff', '#b9c4cf', 0.55]} />
       <directionalLight position={[1.5, 2.5, 3]} intensity={1.5} />
       <directionalLight position={[-2.5, 1.5, -2]} intensity={0.6} color="#dbe9ff" />
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.012, 0]} raycast={() => null}>
-        <circleGeometry args={[0.75, 64]} /><meshBasicMaterial color="#cdd6df" />
+        <circleGeometry args={[0.9, 64]} /><meshBasicMaterial map={FLOOR} transparent depthWrite={false} />
       </mesh>
 
       {mounted.flatMap((layer) => LAYER_FILES[layer].map((file) => (
@@ -322,7 +330,7 @@ export default function BodyViewer({ flagged }: { flagged: string[] }) {
       <Canvas
         camera={{ position: [0.9, 0.95, 4.2], fov: 30, near: 0.02, far: 40 }}
         dpr={[1, 2]}
-        gl={{ antialias: true, preserveDrawingBuffer: true }}
+        gl={{ antialias: true, preserveDrawingBuffer: true, alpha: true }}
         onPointerMissed={() => useStore.getState().selectOrgan(null)}
       >
         <Scene flagged={flagged} onProgress={onProgress} />

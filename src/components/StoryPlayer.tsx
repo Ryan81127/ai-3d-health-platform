@@ -16,7 +16,7 @@ export function TopicPicker({ value, onPick }: { value?: string; onPick(id: stri
     <div className="topic-picker">
       {TOPICS.map((t) => (
         <button key={t.id} className={`topic-chip ${t.id === value ? 'on' : ''}`} disabled={!t.ready && !DISEASE_MAP[t.id]} onClick={() => onPick(t.id)}>
-          <span>{t.icon}</span>{t.title}{!t.ready && <small>{DISEASE_MAP[t.id] ? '衛教資料・動畫製作中' : '尚未完成'}</small>}
+          <span>{t.icon}</span>{t.title}{!t.ready && !DISEASE_MAP[t.id] && <small>尚未完成</small>}
         </button>
       ))}
     </div>

@@ -25,13 +25,13 @@ export function ExploreLeft({ onStory }: { onStory(id: string): void }) {
       </div>
       {tab === 'disease' ? (
         <div className="cat-list">
-          <p className="small">常見疾病 {CATEGORY_STATS.total} 種，已完成 {CATEGORY_STATS.ready} 種，其餘分批整理中。</p>
+          <p className="small">{CATEGORY_STATS.total} 種常見疾病，依健康管理師課程分為 {CATEGORIES.length} 類；每種都有衛教內容與 3D 動畫。</p>
           {CATEGORIES.map((c) => {
             const done = c.diseases.filter((x) => isReady(x.id)).length;
             return (
               <div key={c.id} className={`acc ${openCat === c.id ? 'open' : ''}`}>
                 <button className="acc-head" aria-expanded={openCat === c.id} onClick={() => setOpenCat(openCat === c.id ? null : c.id)}>
-                  <span>{c.icon} {c.title}</span><b className="count">{done}/{c.diseases.length}</b><i>{openCat === c.id ? '−' : '+'}</i>
+                  <span className="cat-ico" aria-hidden>{c.icon}</span><span>{c.title}</span><b className="count">{done === c.diseases.length ? c.diseases.length : `${done}/${c.diseases.length}`}</b><i>{openCat === c.id ? '−' : '+'}</i>
                 </button>
                 {openCat === c.id && (
                   <div className="acc-body topic-picker">

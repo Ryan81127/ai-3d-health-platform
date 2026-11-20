@@ -32,7 +32,13 @@ export default function OrganCard({ relatedReasons, onOpenStory }: { relatedReas
       <p>這個部位目前沒有對應的衛教內容。可用「隱藏此部位」看到它後方的構造。</p>
     </div>
   );
-  if (!id) return <p className="empty">在 3D 人體上點選任一部位，或從器官清單、搜尋選擇，這裡會顯示它如何運作。</p>;
+  if (!id) return (
+    <div className="empty-state">
+      <svg viewBox="0 0 48 48" width="44" height="44" aria-hidden><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" strokeOpacity=".25" /><path d="M24 12v24M12 24h24" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" /><circle cx="24" cy="24" r="5" fill="none" stroke="currentColor" strokeWidth="1.6" /></svg>
+      <b>點選人體的任一部位</b>
+      <p>或從左側選擇主題、疾病與器官，這裡會顯示它如何運作、可能受到哪些影響，以及可以怎麼照顧。</p>
+    </div>
+  );
 
   const o = ORGAN_MAP[id];
   const reasons = relatedReasons?.(id);

@@ -9,7 +9,7 @@ import Review from './components/Review';
 import Home from './components/Home';
 import { ExploreLeft, ExploreRight } from './components/Explore';
 
-const STEPS: [Step, string][] = [['setup', '① 建立諮詢'], ['work', '② 問卷・3D・分析'], ['review', '③ 審核與匯出']];
+const STEPS: [Step, string][] = [['setup', '建立諮詢'], ['work', '問卷・3D・分析'], ['review', '審核與匯出']];
 const MODES: [Mode, string][] = [['home', '首頁'], ['explore', '自由探索'], ['consult', '健康諮詢']];
 type Pane = 'form' | 'viewer' | 'analysis';
 
@@ -31,24 +31,38 @@ export default function App() {
   return (
     <div className={`app mode-${mode}`}>
       <header className="top no-print">
-        <button className="brand" onClick={() => setMode('home')} aria-label="回到首頁"><span className="logo">✚</span><div><b>3D 人體健康探索</b><small>健康管理師衛教平台</small></div></button>
+        <button className="brand" onClick={() => setMode('home')} aria-label="回到首頁">
+          <span className="logo" aria-hidden>
+            <svg viewBox="0 0 32 32" width="32" height="32"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#5EE6D3" /><stop offset="1" stopColor="#0FA39A" /></linearGradient></defs>
+              <circle cx="16" cy="16" r="15" fill="none" stroke="url(#lg)" strokeWidth="1.6" /><path d="M16 7v18M7 16h18" stroke="url(#lg)" strokeWidth="2.6" strokeLinecap="round" /><circle cx="16" cy="16" r="3.2" fill="#0A1222" stroke="#5EE6D3" strokeWidth="1.4" /></svg>
+          </span>
+          <div><b>3D 人體健康探索</b><small>Health Education Atlas</small></div>
+        </button>
         <nav className="modes" aria-label="模式">
           {MODES.map(([m, label]) => <button key={m} className={mode === m ? 'on' : ''} aria-current={mode === m ? 'page' : undefined} onClick={() => mode !== m && setMode(m)}>{label}</button>)}
         </nav>
         <div className="top-right">
-          <button className={`btn small ghost toggle ${reduceMotion ? 'on' : ''}`} aria-pressed={reduceMotion} onClick={() => setReduceMotion(!reduceMotion)} title="關閉自動旋轉與動畫">減少動態</button>
+          <span className="edu-pill" title="衛教用途，不提供疾病診斷，不能取代醫療專業判斷。">衛教用途・非診斷</span>
+          <button className={`icon-toggle ${reduceMotion ? 'on' : ''}`} aria-pressed={reduceMotion} onClick={() => setReduceMotion(!reduceMotion)} title="關閉自動旋轉與動畫">
+            <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden><path d="M7 5v10M13 5v10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg><span>減少動態</span>
+          </button>
           {mode === 'consult' && ready && <span className="case">{c.caseCode}{isApproved(c) && ' ✓'}</span>}
           {mode === 'consult' && <button className="btn small ghost" onClick={() => confirm('建立新的諮詢？目前這筆若已同意本機儲存會保留。') && startNew()}>＋ 新諮詢</button>}
         </div>
       </header>
       {mode === 'consult' && (
         <nav className="steps no-print" aria-label="諮詢流程">
-          {STEPS.map(([s, label]) => (
-            <button key={s} className={current === s ? 'on' : ''} aria-current={current === s ? 'step' : undefined} disabled={s !== 'setup' && !ready} onClick={() => go(s)}>{label}</button>
-          ))}
+          {STEPS.map(([s, label], i) => {
+            const idx = STEPS.findIndex(([x]) => x === current);
+            return (
+              <button key={s} className={`${current === s ? 'on' : ''} ${i < idx ? 'done' : ''}`} aria-current={current === s ? 'step' : undefined} disabled={s !== 'setup' && !ready} onClick={() => go(s)}>
+                <i>{i < idx ? '✓' : i + 1}</i><span>{label}</span>
+              </button>
+            );
+          })}
         </nav>
       )}
-      <div className="disclaimer no-print">衛教用途，不提供疾病診斷，不能取代醫療專業判斷。</div>
+      {mode === 'consult' && <div className="disclaimer no-print">衛教用途，不提供疾病診斷，不能取代醫療專業判斷。</div>}
 
       {stage && (
         <main className={`stage-wrap ${mode}`}>

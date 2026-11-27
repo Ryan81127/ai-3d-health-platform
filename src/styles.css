@@ -612,3 +612,36 @@ dl { margin: .4em 0; } dt { font-weight: 700; color: var(--accent-2); font-size:
   .report h2, .report h3 { break-after: avoid; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* =========================================================
+   8-bit 像素科普動畫
+   ========================================================= */
+.pxm-wrap { margin: .2rem 0 .9rem; }
+.pxm-wrap h4 { margin: 0 0 .45rem; font-size: .82rem; letter-spacing: .06em; color: var(--accent); }
+.pxm-skel { aspect-ratio: 16 / 9; border-radius: 10px; background: #1d2b53; }
+.pxm { margin: 0; border-radius: 12px; overflow: hidden; background: #000; border: 2px solid #000; box-shadow: 0 0 0 2px #5f574f, var(--sh-2, 0 8px 24px rgba(0,0,0,.25)); font-family: Cubic11, 'Noto Sans TC', monospace; }
+.pxm-screen { position: relative; line-height: 0; }
+.pxm canvas { width: 100%; aspect-ratio: 16 / 9; display: block; image-rendering: pixelated; image-rendering: crisp-edges; cursor: pointer; background: #1d2b53; }
+.pxm-badge { position: absolute; top: 6px; right: 6px; line-height: 1; font-size: 11px; padding: 3px 6px; background: #000; color: #ffec27; border: 1px solid #ffec27; }
+.pxm-big { position: absolute; inset: 0; margin: auto; width: max-content; height: max-content; display: flex; flex-direction: column; align-items: center; gap: 6px; line-height: 1; padding: 12px 18px; border: 2px solid #fff1e8; background: rgba(0,0,0,.72); color: #fff1e8; font: inherit; font-size: 12px; cursor: pointer; box-shadow: 4px 4px 0 #000; }
+.pxm-big span { font-size: 26px; color: #ffec27; }
+.pxm-big:hover { background: #7e2553; }
+.pxm-dialog { position: relative; margin: 6px; padding: 10px 12px 10px; min-height: 4.4em; background: #000; color: #fff1e8; border: 2px solid #fff1e8; box-shadow: inset 0 0 0 2px #000, inset 0 0 0 4px #5f574f; }
+.pxm-dialog p { margin: 0; font-size: 15px; line-height: 1.55; letter-spacing: .02em; }
+.pxm-who { position: absolute; top: -9px; left: 10px; font-size: 11px; line-height: 1; padding: 2px 6px; background: #ff004d; color: #fff1e8; }
+.pxm-dialog .cur { font-style: normal; color: #ffec27; margin-left: 2px; animation: pxm-blink .6s steps(1) infinite; }
+.pxm-dialog .cur.done { animation-duration: 1s; }
+@keyframes pxm-blink { 50% { opacity: 0; } }
+.pxm-bar { display: flex; align-items: center; gap: 6px; padding: 0 6px 6px; color: #c2c3c7; font-size: 11px; }
+.pxm-btn { width: 30px; height: 28px; flex: none; border: 2px solid #5f574f; background: #1d2b53; color: #fff1e8; font: inherit; font-size: 12px; cursor: pointer; box-shadow: 2px 2px 0 #000; }
+.pxm-btn:hover, .pxm-btn.on { border-color: #29adff; color: #ffec27; }
+.pxm-btn:active { transform: translate(2px, 2px); box-shadow: none; }
+.pxm-track { position: relative; flex: 1; height: 10px; background: #1d2b53; border: 2px solid #5f574f; cursor: pointer; touch-action: none; }
+.pxm-track:focus-visible, .pxm-btn:focus-visible, .pxm-big:focus-visible { outline: 2px solid #ffec27; outline-offset: 2px; }
+.pxm-fill { position: absolute; inset: 0 auto 0 0; background: repeating-linear-gradient(90deg, #00e436 0 4px, #008751 4px 6px); }
+.pxm-ch { position: absolute; top: -5px; width: 6px; height: 16px; margin-left: -3px; padding: 0; border: 0; background: #5f574f; cursor: pointer; }
+.pxm-ch.done { background: #00e436; }
+.pxm-ch.on { background: #ffec27; }
+.pxm-time { flex: none; min-width: 6.6em; text-align: right; font-variant-numeric: tabular-nums; }
+@media (max-width: 980px) { .pxm-dialog p { font-size: 13px; } .pxm-time { min-width: 0; } }
+@media (prefers-reduced-motion: reduce) { .pxm-dialog .cur { animation: none; } }

@@ -6,6 +6,8 @@ import { reviewStatus } from '../data/reviewers';
 import { useStore, type LayerOpacity } from '../store';
 import { Pending } from './ui';
 
+const PixelMovie = lazy(() => import('../pixel/PixelMovie'));
+import { MOVIES } from '../pixel/scripts';
 const TearFilm = lazy(() => import('./TearFilm'));
 const VesselFlow = lazy(() => import('./VesselFlow'));
 const MetabolismAnim = lazy(() => import('./MetabolismAnim'));
@@ -129,6 +131,13 @@ export default function DiseaseView({ id, onExit }: { id: string; onExit?(): voi
         <div><b>{d.title}</b><small>{d.en}</small></div>
         {onExit && <button className="btn small ghost" onClick={onExit} aria-label="關閉">✕</button>}
       </div>
+      {MOVIES[d.id] && (
+        <section className="pxm-wrap">
+          <h4>像素科普動畫・約 {Math.round(MOVIES[d.id].scenes.reduce((a, s) => a + (s.d ?? 5), 0))} 秒</h4>
+          <Suspense fallback={<div className="pxm-skel" />}><PixelMovie movie={MOVIES[d.id]} /></Suspense>
+          <p className="small">動畫為簡化示意，用來說明發病過程；字幕改寫自下方附來源的內容，詳細依據請看各段落的出處。</p>
+        </section>
+      )}
       <div className="review-badge">
         <b>{reviewStatus(d.review)}</b>
         <span>建議審閱：{d.specialty}・指引版本：{d.review.guidelineVersion}</span>
